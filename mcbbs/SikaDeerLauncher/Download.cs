@@ -1,52 +1,150 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.IO;
-using Newtonsoft.Json;
-using mcbbs;
-using SikaDeerLauncher.Minecraft;
-using Microsoft.VisualBasic.Devices;
-
-namespace SikaDeerLauncher
+﻿namespace SikaDeerLauncher
 {
+    using Newtonsoft.Json;
+    using SikaDeerLauncher.Core;
+    using SikaDeerLauncher.Core.json;
+    using SikaDeerLauncher.Minecraft;
+    using System;
+    using System.IO;
+
     public sealed class MinecraftDownload
     {
-        Download web = new Download();
-        //java下载
-        /// <summary>
-        /// java下载
-        /// </summary>
-        /// <returns></returns>
+        private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
+        private Download web = new Download();
+
+        public MCDownload DownloadLiteloader(string version)
+        {
+            AllTheExistingVersion[] allTheExistingVersion = new Tools().GetAllTheExistingVersion();
+            foreach (AllTheExistingVersion version2 in allTheExistingVersion)
+            {
+                if (version2.version == version)
+                {
+                    version = version2.IdVersion;
+                    break;
+                }
+                if (version2.version == allTheExistingVersion[allTheExistingVersion.Length - 1].version)
+                {
+                    throw new SikaDeerLauncherException("未找到该版本");
+                }
+            }
+            MCDownload download = new MCDownload {
+                path = Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\liteloader-" + version + ".jar"
+            };
+            string[] textArray1 = new string[] { "https://bmclapi2.bangbang93.com/maven/com/mumfrey/liteloader/", version, "/liteloader-", version, ".jar" };
+            download.Url = string.Concat(textArray1);
+            return download;
+        }
+
+        public MCDownload DownloadOptifine(string version, string filename)
+        {
+            AllTheExistingVersion[] allTheExistingVersion = new Tools().GetAllTheExistingVersion();
+            foreach (AllTheExistingVersion version2 in allTheExistingVersion)
+            {
+                if (version2.version == version)
+                {
+                    version = version2.IdVersion;
+                    break;
+                }
+                if (version2.version == allTheExistingVersion[allTheExistingVersion.Length - 1].version)
+                {
+                    throw new SikaDeerLauncherException("未找到该版本");
+                }
+            }
+            return new MCDownload { path = Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\" + filename, Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/" + filename };
+        }
+
+        internal MCDownload ForgeCoreDownload(string version, string ForgeVersion)
+        {
+            MCDownload download = new MCDownload();
+            string str = version;
+            version = "";
+            foreach (AllTheExistingVersion version2 in new Tools().GetAllTheExistingVersion())
+            {
+                if (version2.version == str)
+                {
+                    version = version2.IdVersion;
+                    break;
+                }
+            }
+            if (version == "")
+            {
+                throw new SikaDeerLauncherException("未找到该版本");
+            }
+            string str2 = "https://bmclapi2.bangbang93.com";
+            if (Tools.DSI == "Minecraft")
+            {
+                str2 = "https://files.minecraftforge.net";
+            }
+            char[] separator = new char[] { '.' };
+            if (Convert.ToInt32(version.Split(separator)[1]) > 9)
+            {
+                string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\SikaDeerLauncherDownload\forge - ", version, " - ", ForgeVersion, "-universal.jar" };
+                download.path = string.Concat(textArray1);
+                string[] textArray2 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-universal.jar" };
+                download.Url = string.Concat(textArray2);
+                return download;
+            }
+            string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\SikaDeerLauncherDownload\forge-", version, "-", ForgeVersion, "-", version, "-universal.jar" };
+            download.path = string.Concat(textArray3);
+            string[] textArray4 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "-", version, "/forge-", version, "-", ForgeVersion, "-", version, "-universal.jar" };
+            download.Url = string.Concat(textArray4);
+            return download;
+        }
+
+        public MCDownload ForgeDownload(string version, string ForgeVersion)
+        {
+            MCDownload download = new MCDownload();
+            string str = version;
+            version = "";
+            foreach (AllTheExistingVersion version2 in new Tools().GetAllTheExistingVersion())
+            {
+                if (version2.version == str)
+                {
+                    version = version2.IdVersion;
+                    break;
+                }
+            }
+            if (version == "")
+            {
+                throw new SikaDeerLauncherException("未找到该版本");
+            }
+            char[] separator = new char[] { '.' };
+            if (Convert.ToInt32(version.Split(separator)[1]) < 13)
+            {
+                return this.ForgeCoreDownload(str, ForgeVersion);
+            }
+            string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\SikaDeerLauncherDownload\forge - ", version, " - ", ForgeVersion, "-installer.jar" };
+            download.path = string.Concat(textArray1);
+            string[] textArray2 = new string[] { "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-installer.jar" };
+            download.Url = string.Concat(textArray2);
+            try
+            {
+                new Download().CreateGetHttpResponse(download.Url);
+            }
+            catch (Exception)
+            {
+                string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\SikaDeerLauncherDownload\forge-", version, "-", ForgeVersion, "-", version, "-installer.jar" };
+                download.path = string.Concat(textArray3);
+                string[] textArray4 = new string[] { "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "-", version, "/forge-", version, "-", ForgeVersion, "-", version, "-installer.jar" };
+                download.Url = string.Concat(textArray4);
+            }
+            return download;
+        }
+
         public MCDownload JavaFileDownload()
         {
-            string javanumder;
-            SikaDeerLauncher.Minecraft.Tools a = new Minecraft.Tools();
-            if (a.GetOSBit() == 32)
+            string str;
+            if (new Tools().GetOSBit() == 0x20)
             {
-                javanumder = "jre_x86.exe";
+                str = "jre_x86.exe";
             }
             else
             {
-                javanumder = "jre_x64.exe";
+                str = "jre_x64.exe";
             }
-            MCDownload GetJavaDownload = new MCDownload();
-            GetJavaDownload.Url = @"https://bmclapi.bangbang93.com/java/" + javanumder;
-            GetJavaDownload.path = System.IO.Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\" + javanumder;
-            return GetJavaDownload;
+            return new MCDownload { Url = "https://bmclapi.bangbang93.com/java/" + str, path = Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\" + str };
         }
 
-        //mc本体下载
-        SikaDeerLauncher.Core.SikaDeerLauncherCore SLC = new Core.SikaDeerLauncherCore();
-        /// <summary>
-        /// mc本体下载
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <returns></returns>
         public MCDownload MCjarDownload(string version)
         {
             MCDownload download = new MCDownload();
@@ -54,144 +152,65 @@ namespace SikaDeerLauncher
             {
                 if (Tools.mcV.ToArray().Length == 0)
                 {
-                    string v = SLC.GetFile(@".minecraft\version.Sika");
-                    string[] a1 = v.Split('|');
-                    foreach (var a2 in a1)
+                    char[] separator = new char[] { '|' };
+                    string[] strArray = this.SLC.GetFile(@".minecraft\version.Sika").Split(separator);
+                    for (int i = 0; i < strArray.Length; i++)
                     {
-                        var a3 = a2.Split('&');
-                        mc mc = new mc();
-                        mc.version = a3[0];
-                        mc.url = a3[1];
-                        Tools.mcV.Add(mc);
+                        char[] chArray2 = new char[] { '&' };
+                        string[] strArray2 = strArray[i].Split(chArray2);
+                        mc item = new mc {
+                            version = strArray2[0],
+                            url = strArray2[1]
+                        };
+                        Tools.mcV.Add(item);
                     }
                 }
-                foreach (var l in Tools.mcV)
+                foreach (mc mc2 in Tools.mcV)
                 {
-                    if (l.version == version)
+                    if (mc2.version == version)
                     {
-                        download.Url = l.url;
-                        download.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar";
+                        download.Url = mc2.url;
+                        string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
+                        download.path = string.Concat(textArray1);
                     }
                 }
+                return download;
             }
-            else
-            {
-                download.Url = @"https://bmclapi2.bangbang93.com/version/" + version + "/client";
-                download.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar";
-            }
+            download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/client";
+            string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
+            download.path = string.Concat(textArray2);
             return download;
         }
-        /// <summary>
-        /// MCjson下载
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <returns></returns>
+
         public MCDownload MCjsonDownload(string version)
         {
             MCDownload download = new MCDownload();
             if (Tools.DSI == "Minecraft")
             {
-                string json = web.getHtml(@"https://launchermeta.mojang.com/mc/game/version_manifest.json");
-                if (json != "")
+                string str = this.web.getHtml("https://launchermeta.mojang.com/mc/game/version_manifest.json");
+                if (str != "")
                 {
-                    var jo = JsonConvert.DeserializeObject<Core.json.mcweb.Root>(json);
-
-                    foreach (var jo1 in jo.versions)
+                    foreach (mcweb.VersionsItem item in JsonConvert.DeserializeObject<mcweb.Root>(str).versions)
                     {
-                        if (jo1.id == version)
+                        if (item.id == version)
                         {
-                            download.Url = jo1.url;
-                            download.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json";
-
+                            download.Url = item.url;
+                            string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                            download.path = string.Concat(textArray1);
                         }
                     }
+                    return download;
                 }
-                else
-                {
-                    download.Url = @"https://bmclapi2.bangbang93.com/version/" + version + "/json";
-                    download.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json";
-                }
-            }
-            else
-            {
-                download.Url = @"https://bmclapi2.bangbang93.com/version/" + version + "/json";
-                download.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json";
-            }
-            return download;
-        }
-        /// <summary>
-        /// 取Forge下载地址
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="ForgeVersion">Forge版本</param>
-        /// <returns></returns>
-        public MCDownload ForgeDownload(string version,string ForgeVersion)
-        {
-            Tools tools = new Tools();
-            MCDownload download = new MCDownload();
-            if (version.Length >= 5)
-            {
-                download.path = System.IO.Directory.GetCurrentDirectory()+@"\SikaDeerLauncherDownload\" +"forge - " + version + " - " + ForgeVersion  + " - installer.jar";
-                download.Url = "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/" + version + "-" + ForgeVersion  + "/forge-" + version + "-" + ForgeVersion  + "-installer.jar";
+                download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/json";
+                string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                download.path = string.Concat(textArray2);
                 return download;
             }
-            download.path = System.IO.Directory.GetCurrentDirectory()+@"\SikaDeerLauncherDownload\" +"forge-" + version + "-" + ForgeVersion + "-" + version + "-installer.jar";
-            download.Url = "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/"+version+"-"+ForgeVersion+"-"+version+"/forge-"+version+"-"+ForgeVersion+"-"+version+"-installer.jar";
-            return download;
-        }
-        /// <summary>
-        /// 取Liteloader下载
-        /// </summary>
-        /// <param name="version">Liteloader版本</param>
-        /// <returns></returns>
-        public MCDownload DownloadLiteloader(string version)
-        {
-            Tools tools = new Tools();
-            AllTheExistingVersion[] all = tools.GetAllTheExistingVersion();
-            foreach (var a in all)
-            {
-                if (a.version == version)
-                {
-                    version = a.IdVersion;
-                    break;
-                }
-                else if(a.version == all[all.Length-1].version)
-                {
-                    throw new SikaDeerLauncherException("未找到该版本");
-                }
-            }
-            MCDownload download = new MCDownload();
-            download.path = System.IO.Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\" + "liteloader-" + version + ".jar";
-            download.Url = "https://bmclapi2.bangbang93.com/maven/com/mumfrey/liteloader/" + version + "/liteloader-" + version + ".jar";
-            return download;
-        }
-        /// <summary>
-        /// 取Optifine下载
-        /// </summary>
-        /// <param name="version">mc版本</param>
-        /// <param name="filename">Optifine文件名</param>
-        /// <returns></returns>
-        public MCDownload DownloadOptifine(string version,string filename)
-        {
-            Tools tools = new Tools();
-            AllTheExistingVersion[] all = tools.GetAllTheExistingVersion();
-            foreach (var a in all)
-            {
-                if (a.version == version)
-                {
-                    version = a.IdVersion;
-                    break;
-                }
-                else if (a.version == all[all.Length - 1].version)
-                {
-                    throw new SikaDeerLauncherException("未找到该版本");
-                }
-            }
-            MCDownload download = new MCDownload();
-            download.path = System.IO.Directory.GetCurrentDirectory() + @"\SikaDeerLauncherDownload\" + filename;
-            download.Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/"+filename;
+            download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/json";
+            string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+            download.path = string.Concat(textArray3);
             return download;
         }
     }
-
 }
+

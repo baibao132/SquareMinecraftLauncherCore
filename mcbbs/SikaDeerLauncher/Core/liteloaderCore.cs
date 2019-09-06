@@ -1,147 +1,138 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SikaDeerLauncher.Minecraft;
-namespace SikaDeerLauncher.Core
+﻿namespace SikaDeerLauncher.Core
 {
+    using Newtonsoft.Json;
+    using SikaDeerLauncher;
+    using SikaDeerLauncher.Core.Forge;
+    using SikaDeerLauncher.Minecraft;
+    using System;
+    using System.IO;
+
     internal class LiteloaderCore
     {
-        Tools tools = new Tools();
-        SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
-        MinecraftDownload Minecraft = new MinecraftDownload();
+        private MinecraftDownload Minecraft = new MinecraftDownload();
+        private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
+        private Tools tools = new Tools();
+
         internal string LiteloaderJson(string version)
         {
-            if (tools.LiteloaderExist(version) == true)
+            if (this.tools.LiteloaderExist(version))
             {
                 throw new SikaDeerLauncherException("已经安装过了，无需再次安装");
             }
-            AllTheExistingVersion[] all = tools.GetAllTheExistingVersion();
-            string mcversion = null;
-            foreach (var s in all)
+            string idVersion = null;
+            foreach (AllTheExistingVersion version2 in this.tools.GetAllTheExistingVersion())
             {
-                if (s.version == version)
+                if (version2.version == version)
                 {
-                    mcversion = s.IdVersion;
+                    idVersion = version2.IdVersion;
                 }
             }
-            LiteloaderList[] liteloaderLists = tools.GetLiteloaderList();
-            LiteloaderList liteloaderList = new LiteloaderList();
-            foreach (var ap in liteloaderLists)
+            LiteloaderList[] liteloaderList = this.tools.GetLiteloaderList();
+            LiteloaderList libraries = new LiteloaderList();
+            foreach (LiteloaderList list2 in liteloaderList)
             {
-                if (ap.mcversion == mcversion)
+                if (list2.mcversion == idVersion)
                 {
-                    liteloaderList = ap;
+                    libraries = list2;
                     break;
                 }
-                else if(ap.mcversion == liteloaderLists[liteloaderLists.Length-1].mcversion)
+                if (list2.mcversion == liteloaderList[liteloaderList.Length - 1].mcversion)
                 {
                     throw new SikaDeerLauncherException("该版本不支持安装");
                 }
             }
-            string FileText = SLC.GetFile(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version+ @"\" + version + ".json");
-            //var a = JsonConvert.DeserializeObject<Forge.ForgeJson.Root>(FileText);
-            var b = JsonConvert.DeserializeObject<Forge.ForgeY.Root>(FileText);
-            string arg = null;
-            //if (a.arguments != null)
-            //{
-            //    arg += "{\"arguments\": {\"game\": [";
-            //    for (int i = 0; a.arguments.game.ToArray().Length - 1 > 0; i++)
-            //    {
-            //        arg += "\"" + a.arguments.game[i] + "\",";
-            //    }
-            //}
-            //else
-            //{
-                arg += "{";
-
-
-            //}
-            arg += liteloaderJsonY(b,liteloaderList,version);
-            var p = JsonConvert.DeserializeObject<Forge.ForgeJsonEarly.Root>(FileText);
-            arg += ",\"minecraftArguments\": \"" + p.minecraftArguments+" --tweakClass "+liteloaderList.tweakClass + "\"}";
-            return arg;
+            string file = this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+            ForgeY.Root versionText = JsonConvert.DeserializeObject<ForgeY.Root>(file);
+            string str2 = null;
+            str2 = str2 + "{" + this.liteloaderJsonY(versionText, libraries, version);
+            ForgeJsonEarly.Root root2 = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
+            string[] textArray2 = new string[] { str2, ",\"minecraftArguments\": \"", root2.minecraftArguments, " --tweakClass ", libraries.tweakClass, "\"}" };
+            return string.Concat(textArray2);
         }
-        public string liteloaderJsonY(Forge.ForgeY.Root versionText, LiteloaderList libraries,string version)
+
+        public string liteloaderJsonY(ForgeY.Root versionText, LiteloaderList libraries, string version)
         {
-            string arg = "\"assetIndex\": {\"id\": \"" + versionText.assetIndex.id + "\",\"size\":" + versionText.assetIndex.size + ",\"url\": \"" + versionText.assetIndex.url + "\"},\"assets\": \"" + versionText.assets + "\",\"downloads\": {\"client\": {\"url\":\"" + versionText.downloads.client.url + "\"}},\"id\": \"" + versionText.id + "\",\"libraries\": [";
-            foreach (var a in libraries.lib)
+            string[] textArray1 = new string[] { "\"assetIndex\": {\"id\": \"", versionText.assetIndex.id, "\",\"size\":", versionText.assetIndex.size, ",\"url\": \"", versionText.assetIndex.url, "\"},\"assets\": \"", versionText.assets, "\",\"downloads\": {\"client\": {\"url\":\"", versionText.downloads.client.url, "\"}},\"id\": \"", versionText.id, "\",\"libraries\": [" };
+            string str = string.Concat(textArray1);
+            foreach (Lib lib in libraries.lib)
             {
-                Forge.ForgeY.LibrariesItem item = new Forge.ForgeY.LibrariesItem();
-                item.name = a.name;
-                Forge.ForgeY.Downloads down = new Forge.ForgeY.Downloads();
-                down.artifact = new Forge.ForgeY.Artifact();
-                down.artifact.url = " ";
-                item.downloads = down;
-                versionText.libraries.Add(item);
+                ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem {
+                    name = lib.name
+                };
+                ForgeY.Downloads downloads2 = new ForgeY.Downloads {
+                    artifact = new ForgeY.Artifact()
+                };
+                downloads2.artifact.url = " ";
+                item2.downloads = downloads2;
+                versionText.libraries.Add(item2);
             }
-            Forge.ForgeY.LibrariesItem item1 = new Forge.ForgeY.LibrariesItem();
-            item1.name = "com.mumfrey:liteloader:"+libraries.version;
-            Forge.ForgeY.Downloads down1 = new Forge.ForgeY.Downloads();
-            down1.artifact = new Forge.ForgeY.Artifact();
-            down1.artifact.url = Minecraft.DownloadLiteloader(version).Url;
-            item1.downloads = down1;
-            versionText.libraries.Add(item1);
+            ForgeY.LibrariesItem item = new ForgeY.LibrariesItem {
+                name = "com.mumfrey:liteloader:" + libraries.version
+            };
+            ForgeY.Downloads downloads = new ForgeY.Downloads {
+                artifact = new ForgeY.Artifact()
+            };
+            downloads.artifact.url = this.Minecraft.DownloadLiteloader(version).Url;
+            item.downloads = downloads;
+            versionText.libraries.Add(item);
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
-                arg += "{\"name\":\"" + versionText.libraries[i].name + "\",";
-                if (versionText.libraries[i].downloads == null || versionText.libraries[i].downloads.artifact == null)
+                str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
+                if ((versionText.libraries[i].downloads == null) || (versionText.libraries[i].downloads.artifact == null))
                 {
-                    arg = arg.Substring(0, arg.Length - 1);
+                    str = str.Substring(0, str.Length - 1);
                 }
                 else
                 {
-                    arg += "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].downloads.artifact.url + "\"}}";
+                    str = str + "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].downloads.artifact.url + "\"}}";
                 }
                 if (versionText.libraries[i].natives != null)
                 {
-                    arg += ",\"natives\": {";
-                    string natives = null;
+                    str = str + ",\"natives\": {";
+                    string str2 = null;
                     if (versionText.libraries[i].natives.linux != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"linux\": \"natives - linux\"";
+                        str2 = str2 + "\"linux\": \"natives - linux\"";
                     }
                     if (versionText.libraries[i].natives.osx != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"osx\": \"natives - osx\"";
+                        str2 = str2 + "\"osx\": \"natives - osx\"";
                     }
                     if (versionText.libraries[i].natives.windows != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"windows\": \"" + versionText.libraries[i].natives.windows + "\"";
+                        str2 = str2 + "\"windows\": \"" + versionText.libraries[i].natives.windows + "\"";
                     }
-                    arg += natives + "}},";
+                    str = str + str2 + "}},";
                 }
                 else
                 {
-                    arg += "},";
+                    str = str + "},";
                 }
-                if (i == versionText.libraries.ToArray().Length - 1)
+                if (i == (versionText.libraries.ToArray().Length - 1))
                 {
-                    char[] ca = arg.ToCharArray();
-                    ca[ca.Length - 1] = ']';
-                    arg = null;
-                    foreach (var mychar in ca)
+                    char[] chArray1 = str.ToCharArray();
+                    chArray1[chArray1.Length - 1] = ']';
+                    str = null;
+                    foreach (char ch in chArray1)
                     {
-                        arg += mychar;
+                        str = str + ch.ToString();
                     }
                 }
             }
-            arg += ",\"mainClass\": \"" + versionText.mainClass + "\"";
-            return arg;
+            return (str + ",\"mainClass\": \"" + versionText.mainClass + "\"");
         }
     }
 }
+

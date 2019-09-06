@@ -1,259 +1,248 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-namespace SikaDeerLauncher.Core
+﻿namespace SikaDeerLauncher.Core
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using SikaDeerLauncher;
+    using SikaDeerLauncher.Core.Forge;
+    using SikaDeerLauncher.Minecraft;
+    using System;
+    using System.IO;
+    using System.Linq;
+
     internal class ForgeCore
     {
-        MinecraftDownload download = new MinecraftDownload();
-        Download Download = new Download();
-        SikaDeerLauncher.Minecraft.Tools Tools = new Minecraft.Tools();
-        SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
-        public string ForgeJson(string version,string ForgePath)
+        private MinecraftDownload download = new MinecraftDownload();
+        private SikaDeerLauncher.Download Download = new SikaDeerLauncher.Download();
+        private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
+        private SikaDeerLauncher.Minecraft.Tools Tools = new SikaDeerLauncher.Minecraft.Tools();
+
+        public string ForgeJson(string version, string ForgePath)
         {
-            string FileText = null;
-            string mc = null;
-            Minecraft.AllTheExistingVersion[] all = Tools.GetAllTheExistingVersion();
-            foreach (var s in all)
+            string file = null;
+            AllTheExistingVersion[] allTheExistingVersion = this.Tools.GetAllTheExistingVersion();
+            foreach (AllTheExistingVersion version2 in allTheExistingVersion)
             {
-                if (s.version == version)
+                if (version2.version == version)
                 {
-                    mc = s.IdVersion;
+                    string idVersion = version2.IdVersion;
                     break;
                 }
-                else if (s == all[all.Length - 1])
+                if (version2 == allTheExistingVersion[allTheExistingVersion.Length - 1])
                 {
                     throw new SikaDeerLauncherException("未找到该版本");
                 }
             }
-            try
+            if (this.Tools.ForgeExist(version))
             {
-                if (Tools.GetCompareForgeVersions(version))
-                {
-                    Tools.UninstallTheExpansionPack(Minecraft.ExpansionPack.Forge,version);
-                    FileText = SLC.GetFile(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
-                }
-                else
-                {
-                    throw new SikaDeerLauncherException("无需更新");
-                }
+                this.Tools.UninstallTheExpansionPack(ExpansionPack.Forge, version);
             }
-            catch (SikaDeerLauncherException ex)
+            file = this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+            ForgeJsonEarly.Root root = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
+            ForgeY.Root versionText = JsonConvert.DeserializeObject<ForgeY.Root>(file);
+            string str2 = null;
+            if (root.minecraftArguments != null)
             {
-                FileText = SLC.GetFile(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
-            }
-            var a = JsonConvert.DeserializeObject<Forge.ForgeJsonEarly.Root>(FileText);
-            var b = JsonConvert.DeserializeObject<Forge.ForgeY.Root>(FileText);
-            string arg = null;
-            if (a.minecraftArguments == null)
-            {
-                var c = (JObject)JsonConvert.DeserializeObject(FileText);
-                var p = (JObject)JsonConvert.DeserializeObject(SLC.GetFile(ForgePath));
-                arg += "{\"arguments\": {\"game\": [";
-               for (int i = 0; c["arguments"]["game"].ToArray().Length - 1 > 0; i++)
+                ForgeJsonEarly.Root root3 = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(this.SLC.GetFile(ForgePath));
+                str2 = str2 + "{" + this.ForgeJsonY(versionText, JsonConvert.DeserializeObject<ForgeY.Root>(this.SLC.GetFile(ForgePath)));
+                if (this.Tools.OptifineExist(version))
                 {
-                    try
+                    root3.minecraftArguments = root3.minecraftArguments + " --tweakClass optifine.OptiFineForgeTweaker";
+                }
+                if (this.Tools.LiteloaderExist(version))
+                {
+                    root3.minecraftArguments = root3.minecraftArguments + " --tweakClass com.mumfrey.liteloader.launch.LiteLoaderTweaker";
+                }
+                return (str2 + ",\"minecraftArguments\": \"" + root3.minecraftArguments + "\"}");
+            }
+            JObject obj2 = (JObject) JsonConvert.DeserializeObject(file);
+            JObject obj3 = (JObject) JsonConvert.DeserializeObject(this.SLC.GetFile(ForgePath));
+            str2 = str2 + "{\"arguments\": {\"game\": [";
+            for (int i = 0; (obj2["arguments"]["game"].ToArray<JToken>().Length - 1) > 0; i++)
+            {
+                try
+                {
+                    obj2["arguments"]["game"][i].ToString();
+                    if ((obj2["arguments"]["game"][i].ToString()[0] == '-') || (obj2["arguments"]["game"][i].ToString()[0] == '$'))
                     {
-                        
-                        c["arguments"]["game"][i].ToString();
-                        if (c["arguments"]["game"][i].ToString()[0] == '-' || c["arguments"]["game"][i].ToString()[0] == '$')
-                        {
-                            arg += "\"" + c["arguments"]["game"][i].ToString() + "\",";
-                        }
-                        else
-                        {
-                            if (c["arguments"]["game"][i - 1].ToString()[0] == '-')
-                            {
-                                arg += "\"" + c["arguments"]["game"][i].ToString() + "\",";
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+                        str2 = str2 + "\"" + obj2["arguments"]["game"][i].ToString() + "\",";
+                        continue;
                     }
-                    catch (Exception ex)
+                    if (obj2["arguments"]["game"][i - 1].ToString()[0] == '-')
                     {
-                        break;
+                        str2 = str2 + "\"" + obj2["arguments"]["game"][i].ToString() + "\",";
+                        continue;
                     }
                 }
-                for (int i = 0; p["arguments"]["game"].ToArray().Length - 1 > 0; i++)
+                catch (Exception)
                 {
-                    try
-                    {
-                        p["arguments"]["game"][i].ToString();
-                        arg += "\"" + p["arguments"]["game"][i].ToString() + "\",";
-                    }
-                    catch (Exception ex)
-                    {
-                        arg = arg.Substring(0, arg.Length - 1) + "]},";
-                        break;
-                    }
                 }
-                arg = SLC.Replace(arg, "optifine.OptiFineTweaker", "optifine.OptiFineForgeTweaker");
-               arg += ForgeJsonY(b, JsonConvert.DeserializeObject<Forge.ForgeY.Root>(SLC.GetFile(ForgePath)));
-               arg += "}";
+                break;
             }
-            else
+            if (this.Tools.OptifineExist(version))
             {
-                var p = JsonConvert.DeserializeObject<Forge.ForgeJsonEarly.Root>(SLC.GetFile(ForgePath));
-                arg += "{";
-                arg += ForgeJsonY(b, JsonConvert.DeserializeObject<Forge.ForgeY.Root>(SLC.GetFile(ForgePath)));
-                p.minecraftArguments = SLC.Replace(p.minecraftArguments, "optifine.OptiFineTweaker", "optifine.OptiFineForgeTweaker");
-                arg += ",\"minecraftArguments\": \"" + p.minecraftArguments+"\"}";
+                str2 = str2 + "\"--tweakClass\",\"optifine.OptiFineForgeTweaker\",";
             }
-            return arg;
+            if (this.Tools.LiteloaderExist(version))
+            {
+                str2 = str2 + " \"--tweakClass\",\"com.mumfrey.liteloader.launch.LiteLoaderTweaker\",";
+            }
+            for (int j = 0; (obj3["arguments"]["game"].ToArray().Length - 1) > 0; j++)
+            {
+                try
+                {
+                    obj3["arguments"]["game"][j].ToString();
+                    str2 = str2 + "\"" + obj3["arguments"]["game"][j].ToString() + "\",";
+                }
+                catch (Exception)
+                {
+                    str2 = str2.Substring(0, str2.Length - 1) + "]},";
+                    break;
+                }
+            }
+            return (str2 + this.ForgeJsonY(versionText, JsonConvert.DeserializeObject<ForgeY.Root>(this.SLC.GetFile(ForgePath))) + "}");
         }
-        public string ForgeJsonY(Forge.ForgeY.Root versionText,Forge.ForgeY.Root ForgeText)
+
+        public string ForgeJsonY(ForgeY.Root versionText, ForgeY.Root ForgeText)
         {
-            string arg = "\"assetIndex\": {\"id\": \""+versionText.assetIndex.id+ "\",\"size\":"+versionText.assetIndex.size+",\"url\": \"" + versionText.assetIndex.url+ "\"},\"assets\": \""+versionText.assets+ "\",\"downloads\": {\"client\": {\"url\":\""+versionText.downloads.client.url+"\"}},\"id\": \"" + versionText.id+ "\",\"libraries\": [";
-            foreach (var a in ForgeText.libraries)
+            string[] textArray1 = new string[] { "\"assetIndex\": {\"id\": \"", versionText.assetIndex.id, "\",\"size\":", versionText.assetIndex.size, ",\"url\": \"", versionText.assetIndex.url, "\"},\"assets\": \"", versionText.assets, "\",\"downloads\": {\"client\": {\"url\":\"", versionText.downloads.client.url, "\"}},\"id\": \"", versionText.id, "\",\"libraries\": [" };
+            string str = string.Concat(textArray1);
+            foreach (ForgeY.LibrariesItem item in ForgeText.libraries)
             {
-                if (a.downloads == null)
+                if (item.downloads == null)
                 {
-                    Forge.ForgeY.Downloads down = new Forge.ForgeY.Downloads();
-                    Forge.ForgeY.Artifact artifact = new Forge.ForgeY.Artifact();
-                    down.artifact = artifact;
-                    a.downloads = down;
+                    ForgeY.Downloads downloads = new ForgeY.Downloads();
+                    ForgeY.Artifact artifact = new ForgeY.Artifact();
+                    downloads.artifact = artifact;
+                    item.downloads = downloads;
                 }
-                else if (a.downloads.artifact == null)
+                else if (item.downloads.artifact == null)
                 {
-                    Forge.ForgeY.Artifact artifact = new Forge.ForgeY.Artifact();
-                    a.downloads.artifact = artifact;
+                    ForgeY.Artifact artifact2 = new ForgeY.Artifact();
+                    item.downloads.artifact = artifact2;
                 }
-                a.downloads.artifact.url = "http://files.minecraftforge.net/maven/";
-                versionText.libraries.Add(a);
+                item.downloads.artifact.url = "http://files.minecraftforge.net/maven/";
+                versionText.libraries.Add(item);
             }
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
-                arg += "{\"name\":\"" + versionText.libraries[i].name + "\",";
-                if ((versionText.libraries[i].downloads == null || versionText.libraries[i].downloads.artifact == null) && versionText.libraries[i].url == null)
+                str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
+                if (((versionText.libraries[i].downloads == null) || (versionText.libraries[i].downloads.artifact == null)) && (versionText.libraries[i].url == null))
                 {
-                    arg = arg.Substring(0, arg.Length - 1);
+                    str = str.Substring(0, str.Length - 1);
                 }
-                else if (versionText.libraries[i].downloads != null && versionText.libraries[i].downloads.artifact != null)
+                else if ((versionText.libraries[i].downloads != null) && (versionText.libraries[i].downloads.artifact != null))
                 {
-                    arg += "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].downloads.artifact.url + "\"}}";
+                    str = str + "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].downloads.artifact.url + "\"}}";
                 }
                 else if (versionText.libraries[i].url != null)
                 {
-                    arg += "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].url + "\"}}";
+                    str = str + "\"downloads\":{\"artifact\":{\"url\":\"" + versionText.libraries[i].url + "\"}}";
                 }
                 if (versionText.libraries[i].natives != null)
                 {
-                    
-                    arg += ",\"natives\": {";
-                    string natives = null;
+                    str = str + ",\"natives\": {";
+                    string str2 = null;
                     if (versionText.libraries[i].natives.linux != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"linux\": \"natives - linux\"";
+                        str2 = str2 + "\"linux\": \"natives - linux\"";
                     }
                     if (versionText.libraries[i].natives.osx != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"osx\": \"natives - osx\"";
+                        str2 = str2 + "\"osx\": \"natives - osx\"";
                     }
                     if (versionText.libraries[i].natives.windows != null)
                     {
-                        if (natives != null)
+                        if (str2 != null)
                         {
-                            natives += ",";
+                            str2 = str2 + ",";
                         }
-                        natives += "\"windows\": \""+versionText.libraries[i].natives.windows+"\"";
+                        str2 = str2 + "\"windows\": \"" + versionText.libraries[i].natives.windows + "\"";
                     }
-                    arg += natives+"}},";
+                    str = str + str2 + "}},";
                 }
                 else
                 {
-                    arg += "},";
+                    str = str + "},";
                 }
-                if (i == versionText.libraries.ToArray().Length - 1)
+                if (i == (versionText.libraries.ToArray().Length - 1))
                 {
-                    char[] ca = arg.ToCharArray();
-                    ca[ca.Length - 1] = ']';
-                    arg = null;
-                    foreach (var mychar in ca)
+                    char[] chArray1 = str.ToCharArray();
+                    chArray1[chArray1.Length - 1] = ']';
+                    str = null;
+                    foreach (char ch in chArray1)
                     {
-                        arg += mychar;
+                        str = str + ch.ToString();
                     }
                 }
             }
-            arg += ",\"mainClass\": \""+ForgeText.mainClass+"\"";
-            return arg;
+            return (str + ",\"mainClass\": \"" + ForgeText.mainClass + "\"");
         }
-        internal string ForgeKeep(string FileText,Forge.ForgeY.Root ForgePath,string versionjson,string version)
+
+        internal string ForgeKeep(string FileText, ForgeY.Root ForgePath, string versionjson, string version)
         {
-            var a = JsonConvert.DeserializeObject<Forge.ForgeJsonEarly.Root>(FileText);
-            var b = JsonConvert.DeserializeObject<Forge.ForgeY.Root>(FileText);
-            string arg = null;
-            if (a.minecraftArguments == null)
+            ForgeJsonEarly.Root root = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(FileText);
+            JsonConvert.DeserializeObject<ForgeY.Root>(FileText);
+            string str = null;
+            if (root.minecraftArguments != null)
             {
-                var c = (JObject)JsonConvert.DeserializeObject(FileText);
-                arg += "{\"arguments\": {\"game\": [";
-                for (int i = 1; c["arguments"]["game"].ToArray().Length - 1 > 0; i += 2)
+                JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(versionjson);
+                str = str + "{";
+                this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
+                str = str + this.ForgeJsonY(JsonConvert.DeserializeObject<ForgeY.Root>(versionjson), ForgePath);
+                char[] separator = new char[] { ' ' };
+                string[] strArray = root.minecraftArguments.Split(separator);
+                string str2 = "";
+                for (int j = 1; strArray.Length > j; j += 2)
                 {
-                    try
+                    if ((((strArray[j - 1][0] == '-') && (strArray[j] != "com.mumfrey.liteloader.launch.LiteLoaderTweaker")) && (strArray[j] != "optifine.OptiFineForgeTweaker")) || (strArray[j][0] == '$'))
                     {
-
-                        c["arguments"]["game"][i].ToString();
-                        if (c["arguments"]["game"][i - 1].ToString()[0] == '-' && (c["arguments"]["game"][i].ToString() != "com.mumfrey.liteloader.launch.LiteLoaderTweaker" && c["arguments"]["game"][i].ToString() != "optifine.OptiFineForgeTweaker") || c["arguments"]["game"][i - 1].ToString()[0] == '$')
+                        if (j != (strArray.Length - 1))
                         {
-                            arg += "\"" + c["arguments"]["game"][i - 1].ToString()+"\",\""+ c["arguments"]["game"][i].ToString() + "\",";
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        break;
-                    }
-                }
-                arg = arg.Substring(0, arg.Length - 1) + "]},";
-                SLC.wj(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
-                arg += ForgeJsonY(JsonConvert.DeserializeObject<Forge.ForgeY.Root>(versionjson), ForgePath);
-                arg += "}";
-            }
-            else
-            {
-                var p = JsonConvert.DeserializeObject<Forge.ForgeJsonEarly.Root>(versionjson);
-                arg += "{";
-                SLC.wj(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
-                arg += ForgeJsonY(JsonConvert.DeserializeObject<Forge.ForgeY.Root>(versionjson), ForgePath);
-                var newjson = a.minecraftArguments.Split(' ');
-                string marg = "";
-                for (var i = 1; newjson.Length > i;i += 2)
-                {
-                    if (newjson[i - 1][0] == '-' && (newjson[i] != "com.mumfrey.liteloader.launch.LiteLoaderTweaker" && newjson[i] != "optifine.OptiFineForgeTweaker")|| newjson[i][0] == '$')
-                    {
-                        if (i != newjson.Length - 1)
-                        {
-                            marg += newjson[i - 1] + " " + newjson[i] + " ";
+                            string[] textArray4 = new string[] { str2, strArray[j - 1], " ", strArray[j], " " };
+                            str2 = string.Concat(textArray4);
                         }
                         else
                         {
-                            marg += newjson[i - 1] + " " + newjson[i];
+                            str2 = str2 + strArray[j - 1] + " " + strArray[j];
                         }
                     }
-
                 }
-                if (marg[marg.Length - 1] == ' ')
+                if (str2[str2.Length - 1] == ' ')
                 {
-                    marg = marg.Substring(0, marg.Length - 1);
+                    str2 = str2.Substring(0, str2.Length - 1);
                 }
-                arg += ",\"minecraftArguments\": \"" + marg + "\"}";
+                return (str + ",\"minecraftArguments\": \"" + str2 + "\"}");
             }
-            return arg;
+            JObject obj2 = (JObject) JsonConvert.DeserializeObject(FileText);
+            str = str + "{\"arguments\": {\"game\": [";
+            for (int i = 1; (obj2["arguments"]["game"].ToArray<JToken>().Length - 1) > 0; i += 2)
+            {
+                try
+                {
+                    obj2["arguments"]["game"][i].ToString();
+                    if ((((obj2["arguments"]["game"][i - 1].ToString()[0] == '-') && (obj2["arguments"]["game"][i].ToString() != "com.mumfrey.liteloader.launch.LiteLoaderTweaker")) && (obj2["arguments"]["game"][i].ToString() != "optifine.OptiFineForgeTweaker")) || (obj2["arguments"]["game"][i - 1].ToString()[0] == '$'))
+                    {
+                        string[] textArray1 = new string[] { str, "\"", obj2["arguments"]["game"][i - 1].ToString(), "\",\"", obj2["arguments"]["game"][i].ToString(), "\"," };
+                        str = string.Concat(textArray1);
+                    }
+                }
+                catch (Exception)
+                {
+                    break;
+                }
+            }
+            str = str.Substring(0, str.Length - 1) + "]},";
+            this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
+            return (str + this.ForgeJsonY(JsonConvert.DeserializeObject<ForgeY.Root>(versionjson), ForgePath) + "}");
         }
     }
 }
+

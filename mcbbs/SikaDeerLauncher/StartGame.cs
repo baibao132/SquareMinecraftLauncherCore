@@ -1,20 +1,135 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SikaDeerLauncher.Minecraft
+﻿namespace SikaDeerLauncher.Minecraft
 {
+    using json4;
+    using main;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using SikaDeerLauncher;
+    using SikaDeerLauncher.Core;
+    using SikaDeerLauncher.Properties;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using System.Threading;
+    using System.Windows.Forms;
+    using windows;
+
     public sealed class Game
     {
-        Tools tools = new Tools();
-        SikaDeerLauncher.Core.SikaDeerLauncherCore SLC = new Core.SikaDeerLauncherCore();
+        private Process process = new Process();
+        private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
+        private ProcessStartInfo start = new ProcessStartInfo();
+        private Tools tools = new Tools();
+
+        [field: CompilerGenerated]
+        public event ErrorDel ErrorEvent;
+
+        [field: CompilerGenerated]
+        public event LogDel LogEvent;
+
+        internal void errormonitoring()
+        {
+            Control.CheckForIllegalCrossThreadCalls = false;
+            StreamReader standardError = this.process.StandardError;
+            string sE = standardError.ReadToEnd();
+            if (sE != "")
+            {
+                Error error = new Error(null, sE);
+                if (this.ErrorEvent != null)
+                {
+                    this.ErrorEvent(error);
+                }
+                else
+                {
+                    standardError.Close();
+                }
+            }
+            try
+            {
+                this.process.WaitForExit();
+                standardError.Close();
+                this.process.Close();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        internal void monitoring()
+        {
+            try
+            {
+                Control.CheckForIllegalCrossThreadCalls = false;
+                StreamReader standardOutput = this.process.StandardOutput;
+                while (!standardOutput.EndOfStream)
+                {
+                    string message = standardOutput.ReadLine();
+                    if (WinAPI.GetHandle("LWJGL").ToInt32() != 0)
+                    {
+                        standardOutput.Close();
+                        this.process.Close();
+                    }
+                    if (this.LogEvent != null)
+                    {
+                        this.LogEvent(new Log(message));
+                    }
+                    string str2 = this.SLC.Replace(message, "Exception", " ");
+                    if ((str2 != null) && (str2 != message))
+                    {
+                        if (this.ErrorEvent != null)
+                        {
+                            this.ErrorEvent(new Error(null, standardOutput.ReadToEnd()));
+                        }
+                        standardOutput.Close();
+                        this.process.Close();
+                    }
+                    if (this.ErrorEvent != null)
+                    {
+                        this.ErrorEvent(new Error(message, null));
+                    }
+                }
+                this.process.WaitForExit();
+                standardOutput.Close();
+                this.process.Close();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public void StartGame(string version, string java, int RAM, string name)
+        {
+            this.StartGame(version, java, RAM, name, "", "");
+        }
+
+        public void StartGame(string version, string java, int RAM, string username, string password)
+        {
+            this.StartGame(version, java, RAM, username, password, "", "");
+        }
+
+        public void StartGame(string version, string java, int RAM, string name, string JVMparameter, string RearParameter)
+        {
+            this.StartGame(version, java, RAM, name, this.SLC.uuid(name), this.SLC.token(), JVMparameter, RearParameter);
+        }
+
+        public void StartGame(string version, string java, int RAM, string username, string password, string JVMparameter, string RearParameter)
+        {
+            Getlogin getlogin = null;
+            try
+            {
+                getlogin = this.tools.MinecraftLogin(username, password);
+            }
+            catch (SikaDeerLauncherException exception)
+            {
+                throw new SikaDeerLauncherException("启动失败，正版登录" + exception.Message);
+            }
+            this.StartGame(version, java, RAM, getlogin.name, getlogin.uuid, getlogin.token, JVMparameter, RearParameter);
+        }
+
         public void StartGame(string version, string java, int RAM, string name, string uuid, string token, string JVMparameter, string RearParameter)
         {
             if (version == "" || version == null || java == "" || java == null || name == null || name == "" || uuid == "" || uuid == null || token == "" || token == null || RAM == 0)
@@ -99,7 +214,7 @@ namespace SikaDeerLauncher.Minecraft
                         }
                         string[] arg = jo3.ToArray();
                         string a = arg[0] + " " + arg[1];
-                        for (int i = 2; i < arg.Length; i +=2)
+                        for (int i = 2; i < arg.Length; i += 2)
                         {
                             a += " " + arg[i] + " " + arg[i + 1];
                         }
@@ -147,213 +262,140 @@ namespace SikaDeerLauncher.Minecraft
 
                         }
                     }
-                    if (RearParameter == "" || RearParameter == null)
+                    if ((RearParameter == "") || (RearParameter == null))
                     {
-                        Game += " " + jo.mainClass + main;
+                        Game = Game + " " + jo.mainClass + main;
                     }
                     else
                     {
-                        Game += " " + jo.mainClass + main + " " + RearParameter;
+                        string[] textArray14 = new string[] { Game, " ", jo.mainClass, main, " ", RearParameter };
+                        Game = string.Concat(textArray14);
                     }
                     Console.WriteLine("\n\n\n\n\n\n" + Game);
-                    ProcessStartInfo start = new ProcessStartInfo(java);
-                    start.Arguments = Game;//设置命令参数
-                    start.CreateNoWindow = true;//不显示dos命令行窗口
-                    start.RedirectStandardOutput = true;//
-                    start.RedirectStandardInput = true;//
-                    start.UseShellExecute = false;
-                    process = Process.Start(start);
-                    LogEvent += new LogDel(errorORLog);
-                    Thread thread = new Thread(new ThreadStart(monitoring));
-                    thread.IsBackground = true;
-                    thread.Start();
+                    this.start.FileName = java;
+                    this.start.Arguments = Game;
+                    this.start.CreateNoWindow = true;
+                    this.start.RedirectStandardOutput = true;
+                    this.start.RedirectStandardInput = true;
+                    this.start.UseShellExecute = false;
+                    this.start.RedirectStandardError = true;
+                    Thread thread1 = new Thread(new ThreadStart(this.monitoring))
+                    {
+                        IsBackground = true
+                    };
+                    Thread thread2 = new Thread(new ThreadStart(this.errormonitoring))
+                    {
+                        IsBackground = true
+                    };
+                    this.process = Process.Start(this.start);
+                    thread2.Start();
+                    thread1.Start();
                 }
-                else
-                {
-                    throw new SikaDeerLauncherException("java路径不对");
-                }
-            }
-            else
-            {
-                throw new SikaDeerLauncherException("缺少Natives");
             }
         }
-        Process process = new Process();
-        /// <summary>
-        /// 启动游戏
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="java">java路径</param>
-        /// <param name="username">邮箱</param>
-        /// <param name="password">密码</param>
-        /// <param name="RAM">内存</param>
-        /// <param name="JVMparameter">JVM参数</param>
-        /// <param name="RearParameter">后置参数</param>
-        public void StartGame(string version, string java, int RAM, string username, string password, string JVMparameter, string RearParameter)
-        {
-            Getlogin getlogin = null;
-            try
-            {
-                getlogin = tools.MinecraftLogin(username, password);
-            }
-            catch (SikaDeerLauncherException ex)
-            {
-                throw new SikaDeerLauncherException("启动失败，正版登录" + ex.Message);
-            }
-            StartGame(version, java, RAM, getlogin.name, getlogin.uuid, getlogin.token, JVMparameter, RearParameter);
-        }
-        /// <summary>
-        /// 启动游戏
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="java">java路径</param>
-        /// <param name="name">游戏名</param>
-        /// <param name="RAM">内存</param>
-        /// <param name="JVMparameter">JVM参数</param>
-        /// <param name="RearParameter">后置参数</param>
-        public void StartGame(string version, string java, int RAM, string name, string JVMparameter, string RearParameter)
-        {
-            StartGame(version, java, RAM, name, SLC.uuid(name), SLC.token(), JVMparameter, RearParameter);
-        }
-        /// <summary>
-        /// 启动游戏
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="java">java路径</param>
-        /// <param name="name">游戏名</param>
-        /// <param name="RAM">内存</param>
-        public void StartGame(string version, string java, int RAM, string name)
-        {
-            StartGame(version, java, RAM, name, "", "");
-        }
-        /// <summary>
-        /// 启动游戏
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="java">java路径</param>
-        /// <param name="username">邮箱</param>
-        /// <param name="password">密码</param>
-        /// <param name="RAM">内存</param>
-        public void StartGame(string version, string java, int RAM, string username, string password)
-        {
-            StartGame(version, java, RAM, username, password, "", "");
-        }
-        /// <summary>
-        /// （外置登录）启动游戏
-        /// </summary>
-        /// <param name="version">版本</param>
-        /// <param name="java">java路径</param>
-        /// <param name="name">游戏名</param>
-        /// <param name="uuid">uuid</param>
-        /// <param name="token">token</param>
-        /// <param name="RAM">内存</param>
-        /// <param name="JVMparameter">JVM参数</param>
-        /// <param name="RearParameter">后置参数</param>
-        /// <param name="yggdrasilURLORID">yggdrasil地址或统一通行证ID</param>
+
         public void StartGame(string version, string java, int RAM, string name, string uuid, string token, string yggdrasilURLORID, string JVMparameter, string RearParameter, AuthenticationServerMode authentication)
         {
             Download download = new Download();
             if (authentication == AuthenticationServerMode.yggdrasil)
             {
-                SLC.SetFile(@"SikaDeerLauncher");
-                byte[] res = new byte[Properties.Resources.SDL.Length];
-                Properties.Resources.SDL.CopyTo(res, 0);
-                FileStream fs = new FileStream(@"SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
-                fs.Write(res, 0, res.Length);
-                fs.Close();
-                string url = download.getHtml(yggdrasilURLORID);
-                if (url == null)
+                this.SLC.SetFile("SikaDeerLauncher");
+                byte[] array = new byte[Resources.SDL.Length];
+                Resources.SDL.CopyTo(array, 0);
+                FileStream stream1 = new FileStream(@"SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
+                stream1.Write(array, 0, array.Length);
+                stream1.Close();
+                string s = download.getHtml(yggdrasilURLORID);
+                if (s == null)
                 {
                     throw new SikaDeerLauncherException("启动失败，无法获取相关信息");
                 }
-                byte[] bytes = Encoding.Default.GetBytes(url);
-                string jvm = "-javaagent:" + System.IO.Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar=" + yggdrasilURLORID + " -Dauthlibinjector.side=client -Dauthlibinjector.yggdrasil.prefetched=" + Convert.ToBase64String(bytes);
-                if (JVMparameter != null && JVMparameter != "")
+                byte[] bytes = Encoding.Default.GetBytes(s);
+                string[] textArray1 = new string[] { "-javaagent:", Directory.GetCurrentDirectory(), @"\SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar=", yggdrasilURLORID, " -Dauthlibinjector.side=client -Dauthlibinjector.yggdrasil.prefetched=", Convert.ToBase64String(bytes) };
+                string jVMparameter = string.Concat(textArray1);
+                if ((JVMparameter != null) && (JVMparameter != ""))
                 {
-                    jvm += "," + JVMparameter;
+                    jVMparameter = jVMparameter + "," + JVMparameter;
                 }
-                StartGame(version, java, RAM, name, uuid, token, jvm, RearParameter);
+                this.StartGame(version, java, RAM, name, uuid, token, jVMparameter, RearParameter);
             }
             else
             {
-                SLC.SetFile(@"SikaDeerLauncher");
-                byte[] res = new byte[Properties.Resources.nide8auth.Length];
-                Properties.Resources.nide8auth.CopyTo(res, 0);
-                FileStream fs = new FileStream(@"SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
-                fs.Write(res, 0, res.Length);
-                fs.Close();
-                string jvm = "-javaagent:" + System.IO.Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar=" + yggdrasilURLORID;
-                if (JVMparameter != null && JVMparameter != "")
+                this.SLC.SetFile("SikaDeerLauncher");
+                byte[] buffer3 = new byte[Resources.nide8auth.Length];
+                Resources.nide8auth.CopyTo(buffer3, 0);
+                FileStream stream2 = new FileStream(@"SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
+                stream2.Write(buffer3, 0, buffer3.Length);
+                stream2.Close();
+                string str3 = "-javaagent:" + Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar=" + yggdrasilURLORID;
+                if ((JVMparameter != null) && (JVMparameter != ""))
                 {
-                    jvm += "," + JVMparameter;
+                    str3 = str3 + "," + JVMparameter;
                 }
-                StartGame(version, java, RAM, name, uuid, token, jvm, RearParameter);
+                this.StartGame(version, java, RAM, name, uuid, token, str3, RearParameter);
             }
         }
-        public delegate void LogDel(Log Log);
-        /// <summary>
-        /// Log事件
-        /// </summary>
-        public event LogDel LogEvent;
-        public delegate void ErrorDel(Error error);
-        /// <summary>
-        /// 退出事件
-        /// </summary>
-        public event ErrorDel ErrorEvent;
+
+        public class Error : EventArgs
+        {
+            private string message;
+            private string SE;
+            private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
+
+            internal Error(string Message, string SE)
+            {
+                if ((Message == null) && (SE != null))
+                {
+                    this.SE = SE;
+                }
+                else
+                {
+                    string str = this.SLC.Replace(Message, "ERROR", " ");
+                    if ((str != null) && (str != Message))
+                    {
+                        this.message = Message;
+                    }
+                }
+            }
+
+            public string Message
+            {
+                get
+                {
+                    return this.message;
+                }
+            }
+
+            public string SeriousError
+            {
+                get
+                {
+                    return this.SE;
+                }
+            }
+        }
+
+        public delegate void ErrorDel(Game.Error error);
+
         public class Log : EventArgs
         {
             private string message;
+
             internal Log(string Message)
             {
                 this.message = Message;
             }
-            public string Message
-            {
-                get { return message; }
-            }
 
-        }
-        internal void monitoring()
-        {
-            System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
-            StreamReader reader = process.StandardOutput;//截取输出流
-            string line = reader.ReadLine();//每次读取一行
-            while (!reader.EndOfStream)
-            {
-                Log error = new Log(reader.ReadLine());
-                if (LogEvent != null)
-                {
-                    LogEvent(error);
-                }
-            }
-            process.WaitForExit();//等待程序执行完退出进程
-            process.Close();//关闭进程
-            reader.Close();//关闭流
-        }
-        public class Error : EventArgs
-        {
-            SikaDeerLauncher.Core.SikaDeerLauncherCore SLC = new Core.SikaDeerLauncherCore();
-            private string message;
-            internal Error(string Message)
-            {
-                string a = SLC.Replace(Message, "[Client thread/ERROR]", " ");
-                if (a != null && a != Message)
-                {
-                    this.message = Message;
-                }
-            }
             public string Message
             {
-                get { return message; }
+                get
+                {
+                    return this.message;
+                }
             }
         }
-        internal void errorORLog(Log log)
-        {
-            if (ErrorEvent != null)
-            {
-                Error e = new Error(log.Message);
-                ErrorEvent(e);
-            }
-        }
+
+        public delegate void LogDel(Game.Log Log);
     }
 }
+
