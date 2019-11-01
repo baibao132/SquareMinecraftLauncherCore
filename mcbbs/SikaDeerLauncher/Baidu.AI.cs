@@ -15,7 +15,7 @@
             Control.CheckForIllegalCrossThreadCalls = false;
             try
             {
-                if (!a && (this.web.getHtml("http://118.31.6.246/libraries/") != null))
+                if (!a && (this.web.Post("http://118.31.6.246/libraries/","") != null))
                 {
                     a = true;
                     Console.WriteLine("调用完成");

@@ -69,25 +69,5 @@ namespace SikaDeerLauncher.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] nide8auth {
-            get {
-                object obj = ResourceManager.GetObject("nide8auth", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] SDL {
-            get {
-                object obj = ResourceManager.GetObject("SDL", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

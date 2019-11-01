@@ -132,7 +132,7 @@ namespace MinecraftServer.Server
         {
             try
             {
-                if (!String.IsNullOrEmpty(JsonText) && JsonText.StartsWith("{") && JsonText.EndsWith("}"))
+                if (JsonText != null || JsonText != "")
                 {
                     var jo2 = JsonConvert.DeserializeObject<jsonForge.Root>(JsonText);
                     MOTD = jo2.description;

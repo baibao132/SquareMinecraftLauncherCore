@@ -49,10 +49,21 @@
                 DSI = null;
             }
         }
-
         public bool ForgeExist(string version)
         {
-            return (this.GetLocalForgeVersion(version) != null);
+            return(GetLocalForgeVersion(version) != null);
+        }
+        public bool ForgeExist(string version,ref string ForgeVersion)
+        {
+            ForgeVersion = GetLocalForgeVersion(version);
+            if (ForgeVersion != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool ForgeInstallation(string ForgePath, string version, string java)
@@ -145,7 +156,7 @@
                     download2.path = Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
                     if ((item.downloads != null) && (item.downloads.artifact != null))
                     {
-                        if ((item.downloads.artifact.url.IndexOf("files.minecraftforge.net") != -1) && (DSI == "Minecraft"))
+                        if ((item.downloads.artifact.url.IndexOf("files.minecraftforge.net") != -1))
                         {
                             char[] chArray2 = new char[] { ':' };
                             string[] strArray2 = item.name.Split(chArray2);
@@ -275,7 +286,7 @@
             }
             catch (Exception ex)
             {
-                throw new SikaDeerLauncherException("版本有问题，请重新下载");
+                throw new SikaDeerLauncherException("无法连接网络");
             }
         }
 
@@ -313,6 +324,7 @@
                     }
                     if (mcV.ToArray().Length == 0)
                     {
+                        ForgeInstallCore.Delay(2000);
                         char[] separator = new char[] { '|' };
                         string[] strArray2 = this.SLC.GetFile(@".minecraft\version.Sika").Split(separator);
                         for (int i = 0; i < strArray2.Length; i++)
@@ -326,17 +338,28 @@
                             mcV.Add(mc);
                         }
                     }
-                    foreach (mc mc2 in mcV)
+                    if (root == null)
                     {
-                        if (mc2.url == root.downloads.client.url)
+                        throw new SikaDeerLauncherException("无任何版本");
+                    }
+                    try
+                    {
+                        foreach (mc mc2 in mcV)
                         {
-                            item.IdVersion = mc2.version;
-                            break;
+                            if (mc2.url == root.downloads.client.url)
+                            {
+                                item.IdVersion = mc2.version;
+                                break;
+                            }
+                        }
+                        if (item.IdVersion != null)
+                        {
+                            list.Add(item);
                         }
                     }
-                    if (item.IdVersion != null)
+                    catch
                     {
-                        list.Add(item);
+                        continue;
                     }
                 }
             }
@@ -346,7 +369,7 @@
         public Skin GetAuthlib_Injector(string yggdrasilURL, string username, string password)
         {
             string str = this.web.Post(yggdrasilURL + "/authserver/authenticate", "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}");
-            BlessingSkin.Root root = null;
+            BlessingSkin.Root root = new BlessingSkin.Root();
             try
             {
                 root = JsonConvert.DeserializeObject<BlessingSkin.Root>(str);
@@ -354,6 +377,10 @@
             catch (Exception)
             {
                 throw new SikaDeerLauncherException("yggdrasil网址有误");
+            }
+            if (root == null)
+            {
+                throw new SikaDeerLauncherException("网络有问题");
             }
             if (root.accessToken == null)
             {
@@ -574,11 +601,14 @@
             }
             return forgeList[index];
         }
-
+        /// <summary>
+        /// 取MC列表
+        /// </summary>
+        /// <returns></returns>
         public MCVersionList[] GetMCVersionList()
         {
-            string text = this.web.getHtml("https://launchermeta.mojang.com/mc/game/version_manifest.json");
-            if (!(text != ""))
+            string text = this.web.getHtml("http://118.31.6.246/libraries/mc/game/version_manifest.json");
+            if (text == null)
             {
                 throw new SikaDeerLauncherException("请求失败");
             }
@@ -595,7 +625,10 @@
             }
             return list.ToArray();
         }
-
+        /// <summary>
+        /// 取合适内存
+        /// </summary>
+        /// <returns></returns>
         public MemoryInformation GetMemorySize()
         {
             this.baidu.Tts();
@@ -606,20 +639,25 @@
             };
             if (information.TotalMemory == 0)
             {
-                information.AppropriateMemory = 0x200;
+                information.AppropriateMemory = 512;
                 return information;
             }
-            if (this.GetOSBit() == 0x40)
+            if (this.GetOSBit() == 64)
             {
-                information.AppropriateMemory = ((0x400 * information.TotalMemory) / 0x400) / 2;
+                if (GetJavaPath().IndexOf("x86") >= 0)
+                {
+                    information.AppropriateMemory = 512;
+                    return information;
+                }
+                information.AppropriateMemory = ((1024 * information.TotalMemory) / 1024) / 2;
                 return information;
             }
-            if (information.TotalMemory <= 0x400)
+            if (information.TotalMemory <= 1024)
             {
-                information.AppropriateMemory = 0x200;
+                information.AppropriateMemory = 512;
                 return information;
             }
-            information.AppropriateMemory = 0x400;
+            information.AppropriateMemory = 1024;
             return information;
         }
 
@@ -825,6 +863,24 @@
             return false;
         }
 
+        public bool LiteloaderExist(string version,ref string LiteloaderVersion)
+        {
+            using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(version).libraries.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    char[] separator = new char[] { ':' };
+                    string[] strArray = enumerator.Current.name.Split(separator);
+                    if ((strArray[0] == "com.mumfrey") && (strArray[1] == "liteloader"))
+                    {
+                        LiteloaderVersion = strArray[2];
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public bool liteloaderInstall(string version)
         {
             LiteloaderCore core = new LiteloaderCore();
@@ -844,6 +900,7 @@
             {
                 throw new SikaDeerLauncherException("请检查网络");
             }
+            Console.WriteLine(str);
             var root = JsonConvert.DeserializeObject<json2.Root>(str);
             if (root.errorMessage == null)
             {
@@ -852,7 +909,10 @@
                     token = root.accessToken,
                     name = root.selectedProfile.name
                 };
-                string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
+                Console.WriteLine(getlogin.token);
+                string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
+                Console.WriteLine(str1);
+                  string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
                 getlogin.twitch = string.Concat(textArray2);
                 return getlogin;
             }
@@ -880,6 +940,24 @@
                     string[] strArray = enumerator.Current.name.Split(separator);
                     if ((strArray[0] == "optifine") && (strArray[1] == "OptiFine"))
                     {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool OptifineExist(string version,ref string OptifineVersion)
+        {
+            using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(version).libraries.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    char[] separator = new char[] { ':' };
+                    string[] strArray = enumerator.Current.name.Split(separator);
+                    if ((strArray[0] == "optifine") && (strArray[1] == "OptiFine"))
+                    {
+                        OptifineVersion = strArray[2];
                         return true;
                     }
                 }

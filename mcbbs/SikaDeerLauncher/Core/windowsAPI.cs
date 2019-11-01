@@ -11,7 +11,7 @@ using static windows.WinAPI;
 
 namespace windows
 {
-    internal class WinAPI
+    public class WinAPI
     {
 
 

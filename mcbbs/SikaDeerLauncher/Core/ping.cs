@@ -4,7 +4,7 @@
     using System.Net.NetworkInformation;
     using System.Runtime.InteropServices;
 
-    internal class ping
+    public sealed class ping
     {
         private const int INTERNET_CONNECTION_LAN = 2;
         private const int INTERNET_CONNECTION_MODEM = 1;

@@ -188,7 +188,7 @@
             if (Tools.DSI == "Minecraft")
             {
                 string str = this.web.getHtml("https://launchermeta.mojang.com/mc/game/version_manifest.json");
-                if (str != "")
+                if (str != null)
                 {
                     foreach (mcweb.VersionsItem item in JsonConvert.DeserializeObject<mcweb.Root>(str).versions)
                     {

@@ -5,7 +5,7 @@
     using System.Net;
     using System.Text;
 
-    internal sealed class Download
+    public sealed class Download
     {
         internal HttpWebResponse CreateGetHttpResponse(string url)
         {
@@ -17,14 +17,14 @@
             return (HttpWebResponse) request1.GetResponse();
         }
 
-        internal string getHtml(string url)
+        public string getHtml(string url)
         {
             Stream stream;
             WebClient client = new WebClient();
             try
             {
                 stream = client.OpenRead(url);
-                stream.ReadTimeout = 0xbb8;
+                stream.ReadTimeout = 1000;
             }
             catch (WebException exception1)
             {
@@ -41,14 +41,30 @@
                 return null;
             }
         }
+        internal string getHtml(string url,bool WL)
+        {
+            if (WL == true)
+            {
+                if (!Core.ping.CheckServeStatus())
+                {
+                    return null;
+                }
 
+            }
+            return getHtml(url);
+        }
         internal string Post(string URL, string jsonParas)
+        {
+            return Post(URL, jsonParas, "application/json");
+        }
+            internal string Post(string URL, string jsonParas,string Type)
         {
             Stream requestStream;
             HttpWebResponse response;
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
             request.Method = "POST";
-            request.ContentType = "application/json";
+            request.ContentType = Type;
+            request.ReadWriteTimeout = 1000;
             string s = jsonParas;
             byte[] bytes = Encoding.UTF8.GetBytes(s);
             request.ContentLength = bytes.Length;

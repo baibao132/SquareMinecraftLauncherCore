@@ -10,7 +10,7 @@ using System.Web;
 namespace DES
 {
 
-  internal class DESEncrypt
+  public sealed class DESEncrypt
   {
         private static byte[] Keys = { 0x12, 0x44, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
         public string Encrypt(string encryptString, string encryptKey)

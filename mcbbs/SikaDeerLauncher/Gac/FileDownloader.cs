@@ -142,6 +142,7 @@ namespace Gac
         /// <returns>已下载文件大小</returns>
         public long download(IDownloadProgressListener listener)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             try
             {
                 using (FileStream fstream = new FileStream(this.saveFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))

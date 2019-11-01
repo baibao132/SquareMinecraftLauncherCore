@@ -10,7 +10,7 @@
     using System.IO;
     using System.Windows.Forms;
 
-    internal class ForgeInstallCore
+    public sealed class ForgeInstallCore
     {
         private SikaDeerLauncherCore SLC = new SikaDeerLauncherCore();
 
@@ -161,23 +161,22 @@
 
         internal void libraries(ForgeJson.Root json)
         {
-            GacDownload download = new GacDownload();
             int num = 0;
             foreach (ForgeJson.LibrariesItem item in json.libraries)
             {
                 if (!(item.downloads.artifact.url == "") && (this.SLC.FileExist(Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\')) != null))
                 {
                     num++;
-                    download.Download(Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\'), item.downloads.artifact.url);
+                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\'), item.downloads.artifact.url);
                 }
             }
             bool flag = true;
             while (flag)
             {
-                Delay(0x7d0);
-                if (download.Failure != 0)
+                Delay(3000);
+                if (GacDownload.Failure != 0)
                 {
-                    if ((download.Complete + download.Failure) == num)
+                    if ((GacDownload.Complete + GacDownload.Failure) == num)
                     {
                         if (!ping.CheckServeStatus())
                         {
@@ -187,7 +186,7 @@
                         return;
                     }
                 }
-                else if (download.Complete == num)
+                else if (GacDownload.Complete == num)
                 {
                     flag = false;
                 }

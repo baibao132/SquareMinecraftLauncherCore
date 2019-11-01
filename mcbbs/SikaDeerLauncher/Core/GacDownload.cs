@@ -6,24 +6,24 @@
 
     internal class GacDownload
     {
-        internal int Complete;
-        private DownLoadFile dlf = new DownLoadFile();
-        internal int Failure;
+        internal static int Complete;
+        internal static DownLoadFile dlf = new DownLoadFile();
+        internal static int Failure;
         internal static int id;
-        private bool s;
+        private static bool s;
 
-        internal void Download(string path, string url)
+        internal static void Download(string path, string url)
         {
-            if (!this.s)
+            if (!s)
             {
-                this.dlf.doSendMsg += new DownLoadFile.dlgSendMsg(this.SendMsgHander);
-                this.s = true;
+                dlf.doSendMsg += new DownLoadFile.dlgSendMsg(SendMsgHander);
+                s = true;
             }
-            this.dlf.AddDown(url, path.Replace(Path.GetFileName(path), ""), Path.GetFileName(path), id);
-            this.dlf.StartDown(3);
+            dlf.AddDown(url, path.Replace(Path.GetFileName(path), ""), Path.GetFileName(path), id);
+            dlf.StartDown(3);
         }
 
-        private void SendMsgHander(DownMsg msg)
+        private static void SendMsgHander(DownMsg msg)
         {
             DownStatus tag = msg.Tag;
             if (tag != DownStatus.End)
@@ -35,11 +35,11 @@
             }
             else
             {
-                Console.WriteLine(this.Complete);
-                this.Complete++;
+                Console.WriteLine(Complete);
+                Complete++;
                 return;
             }
-            this.Failure++;
+            Failure++;
         }
     }
 }

@@ -68,7 +68,7 @@
                 while (!standardOutput.EndOfStream)
                 {
                     string message = standardOutput.ReadLine();
-                    if (WinAPI.GetHandle("LWJGL").ToInt32() != 0)
+                    if (WinAPI.GetHandle("LWJGL") == null && WinAPI.GetHandle("GLFW30") == null)
                     {
                         standardOutput.Close();
                         this.process.Close();
@@ -80,12 +80,14 @@
                     string str2 = this.SLC.Replace(message, "Exception", " ");
                     if ((str2 != null) && (str2 != message))
                     {
-                        if (this.ErrorEvent != null)
+                        if (windows.WinAPI.GetHandle("LWJGL") == (IntPtr)0 && windows.WinAPI.GetHandle("GLFW30") == (IntPtr)0)
                         {
-                            this.ErrorEvent(new Error(null, standardOutput.ReadToEnd()));
+
+                            if (this.ErrorEvent != null)
+                            {
+                                this.ErrorEvent(new Error(null, standardOutput.ReadToEnd()));
+                            }
                         }
-                        standardOutput.Close();
-                        this.process.Close();
                     }
                     if (this.ErrorEvent != null)
                     {
@@ -100,22 +102,52 @@
             {
             }
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="name">游戏名</param>
         public void StartGame(string version, string java, int RAM, string name)
         {
             this.StartGame(version, java, RAM, name, "", "");
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="username">邮箱</param>
+        /// <param name="password">密码</param>
         public void StartGame(string version, string java, int RAM, string username, string password)
         {
             this.StartGame(version, java, RAM, username, password, "", "");
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="name">游戏名</param>
+        /// <param name="JVMparameter">前置参数</param>
+        /// <param name="RearParameter">后置参数</param>
         public void StartGame(string version, string java, int RAM, string name, string JVMparameter, string RearParameter)
         {
             this.StartGame(version, java, RAM, name, this.SLC.uuid(name), this.SLC.token(), JVMparameter, RearParameter);
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="username">邮箱</param>
+        /// <param name="password">密码</param>
+        /// <param name="JVMparameter">前置参数</param>
+        /// <param name="RearParameter">后置参数</param>
         public void StartGame(string version, string java, int RAM, string username, string password, string JVMparameter, string RearParameter)
         {
             Getlogin getlogin = null;
@@ -129,7 +161,17 @@
             }
             this.StartGame(version, java, RAM, getlogin.name, getlogin.uuid, getlogin.token, JVMparameter, RearParameter);
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="name">游戏名</param>
+        /// <param name="uuid">uuid</param>
+        /// <param name="token">token</param>
+        /// <param name="JVMparameter">前置参数</param>
+        /// <param name="RearParameter">后置参数</param>
         public void StartGame(string version, string java, int RAM, string name, string uuid, string token, string JVMparameter, string RearParameter)
         {
             if (version == "" || version == null || java == "" || java == null || name == null || name == "" || uuid == "" || uuid == null || token == "" || token == null || RAM == 0)
@@ -168,7 +210,11 @@
                     {
                         Game = bx + JVMparameter + " -Djava.library.path=\"" + nativespath + "\" -cp ";
                     }
-                    MCDownload[] Lib = tools.GetTheExistingLibrary(version);
+                    if (tools.GetMissingLibrary(version).Length != 0)
+                    {
+                        throw new SikaDeerLauncherException("Libraries文件不完整");
+                    }
+                    MCDownload[] Lib = tools.GetAllLibrary(version);
                     string Libname = "\"";
                     foreach (var Libname1 in Lib)
                     {
@@ -221,7 +267,7 @@
                         mA = a.Split(' ');
                     }
                     var jo2 = SLC.versionjson<json4.Root>(version);
-                    string main = null;
+                    string main = " --width 854 --height 480";
                     for (int i = 0; mA.Length > i; i += 2)
                     {
                         switch (mA[i])
@@ -293,18 +339,42 @@
                 }
             }
         }
-
+        /// <summary>
+        /// 启动游戏
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <param name="java">java</param>
+        /// <param name="RAM">虚拟内存</param>
+        /// <param name="name">游戏名</param>
+        /// <param name="uuid">uuid</param>
+        /// <param name="token">token</param>
+        /// <param name="yggdrasilURLORID">ID</param>
+        /// <param name="JVMparameter">JVM</param>
+        /// <param name="RearParameter">后置参数</param>
+        /// <param name="authentication">验证方式</param>
         public void StartGame(string version, string java, int RAM, string name, string uuid, string token, string yggdrasilURLORID, string JVMparameter, string RearParameter, AuthenticationServerMode authentication)
         {
+            string str3 = null;
             Download download = new Download();
             if (authentication == AuthenticationServerMode.yggdrasil)
             {
-                this.SLC.SetFile("SikaDeerLauncher");
-                byte[] array = new byte[Resources.SDL.Length];
-                Resources.SDL.CopyTo(array, 0);
-                FileStream stream1 = new FileStream(@"SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
-                stream1.Write(array, 0, array.Length);
-                stream1.Close();
+                if (SLC.FileExist(Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar") != null)
+                {
+                    this.SLC.SetFile("SikaDeerLauncher");
+                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar", "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/26/authlib-injector-1.1.26-41a7a47.jar");
+                    while (true)
+                    {
+                        if (GacDownload.Complete == 0 && GacDownload.Failure == 1)
+                        {
+                            throw new SikaDeerLauncherException("yggdrasil下载失败");
+                        }
+                        else if (GacDownload.Complete == 1)
+                        {
+                            break;
+                        }
+                        ForgeInstallCore.Delay(2000);
+                    }
+                }
                 string s = download.getHtml(yggdrasilURLORID);
                 if (s == null)
                 {
@@ -312,28 +382,34 @@
                 }
                 byte[] bytes = Encoding.Default.GetBytes(s);
                 string[] textArray1 = new string[] { "-javaagent:", Directory.GetCurrentDirectory(), @"\SikaDeerLauncher\yggdrasilSikaDeerLauncher.jar=", yggdrasilURLORID, " -Dauthlibinjector.side=client -Dauthlibinjector.yggdrasil.prefetched=", Convert.ToBase64String(bytes) };
-                string jVMparameter = string.Concat(textArray1);
-                if ((JVMparameter != null) && (JVMparameter != ""))
-                {
-                    jVMparameter = jVMparameter + "," + JVMparameter;
-                }
-                this.StartGame(version, java, RAM, name, uuid, token, jVMparameter, RearParameter);
+                str3 = string.Concat(textArray1);
             }
             else
             {
-                this.SLC.SetFile("SikaDeerLauncher");
-                byte[] buffer3 = new byte[Resources.nide8auth.Length];
-                Resources.nide8auth.CopyTo(buffer3, 0);
-                FileStream stream2 = new FileStream(@"SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar", FileMode.Create, FileAccess.Write);
-                stream2.Write(buffer3, 0, buffer3.Length);
-                stream2.Close();
-                string str3 = "-javaagent:" + Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar=" + yggdrasilURLORID;
-                if ((JVMparameter != null) && (JVMparameter != ""))
+                if (SLC.FileExist(Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar") != null)
+                {
+                    this.SLC.SetFile("SikaDeerLauncher");
+                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar", "https://login2.nide8.com:233/download/nide8auth.jar");
+                    while (true)
+                    {
+                        if (GacDownload.Complete == 0 && GacDownload.Failure == 1)
+                        {
+                            throw new SikaDeerLauncherException("统一通行证下载失败");
+                        }
+                        else if (GacDownload.Complete == 1)
+                        {
+                            break;
+                        }
+                        ForgeInstallCore.Delay(2000);
+                    }
+                }
+                str3 = "-javaagent:" + Directory.GetCurrentDirectory() + @"\SikaDeerLauncher\UnifiedPassSikaDeerLauncher.jar=" + yggdrasilURLORID;
+            }
+            if ((JVMparameter != null) && (JVMparameter != ""))
                 {
                     str3 = str3 + "," + JVMparameter;
                 }
                 this.StartGame(version, java, RAM, name, uuid, token, str3, RearParameter);
-            }
         }
 
         public class Error : EventArgs

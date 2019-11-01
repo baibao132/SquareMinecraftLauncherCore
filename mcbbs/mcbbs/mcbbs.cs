@@ -64,7 +64,7 @@ namespace mcbbs
         {
             if (url == "")
             {
-                url = Web.getHtml("http://www.mcbbs.net/");
+                url = Web.getHtml("http://www.mcbbs.net/",true);
             }
             string ns;
             if (url != null)
@@ -109,7 +109,7 @@ namespace mcbbs
             const string strd1 = "\" title=\"";
             if (url == "")
             {
-                url = Web.getHtml("http://www.mcbbs.net/");
+                url = Web.getHtml("http://www.mcbbs.net/",true);
             }
             string ns;
             if (url != null)
