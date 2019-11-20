@@ -1,4 +1,4 @@
-# SikaDeerLauncher
+# SikaDeerMinecraftLauncherCore
 使用.NET开发的Minecraft启动核心库
 
 此项目开源目的用于学习以及安全排查
