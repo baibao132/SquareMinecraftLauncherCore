@@ -1,4 +1,4 @@
-# SikaDeerMinecraftLauncherCore
+# SquareMinecraftLauncherCore
 使用.NET开发的Minecraft启动核心库
 
 此项目开源目的用于学习以及安全排查
@@ -9,7 +9,7 @@
 ## 第三方API和库
 
 #### BaiBaoAPI
-此API只适用于本库，不会对外公开，创立该库是因为BMCLAPI使用流量过大导致下载速度减弱，为了让SikaDeerLauncher的用户能够获得更好的体验
+此API只适用于本库，不会对外公开，创立该库是因为BMCLAPI使用流量过大导致下载速度减弱，为了让SquareMinecraftLauncher的用户能够获得更好的体验
 
 #### BMCLAPI
 bangbang93's minecraft launcher api  
