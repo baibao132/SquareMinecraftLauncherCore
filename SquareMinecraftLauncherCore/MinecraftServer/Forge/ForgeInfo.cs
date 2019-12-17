@@ -1,4 +1,5 @@
-﻿using SikaDeerLauncher.MinecraftServer.Json;
+﻿using MinecraftServer.Json;
+using SikaDeerLauncher.MinecraftServer.Json;
 using System;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ namespace MinecraftServer.Server.Forge
         public List<ForgeMod> Mods;
 
 
-        internal ForgeInfo(jsonForge.ModListItem[] mod)
+        internal ForgeInfo(json19.ModListItem[] mod)
         {
             // Example ModInfo (with spacing):
 

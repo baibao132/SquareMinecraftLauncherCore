@@ -11,6 +11,7 @@ using System.Net;
 using Newtonsoft.Json;
 using SikaDeerLauncher.MinecraftServer.Json;
 using System.Security.Policy;
+using MinecraftServer.Json;
 
 namespace MinecraftServer.Server
 {
@@ -134,8 +135,12 @@ namespace MinecraftServer.Server
             {
                 if (JsonText != null || JsonText != "")
                 {
-                    var jo2 = JsonConvert.DeserializeObject<jsonForge.Root>(JsonText);
-                    MOTD = jo2.description;
+                    Console.WriteLine(JsonText);
+                    var jo2 = JsonConvert.DeserializeObject<json19.Root>(JsonText);
+                    foreach (var i in jo2.description.extra)
+                    {
+                        MOTD += i.text;
+                    }
                     MaxPlayerCount = jo2.players.max;
                     CurrentPlayerCount = jo2.players.online;
                     ProtocolVersion = jo2.version.protocol;

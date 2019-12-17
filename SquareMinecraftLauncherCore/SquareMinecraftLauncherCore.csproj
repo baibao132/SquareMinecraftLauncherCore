@@ -127,7 +127,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>C:\Users\28175\source\repos\SquareMinecraftLauncherWPF\packages\Newtonsoft.Json.12.0.3-beta2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -153,6 +153,7 @@
     <Compile Include="json\UP.cs" />
     <Compile Include="json\UPerror.cs" />
     <Compile Include="json\UPSkin.cs" />
+    <Compile Include="MinecraftServer\Json\1.9json.cs" />
     <Compile Include="MinecraftServer\Json\json.cs" />
     <Compile Include="MinecraftServer\Json\jsonForge.cs" />
     <Compile Include="SquareMinecraftLauncher\YESAPI.cs" />

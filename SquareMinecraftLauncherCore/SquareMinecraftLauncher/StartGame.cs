@@ -340,7 +340,10 @@
                     {
                         await Task.Factory.StartNew(() =>
                         {
-                            process.WaitForInputIdle();
+                            if (process.WaitForInputIdle())
+                            {
+                                return;
+                            }
 
                         });
                     }
