@@ -86,7 +86,11 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <summary>
         /// minecraft下载源
         /// </summary>
-        MinecraftSource
+        MinecraftSource,
+        /// <summary>
+        /// MCBBS下载源
+        /// </summary>
+        MCBBSSource
     }
     public class MCVersionList
     {
@@ -206,6 +210,7 @@ namespace SquareMinecraftLauncher.Minecraft
     {
         Forge,
         Liteloader,
-        Optifine
+        Optifine,
+        Fabric
     }
 }

@@ -7,6 +7,7 @@ using mcbbs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SquareMinecraftLauncher.Core.fabricmc;
 using SquareMinecraftLauncher.Core.Forge;
 using System;
 using System.Collections.Generic;
@@ -50,9 +51,13 @@ namespace SquareMinecraftLauncher.Minecraft
             {
                 DSI = "Minecraft";
             }
-            else
+            else if (downloadSource == DownloadSource.bmclapiSource)
             {
                 DSI = null;
+            }
+            else
+            {
+                DSI = "https://download.mcbbs.net/libraries/";
             }
         }
         /// <summary>
@@ -151,12 +156,16 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     dSI = "https://libraries.minecraft.net/";
                 }
-                else
+                else if(DSI == null)
                 {
                     dSI = "https://bmclapi2.bangbang93.com/libraries/";
                 }
                 foreach (LibrariesItem item in root.libraries)
                 {
+                    if (item.name == "org.ow2.asm:asm-all:5.2")
+                    {
+                        Console.WriteLine("aa");
+                    }
                     string str2 = null;
                     if (item.natives != null)
                     {
@@ -181,8 +190,11 @@ namespace SquareMinecraftLauncher.Minecraft
                     if ((item.downloads != null) && (item.downloads.artifact != null))
                     {
                         if (item.downloads.artifact.url.IndexOf("libraries.minecraft.net") < 0 && item.downloads.artifact.url.IndexOf("files.minecraftforge.net") < 0)
-                        { 
-                            download2.Url = item.downloads.artifact.url + str2.Replace('\\', Convert.ToChar("/"));
+                        {
+                            if (item.downloads.artifact.url != "" && item.downloads.artifact.url != null  && item.downloads.artifact.url.IndexOf(" ") < 0)
+                            {
+                                download2.Url = item.downloads.artifact.url + str2.Replace('\\', Convert.ToChar("/"));
+                            }
                         }
                         if ((item.downloads.artifact.url.IndexOf("files.minecraftforge.net") != -1))
                         {
@@ -270,7 +282,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     dSI = "https://libraries.minecraft.net/";
                 }
-                else
+                else if (DSI == null)
                 {
                     dSI = "https://bmclapi2.bangbang93.com/libraries/";
                 }
@@ -1255,7 +1267,11 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                     this.SLC.liKeep(str);
                     return;
-
+                case ExpansionPack.Fabric:
+                    fabricUninstall fabricUninstall = new fabricUninstall();
+                    string Uninstall = fabricUninstall.Uninstall(str);
+                    SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", Uninstall);
+                    break;
                 default:
                     return;
             }

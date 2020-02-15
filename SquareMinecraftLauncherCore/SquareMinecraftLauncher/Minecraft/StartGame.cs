@@ -65,7 +65,6 @@
             {
                 Control.CheckForIllegalCrossThreadCalls = false;
                 StreamReader standardOutput = this.process.StandardOutput;
-                process.WaitForInputIdle();
                 while (!standardOutput.EndOfStream)
                 {
                     string message = standardOutput.ReadLine();

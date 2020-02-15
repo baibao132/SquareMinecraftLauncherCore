@@ -12,25 +12,17 @@
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
         private Download web = new Download();
 
-        public MCDownload DownloadLiteloader(string version)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="LiteloaderVersion"></param>
+        /// <returns></returns>
+        public MCDownload DownloadLiteloader(string LiteloaderVersion)
         {
-            AllTheExistingVersion[] allTheExistingVersion = new Tools().GetAllTheExistingVersion();
-            foreach (AllTheExistingVersion version2 in allTheExistingVersion)
-            {
-                if (version2.version == version)
-                {
-                    version = version2.IdVersion;
-                    break;
-                }
-                if (version2.version == allTheExistingVersion[allTheExistingVersion.Length - 1].version)
-                {
-                    throw new SquareMinecraftLauncherException("未找到该版本");
-                }
-            }
             MCDownload download = new MCDownload {
-                path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\liteloader-" + version + ".jar"
+                path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\liteloader-" + LiteloaderVersion + ".jar"
             };
-            string[] textArray1 = new string[] { "https://bmclapi2.bangbang93.com/maven/com/mumfrey/liteloader/", version, "/liteloader-", version, ".jar" };
+            string[] textArray1 = new string[] { "https://bmclapi2.bangbang93.com/maven/com/mumfrey/liteloader/", LiteloaderVersion, "/liteloader-", LiteloaderVersion, ".jar" };
             download.Url = string.Concat(textArray1);
             return download;
         }

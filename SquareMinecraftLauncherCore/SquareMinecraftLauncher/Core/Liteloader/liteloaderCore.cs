@@ -73,7 +73,7 @@
             ForgeY.Downloads downloads = new ForgeY.Downloads {
                 artifact = new ForgeY.Artifact()
             };
-            downloads.artifact.url = this.Minecraft.DownloadLiteloader(version).Url;
+            downloads.artifact.url = this.Minecraft.DownloadLiteloader(libraries.version).Url;
             item.downloads = downloads;
             versionText.libraries.Add(item);
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
