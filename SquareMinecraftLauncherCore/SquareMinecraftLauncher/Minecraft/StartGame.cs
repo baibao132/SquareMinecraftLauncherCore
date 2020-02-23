@@ -368,6 +368,7 @@
         /// <param name="authentication">验证方式</param>
         public async Task StartGame(string version, string java, int RAM, string name, string uuid, string token, string yggdrasilURLORID, string JVMparameter, string RearParameter, AuthenticationServerMode authentication)
         {
+            GacDownload GacDownload = new GacDownload();
             string str3 = null;
             Download download = new Download();
             if (authentication == AuthenticationServerMode.yggdrasil)

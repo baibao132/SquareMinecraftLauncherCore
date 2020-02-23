@@ -6,13 +6,13 @@
 
     internal class GacDownload
     {
-        internal static int Complete;
-        internal static DownLoadFile dlf = new DownLoadFile();
-        internal static int Failure;
+        internal int Complete;
+        internal DownLoadFile dlf = new DownLoadFile();
+        internal int Failure;
         internal static int id;
-        private static bool s;
+        private bool s;
 
-        internal static void Download(string path, string url)
+        internal void Download(string path, string url)
         {
             if (!s)
             {
@@ -20,10 +20,10 @@
                 s = true;
             }
             dlf.AddDown(url, path.Replace(Path.GetFileName(path), ""), Path.GetFileName(path), id);
-            dlf.StartDown(3);
+            dlf.StartDown(10);
         }
 
-        private static void SendMsgHander(DownMsg msg)
+        private void SendMsgHander(DownMsg msg)
         {
             DownStatus tag = msg.Tag;
             if (tag != DownStatus.End)

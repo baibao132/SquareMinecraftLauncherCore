@@ -396,10 +396,6 @@ namespace SquareMinecraftLauncher.Minecraft
                             mcV.Add(mc);
                         }
                     }
-                    if (root == null)
-                    {
-                        throw new SquareMinecraftLauncherException("无任何版本");
-                    }
                     try
                     {
                         foreach (mc mc2 in mcV)

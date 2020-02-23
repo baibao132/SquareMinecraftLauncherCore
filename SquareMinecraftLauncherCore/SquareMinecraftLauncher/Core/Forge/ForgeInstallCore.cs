@@ -15,7 +15,6 @@
     public sealed class ForgeInstallCore
     {
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
-
         internal string ArgAnalysis(string name)
         {
             char[] separator = new char[] { ':' };
@@ -85,84 +84,89 @@
 
         internal async Task ForgeInstall(string path, string version, string java)
         {
-            if (this.SLC.FileExist(java) != null)
+            await Task.Factory.StartNew(() =>
+            {
+                if (this.SLC.FileExist(java) != null)
             {
                 throw new SquareMinecraftLauncherException("java路径不存在");
             }
             string file = this.SLC.GetFile(path);
             ForgeJson.Root json = JsonConvert.DeserializeObject<ForgeJson.Root>(file);
-            await libraries(json);
+            libraries(json);
             DATA[] dataArray = this.data(file);
-            foreach (ForgeJson.ProcessorsItem item in json.processors)
-            {
-                string str2 = this.ArgAnalysis(item.jar);
-                string str3 = "-Xmn128m -Xss1M -Xmx512M -cp \"" + str2 + ";";
-                foreach (string str5 in item.classpath)
+                foreach (ForgeJson.ProcessorsItem item in json.processors)
                 {
-                    str3 = str3 + this.ArgAnalysis(str5) + ";";
-                }
-                char[] separator = new char[] { ':' };
-                string[] strArray = item.jar.Split(separator);
-                string str4 = null;
-                for (int i = 0; (strArray.Length - 1) > i; i++)
-                {
-                    str4 = str4 + strArray[i] + ".";
-                }
-                if (strArray[1] == "SpecialSource")
-                {
-                    str4 = str4.Replace('-', '_').ToLower() + "SpecialSource";
-                }
-                else
-                {
-                    str4 = str4 + "ConsoleTool";
-                }
-                str3 = str3 + "\" " + str4;
-                foreach (string str6 in item.args)
-                {
-                    if (str6[0] == '{')
+                    string str2 = this.ArgAnalysis(item.jar);
+                    string str3 = "-Xmn128m -Xss1M -Xmx512M -cp \"" + str2 + ";";
+                    foreach (string str5 in item.classpath)
                     {
-                        if (str6 == "{MINECRAFT_JAR}")
-                        {
-                            string[] textArray1 = new string[] { str3, " \"", Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar\"" };
-                            str3 = string.Concat(textArray1);
-                        }
-                        else
-                        {
-                            foreach (DATA data in dataArray)
-                            {
-                                if (str6 == data.name)
-                                {
-                                    str3 = str3 + " \"" + data.arg + "\"";
-                                    break;
-                                }
-                            }
-                        }
+                        str3 = str3 + this.ArgAnalysis(str5) + ";";
                     }
-                    else if (str6[0] == '[')
+                    char[] separator = new char[] { ':' };
+                    string[] strArray = item.jar.Split(separator);
+                    string str4 = null;
+                    for (int i = 0; (strArray.Length - 1) > i; i++)
                     {
-                        str3 = str3 + " " + this.ArgAnalysis(str6.Replace("[", "").Replace("]", ""));
+                        str4 = str4 + strArray[i] + ".";
+                    }
+                    if (strArray[1] == "SpecialSource")
+                    {
+                        str4 = str4.Replace('-', '_').ToLower() + "SpecialSource";
                     }
                     else
                     {
-                        str3 = str3 + " " + str6;
+                        str4 = str4 + "ConsoleTool";
                     }
+                    str3 = str3 + "\" " + str4;
+                    foreach (string str6 in item.args)
+                    {
+                        if (str6[0] == '{')
+                        {
+                            if (str6 == "{MINECRAFT_JAR}")
+                            {
+                                string[] textArray1 = new string[] { str3, " \"", Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar\"" };
+                                str3 = string.Concat(textArray1);
+                            }
+                            else
+                            {
+                                foreach (DATA data in dataArray)
+                                {
+                                    if (str6 == data.name)
+                                    {
+                                        str3 = str3 + " \"" + data.arg + "\"";
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else if (str6[0] == '[')
+                        {
+                            str3 = str3 + " " + this.ArgAnalysis(str6.Replace("[", "").Replace("]", ""));
+                        }
+                        else
+                        {
+                            str3 = str3 + " " + str6;
+                        }
+                    }
+                    Console.WriteLine(str3);
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = java,
+                        Arguments = str3,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
+                    Process process1 = Process.Start(startInfo);
+                    process1.WaitForExit();
+                    process1.Close();
                 }
-                Console.WriteLine(str3);
-                ProcessStartInfo startInfo = new ProcessStartInfo {
-                    FileName = java,
-                    Arguments = str3,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardError = true
-                };
-                Process process1 = Process.Start(startInfo);
-                process1.WaitForExit();
-                process1.Close();
-            }
+            });
         }
 
-        internal async Task libraries(ForgeJson.Root json)
+        internal void libraries(ForgeJson.Root json)
         {
+            GacDownload GacDownload = new GacDownload();
             int num = 0;
             foreach (ForgeJson.LibrariesItem item in json.libraries)
             {
@@ -173,8 +177,6 @@
                 }
             }
             bool flag = true;
-            await Task.Factory.StartNew(async () =>
-            {
                 while (flag)
                 {
                     if (GacDownload.Failure != 0)
@@ -185,7 +187,7 @@
                             {
                                 throw new SquareMinecraftLauncherException("安装失败");
                             }
-                            await libraries(json);
+                            libraries(json);
                             return;
                         }
                     }
@@ -195,8 +197,6 @@
                     }
                     Thread.Sleep(500);
                 }
-
-            });
         }
     }
 }
