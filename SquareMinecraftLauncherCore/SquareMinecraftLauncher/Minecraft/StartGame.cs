@@ -201,7 +201,8 @@
                 string nativespath = SLC.nativeszip(version);
                 if (SLC.FileExist(java) != "")
                 {
-                    string bx = "-Xincgc -Xmx" + RAM + "M  -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true ";
+                    
+                    string bx = "-Dminecraft.client.jar=" + System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar" + " -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Xmn128m -Xmx" + RAM + "m -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
                     if (JVMparameter == "" || JVMparameter == null)
                     {
                         Game = bx + "-Djava.library.path=\"" + nativespath + "\" -cp ";

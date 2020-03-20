@@ -29,8 +29,12 @@ namespace Gac
             });
             list.Add(tsk);
         }
-        public void StartDown(int StartNum=3)
+        public void StartDown(int StartNum)
         {
+            if (StartNum == 0)
+            {
+                StartNum = 3;
+            }
             for (int i2 = 0; i2 < StartNum; i2++)
             {
                 lock (list)

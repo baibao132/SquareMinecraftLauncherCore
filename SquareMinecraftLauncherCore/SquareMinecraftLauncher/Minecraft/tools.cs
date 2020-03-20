@@ -162,10 +162,6 @@ namespace SquareMinecraftLauncher.Minecraft
                 }
                 foreach (LibrariesItem item in root.libraries)
                 {
-                    if (item.name == "org.ow2.asm:asm-all:5.2")
-                    {
-                        Console.WriteLine("aa");
-                    }
                     string str2 = null;
                     if (item.natives != null)
                     {
@@ -183,8 +179,8 @@ namespace SquareMinecraftLauncher.Minecraft
                         name = item.name,
                         mainClass = root.mainClass
                     };
-                    char[] separator = new char[] { ':' };
-                    string[] strArray = item.name.Split(separator);
+                    string[] strArray = item.name.Split(':');
+                    if (strArray[1].IndexOf("lwjgl") >= 0 && strArray[2] == "3.2.1") continue;
                     download2.Url = dSI + str2.Replace('\\', Convert.ToChar("/"));
                     download2.path = Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
                     if ((item.downloads != null) && (item.downloads.artifact != null))
