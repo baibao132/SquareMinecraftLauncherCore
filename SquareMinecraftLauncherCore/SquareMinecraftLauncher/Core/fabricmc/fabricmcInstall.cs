@@ -30,6 +30,10 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                         ForgeY.Downloads downloads = new ForgeY.Downloads();
                         ForgeY.Artifact Artifact = new ForgeY.Artifact();
                         downloads.artifact = Artifact;
+                        if (i.url == "http://repo.maven.apache.org/maven2/")
+                        {
+                            i.url = "https://repo.maven.apache.org/maven2/";
+                        }
                         Artifact.url = i.url;
                         lib.downloads = downloads;
                     }

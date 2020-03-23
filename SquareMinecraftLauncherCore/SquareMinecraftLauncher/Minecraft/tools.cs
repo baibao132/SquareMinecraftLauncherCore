@@ -199,8 +199,11 @@ namespace SquareMinecraftLauncher.Minecraft
                             string str3 = strArray2[2];
                             if (strArray2[2].IndexOf('-') != -1)
                             {
-                                char[] chArray3 = new char[] { '-' };
-                                str3 = strArray2[2].Split(chArray3)[0];
+                                string[] urlArray = strArray2[2].Split('-');
+                                if (urlArray.Length == 3) 
+                                {
+                                    str3 = urlArray[0] + "-" +urlArray[1];
+                                }
                             }
                             string[] textArray1 = new string[] { strArray2[0].Replace('.', Convert.ToChar(@"\")), @"\", strArray2[1], @"\", str3, @"\", strArray2[1], "-", strArray2[2], ".jar" };
                             str2 = string.Concat(textArray1);
@@ -1188,6 +1191,7 @@ namespace SquareMinecraftLauncher.Minecraft
             {
                 throw new SquareMinecraftLauncherException("未找到该版本");
             }
+            version = str;
             string[] strArray = new string[0];
             using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(str).libraries.GetEnumerator())
             {
@@ -1203,7 +1207,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 }
             }
             bool flag = false;
-            if (this.LiteloaderExist(str))
+            if (this.LiteloaderExist(version))
             {
                 flag = true;
             }
@@ -1212,14 +1216,14 @@ namespace SquareMinecraftLauncher.Minecraft
             switch (ExpansionPack)
             {
                 case ExpansionPack.Forge:
-                    if (!this.ForgeExist(str))
+                    if (!this.ForgeExist(version))
                     {
                         throw new SquareMinecraftLauncherException("没有安装Forge");
                     }
                     this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     if (strArray.Length != 0)
                     {
-                        this.SLC.opKeep(str, strArray[strArray.Length - 1]);
+                        this.SLC.opKeep(version, strArray[strArray.Length - 1]);
                     }
                     if (!flag)
                     {
@@ -1229,11 +1233,11 @@ namespace SquareMinecraftLauncher.Minecraft
                     return;
 
                 case ExpansionPack.Liteloader:
-                    if (!this.LiteloaderExist(str))
+                    if (!this.LiteloaderExist(version))
                     {
                         throw new SquareMinecraftLauncherException("没有安装Liteloader");
                     }
-                    if (!this.SLC.ForgeKeep(str, text))
+                    if (!this.SLC.ForgeKeep(version, text))
                     {
                         this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     }
@@ -1245,11 +1249,11 @@ namespace SquareMinecraftLauncher.Minecraft
                     return;
 
                 case ExpansionPack.Optifine:
-                    if (!this.OptifineExist(str))
+                    if (!this.OptifineExist(version))
                     {
                         throw new SquareMinecraftLauncherException("没有安装Optifine");
                     }
-                    if (!this.SLC.ForgeKeep(str, text))
+                    if (!this.SLC.ForgeKeep(version, text))
                     {
                         this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     }
@@ -1257,16 +1261,41 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         break;
                     }
-                    this.SLC.liKeep(str);
+                    this.SLC.liKeep(version);
                     return;
                 case ExpansionPack.Fabric:
-                    fabricUninstall fabricUninstall = new fabricUninstall();
-                    string Uninstall = fabricUninstall.Uninstall(str);
-                    SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", Uninstall);
+                    if (FabricExist(version))
+                    {
+                        fabricUninstall fabricUninstall = new fabricUninstall();
+                        string Uninstall = fabricUninstall.Uninstall(version);
+                        SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", Uninstall);
+                    }
+                    else
+                    {
+                        throw new SquareMinecraftLauncherException("没有安装Fabric");
+                    }
                     break;
                 default:
                     return;
             }
+        }
+
+        /// <summary>
+        /// 是否存在Fabric
+        /// </summary>
+        /// <param name="version">版本</param>
+        /// <returns></returns>
+        public bool FabricExist(string version) 
+        {
+            var libraries = JsonConvert.DeserializeObject<ForgeY.Root>(SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json"));
+            foreach (var i in libraries.libraries)
+            {
+                if (i.name.Split(':')[0] == "net.fabricmc")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         [StructLayout(LayoutKind.Sequential)]
