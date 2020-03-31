@@ -25,9 +25,8 @@ BMCLAPI和BMCL不同，属于非开源项目
 捐助  
 服务器的开销是有费用的，若你觉得BMCLAPI对你有帮助，欢迎捐助，支付宝：bangbang93@bangbang93.com服务器的开销是有费用的，若你觉得BMCLAPI对你有帮助，欢迎捐助，支付宝：bangbang93@bangbang93.com  
 
-#### mcbbs新闻API
-http://www.mcbbs.net/thread-538691-1-1.html
-来源：mcbbs
+#### YESAPI
+http://open.yesapi.cn/
 
 ## Newtonsoft.Json  
 
