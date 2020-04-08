@@ -700,7 +700,7 @@ namespace SquareMinecraftLauncher.Minecraft
             string text = null;
             await Task.Factory.StartNew(() =>
             {
-                text = this.web.getHtml("http://118.31.6.246/libraries/mc/game/version_manifest.json");
+                text = this.web.getHtml("https://launchermeta.mojang.com/mc/game/version_manifest.json");
             });
             if (text == null)
             {
@@ -1206,11 +1206,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                 }
             }
-            bool flag = false;
-            if (this.LiteloaderExist(version))
-            {
-                flag = true;
-            }
+            bool flag = this.LiteloaderExist(version);
             MCDownload download2 = download.MCjsonDownload(version);
             string text = this.web.getHtml(download2.Url);
             switch (ExpansionPack)
@@ -1229,6 +1225,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         break;
                     }
+                    
                     this.SLC.liKeep(str);
                     return;
 

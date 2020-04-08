@@ -153,6 +153,7 @@
     <Compile Include="json\UP.cs" />
     <Compile Include="json\UPerror.cs" />
     <Compile Include="json\UPSkin.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIYJson.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\1.9json.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\json.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\jsonForge.cs" />
