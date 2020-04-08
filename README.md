@@ -9,7 +9,7 @@
 ## 第三方API和库
 
 #### BaiBaoAPI
-此API只适用于本库，不会对外公开，创建API是因为BMCLAPI使用流量过大导致下载速度减弱，为了让SquareMinecraftLauncher的用户能够获得更好的体验
+此API因资金不足先暂停使用
 
 #### BMCLAPI
 bangbang93's minecraft launcher api  
