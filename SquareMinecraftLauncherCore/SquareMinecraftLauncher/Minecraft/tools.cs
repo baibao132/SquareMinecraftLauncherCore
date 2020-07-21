@@ -1,6 +1,5 @@
 ﻿using AI;
 using BlessingSkinJson;
-using global::MinecraftServer.Server;
 using global::SquareMinecraftLauncher.Core;
 using json4;
 using mcbbs;
@@ -93,7 +92,7 @@ namespace SquareMinecraftLauncher.Minecraft
             string str;
             if ((this.SLC.FileExist(ForgePath) == null) && new Unzip().UnZipFile(ForgePath, @"SquareMinecraftLauncher\Forge\", out str))
             {
-                string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
+                string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
                 if (this.SLC.FileExist(string.Concat(textArray1)) == null)
                 {
                     ForgeCore core = new ForgeCore();
@@ -102,12 +101,12 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         await new ForgeInstallCore().ForgeInstall(@"SquareMinecraftLauncher\Forge\install_profile.json", version, java);
                         char[] separator = new char[] { '\\' };
-                        string[] strArray = ((JObject) JsonConvert.DeserializeObject(this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\install_profile.json")))["path"].ToString().Replace(':', '\\').Split(separator);
+                        string[] strArray = ((JObject) JsonConvert.DeserializeObject(this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\install_profile.json")))["path"].ToString().Replace(':', '\\').Split(separator);
                         string[] textArray3 = new string[] { strArray[0].Replace('.', '\\'), @"\", strArray[1], @"\", strArray[2] };
                         string str2 = string.Concat(textArray3);
-                        string path = Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
+                        string path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
                         this.SLC.path(path);
-                        foreach (string str4 in Directory.GetFiles(@"SquareMinecraftLauncher\Forge\maven\" + str2))
+                        foreach (string str4 in System.IO.Directory.GetFiles(@"SquareMinecraftLauncher\Forge\maven\" + str2))
                         {
                             try
                             {
@@ -182,7 +181,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     string[] strArray = item.name.Split(':');
                     if (strArray[1].IndexOf("lwjgl") >= 0 && strArray[2] == "3.2.1") continue;
                     download2.Url = dSI + str2.Replace('\\', Convert.ToChar("/"));
-                    download2.path = Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
+                    download2.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
                     if ((item.downloads != null) && (item.downloads.artifact != null))
                     {
                         if (item.downloads.artifact.url.IndexOf("libraries.minecraft.net") < 0 && item.downloads.artifact.url.IndexOf("files.minecraftforge.net") < 0)
@@ -292,7 +291,7 @@ namespace SquareMinecraftLauncher.Minecraft
                         string str2 = this.SLC.libAnalysis(token["name"].ToString(), false, token["natives"]["windows"].ToString());
                         MCDownload item = new MCDownload {
                             Url = dSI + str2.Replace('\\', '/'),
-                            path = Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2
+                            path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2
                         };
                         list.Add(item);
                     }
@@ -314,12 +313,12 @@ namespace SquareMinecraftLauncher.Minecraft
         {
             try
             {
-                SLC.SetFile(Directory.GetCurrentDirectory() + @"\.minecraft\assets");
-                SLC.SetFile(Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes");
+                SLC.SetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets");
+                SLC.SetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes");
                 var jo = SLC.versionjson<json4.Root>(version);
                 string json = web.getHtml(jo.AssetIndex.url);
                 var FileName = jo.AssetIndex.url.Split('/');
-                SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes\" + FileName[FileName.Length - 1], json);
+                SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes\" + FileName[FileName.Length - 1], json);
                 mcbbs.mcbbsnews mcbbs = new mcbbs.mcbbsnews();
                 string[] str = new string[0];
                 List<MCDownload> str2 = new List<MCDownload>();
@@ -332,7 +331,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     jstr = o.Name;
                     MCDownload assets = new MCDownload();
                     var hash = json1["objects"][o.Name]["hash"].ToString();
-                    assets.path = System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\assets\objects\" + hash[0] + hash[1] + "\\" + hash;
+                    assets.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\objects\" + hash[0] + hash[1] + "\\" + hash;
                     assets.Url = dsi + @"/" + hash[0] + hash[1] + "/" + hash;
                     str2.Add(assets);
                 }
@@ -352,11 +351,11 @@ namespace SquareMinecraftLauncher.Minecraft
             this.YESAPI.Tts();
             new mcbbsnews();
             List<AllTheExistingVersion> list = new List<AllTheExistingVersion>();
-            if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\.minecraft\versions"))
+            if (!System.IO.Directory.Exists(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions"))
             {
                 throw new SquareMinecraftLauncherException("没有找到任何版本");
             }
-            foreach (string str in Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\.minecraft\versions"))
+            foreach (string str in System.IO.Directory.GetDirectories(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions"))
             {
                 string str2 = this.SLC.app(str, Convert.ToChar(@"\"), "versions");
                 if (File.Exists(str + @"\" + str2 + ".jar") && File.Exists(str + @"\" + str2 + ".json"))
@@ -572,7 +571,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     try
                     {
-                        directories = Directory.GetDirectories(str2 + @"Program Files\Java\");
+                        directories = System.IO.Directory.GetDirectories(str2 + @"Program Files\Java\");
                     }
                     catch
                     {
@@ -590,7 +589,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     try
                     {
-                        directories = Directory.GetDirectories(str2 + @"Program Files (x86)\Java\");
+                        directories = System.IO.Directory.GetDirectories(str2 + @"Program Files (x86)\Java\");
                     }
                     catch
                     {
@@ -883,32 +882,6 @@ namespace SquareMinecraftLauncher.Minecraft
                 return 0x40;
             }
             return 0x20;
-        }
-        /// <summary>
-        /// 取服务器信息
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public ServerInfo GetServerInformation(string ip, int port)
-        {
-            ServerInfo info;
-            this.YESAPI.Tts();
-            if (((ip == "") || (port == 0)) || (ip == null))
-            {
-                throw new SquareMinecraftLauncherException("ip或port不得为空");
-            }
-            try
-            {
-                ServerInfo info1 = new ServerInfo(ip, port);
-                info1.StartGetServerInfo();
-                info = info1;
-            }
-            catch (Exception exception1)
-            {
-                throw new SquareMinecraftLauncherException(exception1.Message);
-            }
-            return info;
         }
         /// <summary>
         /// 取存在的依赖库
@@ -1216,7 +1189,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         throw new SquareMinecraftLauncherException("没有安装Forge");
                     }
-                    this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
+                    this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     if (strArray.Length != 0)
                     {
                         this.SLC.opKeep(version, strArray[strArray.Length - 1]);
@@ -1236,7 +1209,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                     if (!this.SLC.ForgeKeep(version, text))
                     {
-                        this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
+                        this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     }
                     if (strArray.Length == 0)
                     {
@@ -1252,7 +1225,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                     if (!this.SLC.ForgeKeep(version, text))
                     {
-                        this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
+                        this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     }
                     if (!flag)
                     {
@@ -1265,7 +1238,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         fabricUninstall fabricUninstall = new fabricUninstall();
                         string Uninstall = fabricUninstall.Uninstall(version);
-                        SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", Uninstall);
+                        SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", Uninstall);
                     }
                     else
                     {
@@ -1284,7 +1257,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public bool FabricExist(string version) 
         {
-            var libraries = JsonConvert.DeserializeObject<ForgeY.Root>(SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json"));
+            var libraries = JsonConvert.DeserializeObject<ForgeY.Root>(SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json"));
             foreach (var i in libraries.libraries)
             {
                 if (i.name.Split(':')[0] == "net.fabricmc")
@@ -1293,6 +1266,15 @@ namespace SquareMinecraftLauncher.Minecraft
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 设置Minecraft目录路径
+        /// </summary>
+        /// <param name="Path">.minecraft路径</param>
+        public void SetMinecraftFilesPath(string Path) 
+        {
+            System.Directory.Files = Path != null?Path:System.IO.Directory.GetCurrentDirectory();
         }
 
         [StructLayout(LayoutKind.Sequential)]

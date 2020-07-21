@@ -38,7 +38,7 @@
         {
             if (File.GetAttributes(path) == FileAttributes.Directory)
             {
-                Directory.Delete(path, true);
+                System.IO.Directory.Delete(path, true);
             }
             else
             {
@@ -50,7 +50,7 @@
         {
             if (File.GetAttributes(fileFullPath) == FileAttributes.Directory)
             {
-                Directory.Delete(fileFullPath, true);
+                System.IO.Directory.Delete(fileFullPath, true);
             }
             else
             {
@@ -109,8 +109,8 @@
             forgePath.libraries = list;
             forgePath.mainClass = allFile[0].mainClass;
             ForgeCore core = new ForgeCore();
-            string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
-            string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+            string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+            string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
             this.wj(string.Concat(textArray1), core.ForgeKeep(this.GetFile(string.Concat(textArray2)), forgePath, versionjson, version));
             return true;
         }
@@ -287,9 +287,9 @@
             foreach (MCDownload download in new Tools().GetAllNatives(version))
             {
                 string str;
-                unzip.UnZipFile(download.path, Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + "-natives", out str);
+                unzip.UnZipFile(download.path, System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + "-natives", out str);
             }
-            string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, "-natives" };
+            string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, "-natives" };
             return string.Concat(textArray2);
         }
 
@@ -383,9 +383,9 @@
 
         internal void SetFile(string path)
         {
-            if (!Directory.Exists(path))
+            if (!System.IO.Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                System.IO.Directory.CreateDirectory(path);
             }
         }
 
@@ -409,8 +409,8 @@
         internal string uuid(string name)
         {
             DESEncrypt encrypt = new DESEncrypt();
-            this.SetFile(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher");
-            string file = this.GetFile(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika");
+            this.SetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher");
+            string file = this.GetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika");
             if (file != "")
             {
                 file = encrypt.Decrypt(file, "zxttquws");
@@ -433,11 +433,11 @@
                 if (file != "")
                 {
                     string[] textArray1 = new string[] { file, "\n", name, "|", root.id };
-                    this.wj(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(string.Concat(textArray1), "zxttquws"));
+                    this.wj(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(string.Concat(textArray1), "zxttquws"));
                 }
                 else
                 {
-                    this.wj(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(name + "|" + root.id, "zxttquws"));
+                    this.wj(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(name + "|" + root.id, "zxttquws"));
                 }
                 return root.id;
             }
@@ -445,10 +445,10 @@
             if (file != "")
             {
                 string[] textArray2 = new string[] { file, "\n", name, "|", str2 };
-                this.wj(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(string.Concat(textArray2), "zxttquws"));
+                this.wj(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(string.Concat(textArray2), "zxttquws"));
                 return str2;
             }
-            this.wj(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(name + "|" + str2, "zxttquws"));
+            this.wj(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\user.Sika", encrypt.Encrypt(name + "|" + str2, "zxttquws"));
             return str2;
         }
 
@@ -457,7 +457,7 @@
             StreamReader reader = null;
             try
             {
-                string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
                 reader = new StreamReader(string.Concat(textArray1), Encoding.Default);
             }
             catch (DirectoryNotFoundException)
@@ -472,7 +472,7 @@
             StreamReader reader = null;
             try
             {
-                string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
                 reader = new StreamReader(string.Concat(textArray1), Encoding.Default);
             }
             catch (Exception)

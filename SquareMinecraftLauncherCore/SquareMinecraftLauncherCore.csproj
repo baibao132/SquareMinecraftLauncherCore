@@ -154,9 +154,7 @@
     <Compile Include="json\UPerror.cs" />
     <Compile Include="json\UPSkin.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIYJson.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\1.9json.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\json.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json\jsonForge.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\Windows\System.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\fabricmc\fabricUninstall.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\JsonIntegration\SetJson.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\YESAPI.cs" />
@@ -198,12 +196,6 @@
     <Compile Include="SquareMinecraftLauncher\Minecraft\Download.cs" />
     <Compile Include="SquareMinecraftLauncher\SquareMinecraftLauncherException.cs" />
     <Compile Include="mcbbs\mcbbs.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Forge\FMLHandshakeClientState.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Forge\FMLHandshakeDiscriminator.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Forge\ForgeInfo.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\Json.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\ProtocolHandler.cs" />
-    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer\ServerInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

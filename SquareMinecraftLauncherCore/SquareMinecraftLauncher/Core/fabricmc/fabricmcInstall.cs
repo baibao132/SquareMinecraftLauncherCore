@@ -57,7 +57,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                 lib2.downloads = downloads2;
                 libItem.Add(lib2);
                 /*/结束/*/
-                var json1 = SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+                var json1 = SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
                 var jo1 = JsonConvert.DeserializeObject<ForgeY.Root>(json1);
                 foreach (var i in jo1.libraries)//增加版本libraries
                 {
@@ -70,7 +70,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                 }
                 string mainclass = jo.mainClass;//fabricmcMainClass
                 string Arguments = ArgumentsJson(json1) + "\"--tweakClass\",\"" + jo.launchwrapper.tweakers.client[0] + "\"";//组成新的Arguments
-                SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", new NewJson().newJson(libItem, Arguments, mainclass, jo1));
+                SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", new NewJson().newJson(libItem, Arguments, mainclass, jo1));
                 return;
             }
             throw new SquareMinecraftLauncherException("访问失败");

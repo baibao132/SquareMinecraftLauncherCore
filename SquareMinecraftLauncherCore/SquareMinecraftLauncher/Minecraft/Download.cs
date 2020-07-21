@@ -20,7 +20,7 @@
         public MCDownload DownloadLiteloader(string LiteloaderVersion)
         {
             MCDownload download = new MCDownload {
-                path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\liteloader-" + LiteloaderVersion + ".jar"
+                path = System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\liteloader-" + LiteloaderVersion + ".jar"
             };
             string[] textArray1 = new string[] { "https://bmclapi2.bangbang93.com/maven/com/mumfrey/liteloader/", LiteloaderVersion, "/liteloader-", LiteloaderVersion, ".jar" };
             download.Url = string.Concat(textArray1);
@@ -42,7 +42,7 @@
                     throw new SquareMinecraftLauncherException("未找到该版本");
                 }
             }
-            return new MCDownload { path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + filename, Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/" + filename };
+            return new MCDownload { path = System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + filename, Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/" + filename };
         }
 
         internal MCDownload ForgeCoreDownload(string version, string ForgeVersion)
@@ -70,13 +70,13 @@
             char[] separator = new char[] { '.' };
             if (Convert.ToInt32(version.Split(separator)[1]) > 9)
             {
-                string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge - ", version, " - ", ForgeVersion, "-universal.jar" };
+                string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge - ", version, " - ", ForgeVersion, "-universal.jar" };
                 download.path = string.Concat(textArray1);
                 string[] textArray2 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-universal.jar" };
                 download.Url = string.Concat(textArray2);
                 return download;
             }
-            string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-universal.jar" };
+            string[] textArray3 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-universal.jar" };
             download.path = string.Concat(textArray3);
             string[] textArray4 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-universal.jar" };
             download.Url = string.Concat(textArray4);
@@ -105,7 +105,7 @@
             {
                 return this.ForgeCoreDownload(str, ForgeVersion);
             }
-            string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge - ", version, " - ", ForgeVersion, "-installer.jar" };
+            string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge - ", version, " - ", ForgeVersion, "-installer.jar" };
             download.path = string.Concat(textArray1);
             string[] textArray2 = new string[] { "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-installer.jar" };
             download.Url = string.Concat(textArray2);
@@ -115,7 +115,7 @@
             }
             catch (Exception)
             {
-                string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-", version, "-installer.jar" };
+                string[] textArray3 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-", version, "-installer.jar" };
                 download.path = string.Concat(textArray3);
                 string[] textArray4 = new string[] { "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "-", version, "/forge-", version, "-", ForgeVersion, "-", version, "-installer.jar" };
                 download.Url = string.Concat(textArray4);
@@ -134,7 +134,7 @@
             {
                 str = "jre_x64.exe";
             }
-            return new MCDownload { Url = "https://bmclapi.bangbang93.com/java/" + str, path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + str };
+            return new MCDownload { Url = "https://bmclapi.bangbang93.com/java/" + str, path = System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + str };
         }
 
         public MCDownload MCjarDownload(string version)
@@ -162,14 +162,14 @@
                     if (mc2.version == version)
                     {
                         download.Url = mc2.url;
-                        string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
+                        string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
                         download.path = string.Concat(textArray1);
                     }
                 }
                 return download;
             }
             download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/client";
-            string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
+            string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
             download.path = string.Concat(textArray2);
             return download;
         }
@@ -187,19 +187,19 @@
                         if (item.id == version)
                         {
                             download.Url = item.url;
-                            string[] textArray1 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                            string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
                             download.path = string.Concat(textArray1);
                         }
                     }
                     return download;
                 }
                 download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/json";
-                string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+                string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
                 download.path = string.Concat(textArray2);
                 return download;
             }
             download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/json";
-            string[] textArray3 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
+            string[] textArray3 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".json" };
             download.path = string.Concat(textArray3);
             return download;
         }

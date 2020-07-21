@@ -35,7 +35,7 @@
             {
                 this.Tools.UninstallTheExpansionPack(ExpansionPack.Forge, version);
             }
-            file = this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+            file = this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
             ForgeJsonEarly.Root root = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
             ForgeY.Root versionText = JsonConvert.DeserializeObject<ForgeY.Root>(file);
             string str2 = null;
@@ -200,7 +200,7 @@
             {
                 JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(versionjson);
                 str = str + "{";
-                this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
+                this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
                 str = str + this.ForgeJsonY(JsonConvert.DeserializeObject<ForgeY.Root>(versionjson), ForgePath);
                 char[] separator = new char[] { ' ' };
                 string[] strArray = root.minecraftArguments.Split(separator);
@@ -245,7 +245,7 @@
                 }
             }
             str = str.Substring(0, str.Length - 1) + "]},";
-            this.SLC.wj(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
+            this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", versionjson);
             return (str + this.ForgeJsonY(JsonConvert.DeserializeObject<ForgeY.Root>(versionjson), ForgePath) + "}");
         }
     }

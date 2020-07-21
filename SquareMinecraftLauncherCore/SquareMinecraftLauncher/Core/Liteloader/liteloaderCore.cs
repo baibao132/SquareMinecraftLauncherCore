@@ -42,7 +42,7 @@
                     throw new SquareMinecraftLauncherException("该版本不支持安装");
                 }
             }
-            string file = this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+            string file = this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
             ForgeY.Root versionText = JsonConvert.DeserializeObject<ForgeY.Root>(file);
             string str2 = null;
             str2 = str2 + "{" + this.liteloaderJsonY(versionText, libraries, version);

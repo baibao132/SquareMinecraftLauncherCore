@@ -18,7 +18,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
         SquareMinecraftLauncher.Core.SquareMinecraftLauncherCore SMLC = new SquareMinecraftLauncherCore();
         internal string Uninstall(string version)
         {
-            var json = SMLC.GetFile(Directory.GetCurrentDirectory() + "\\.minecraft\\versions\\" + version + "\\" + version + ".json");
+            var json = SMLC.GetFile(System.Directory.GetCurrentDirectory() + "\\.minecraft\\versions\\" + version + "\\" + version + ".json");
             var libraries = librariesJson(json);
             string Arg = ArgumentsJson(json);
             string mainClass = "net.minecraft.launchwrapper.Launch";

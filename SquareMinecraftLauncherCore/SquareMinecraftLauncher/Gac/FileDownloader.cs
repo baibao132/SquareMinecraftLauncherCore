@@ -98,7 +98,7 @@ namespace Gac
                 }
                 //构建http 请求
                 this.downloadUrl = downloadUrl;
-                if (!Directory.Exists(fileSaveDir)) Directory.CreateDirectory(fileSaveDir);
+                if (!System.IO.Directory.Exists(fileSaveDir)) System.IO.Directory.CreateDirectory(fileSaveDir);
                 this.threads = new DownloadThread[threadNum];
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downloadUrl);
                 request.Referer = downloadUrl.ToString();

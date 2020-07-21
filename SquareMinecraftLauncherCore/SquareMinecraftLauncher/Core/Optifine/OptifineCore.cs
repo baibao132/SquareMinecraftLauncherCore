@@ -94,7 +94,7 @@
             {
                 throw new SquareMinecraftLauncherException("已经安装过了,无需再次安装");
             }
-            string file = this.SLC.GetFile(Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
+            string file = this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
             ForgeJsonEarly.Root root = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
             ForgeY.Root versionText = JsonConvert.DeserializeObject<ForgeY.Root>(file);
             string str2 = null;

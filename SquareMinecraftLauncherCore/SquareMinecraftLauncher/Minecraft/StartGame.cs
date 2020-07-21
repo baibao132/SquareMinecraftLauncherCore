@@ -180,7 +180,7 @@
             }
             string Game = null;
             Tools tools = new Tools();
-            if (SLC.FileExist(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar") != null)
+            if (SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar") != null)
             {
                 throw new SquareMinecraftLauncherException("启动失败,未找到该版本");
             }
@@ -201,8 +201,8 @@
                 string nativespath = SLC.nativeszip(version);
                 if (SLC.FileExist(java) != "")
                 {
-                    
-                    string bx = "-Dminecraft.client.jar=" + System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar" + " -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Xmn128m -Xmx" + RAM + "m -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
+
+                    string bx = "-Dminecraft.client.jar=" + System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar" + " -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Xmn128m -Xmx" + RAM + "m -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
                     if (JVMparameter == "" || JVMparameter == null)
                     {
                         Game = bx + "-Djava.library.path=\"" + nativespath + "\" -cp ";
@@ -221,7 +221,7 @@
                     {
                         Libname += Libname1.path + ";";
                     }
-                    Game += Libname + System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar\"";
+                    Game += Libname + System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar\"";
                     var jo = SLC.versionjson<main.mainclass>(version);
                     string[] mA = null;
                     if (jo.minecraftArguments != null)
@@ -233,7 +233,7 @@
                         StreamReader sr;
                         try
                         {
-                            sr = new StreamReader(System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", Encoding.Default);
+                            sr = new StreamReader(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", Encoding.Default);
                         }
                         catch (System.IO.DirectoryNotFoundException ex)
                         {
@@ -279,10 +279,10 @@
                                 main += " " + mA[i] + " \"" + jo2.id + "\"";
                                 break;
                             case "--gameDir":
-                                main += " " + mA[i] + " \"" + System.IO.Directory.GetCurrentDirectory() + @"\.minecraft" + "\"";
+                                main += " " + mA[i] + " \"" + System.Directory.GetCurrentDirectory() + @"\.minecraft" + "\"";
                                 break;
                             case "--assetsDir":
-                                main += " " + mA[i] + " \"" + System.IO.Directory.GetCurrentDirectory() + @"\.minecraft\assets" + "\"";
+                                main += " " + mA[i] + " \"" + System.Directory.GetCurrentDirectory() + @"\.minecraft\assets" + "\"";
                                 break;
                             case "--assetIndex":
                                 main += " " + mA[i] + " " + jo2.assets;
@@ -347,7 +347,7 @@
 
                         });
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         throw new SquareMinecraftLauncherException("等待时发生异常：" + ex.Message);
                     }
@@ -374,10 +374,10 @@
             Download download = new Download();
             if (authentication == AuthenticationServerMode.yggdrasil)
             {
-                if (SLC.FileExist(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar") != null)
+                if (SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar") != null)
                 {
                     this.SLC.SetFile("SquareMinecraftLauncher");
-                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar", "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/26/authlib-injector-1.1.26-41a7a47.jar");
+                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar", "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/26/authlib-injector-1.1.26-41a7a47.jar");
                     while (true)
                     {
                         if (GacDownload.Complete == 0 && GacDownload.Failure == 1)
@@ -397,15 +397,15 @@
                     throw new SquareMinecraftLauncherException("启动失败，无法获取相关信息");
                 }
                 byte[] bytes = Encoding.Default.GetBytes(s);
-                string[] textArray1 = new string[] { "-javaagent:", Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar=", yggdrasilURLORID, " -Dauthlibinjector.side=client -Dauthlibinjector.yggdrasil.prefetched=", Convert.ToBase64String(bytes) };
+                string[] textArray1 = new string[] { "-javaagent:", System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar=", yggdrasilURLORID, " -Dauthlibinjector.side=client -Dauthlibinjector.yggdrasil.prefetched=", Convert.ToBase64String(bytes) };
                 str3 = string.Concat(textArray1);
             }
             else
             {
-                if (SLC.FileExist(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar") != null)
+                if (SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar") != null)
                 {
                     this.SLC.SetFile("SquareMinecraftLauncher");
-                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar", "https://login2.nide8.com:233/download/nide8auth.jar");
+                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar", "https://login2.nide8.com:233/download/nide8auth.jar");
                     while (true)
                     {
                         if (GacDownload.Complete == 0 && GacDownload.Failure == 1)
@@ -419,13 +419,13 @@
                         ForgeInstallCore.Delay(2000);
                     }
                 }
-                str3 = "-javaagent:" + Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar=" + yggdrasilURLORID;
+                str3 = "-javaagent:" + System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\UnifiedPassSquareMinecraftLauncher.jar=" + yggdrasilURLORID;
             }
             if ((JVMparameter != null) && (JVMparameter != ""))
-                {
-                    str3 = str3 + "," + JVMparameter;
-                }
-                await this.StartGame(version, java, RAM, name, uuid, token, str3, RearParameter);
+            {
+                str3 = str3 + "," + JVMparameter;
+            }
+            await this.StartGame(version, java, RAM, name, uuid, token, str3, RearParameter);
         }
 
         public class Error : EventArgs

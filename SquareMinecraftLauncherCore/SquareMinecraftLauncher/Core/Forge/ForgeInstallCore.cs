@@ -23,7 +23,7 @@
             {
                 if (name[0] == '/')
                 {
-                    return (Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\" + name.Replace('/', '\\'));
+                    return (System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\" + name.Replace('/', '\\'));
                 }
                 return name;
             }
@@ -35,7 +35,7 @@
                     str2 = str2 + ".jar";
                 }
                 string[] textArray1 = new string[11];
-                textArray1[0] = Directory.GetCurrentDirectory();
+                textArray1[0] = System.Directory.GetCurrentDirectory();
                 textArray1[1] = @"\.minecraft\libraries\";
                 textArray1[2] = strArray[0].Replace('.', '\\');
                 textArray1[3] = @"\";
@@ -54,7 +54,7 @@
             {
                 str = str + ".jar";
             }
-            string[] textArray2 = new string[] { Directory.GetCurrentDirectory(), @"\.minecraft\libraries\", strArray[0].Replace('.', '\\'), @"\", strArray[1].Replace('.', '\\'), @"\", strArray[2], @"\", strArray[1], "-", strArray[2], "-", str };
+            string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\libraries\", strArray[0].Replace('.', '\\'), @"\", strArray[1].Replace('.', '\\'), @"\", strArray[2], @"\", strArray[1], "-", strArray[2], "-", str };
             return string.Concat(textArray2);
         }
 
@@ -124,7 +124,7 @@
                         {
                             if (str6 == "{MINECRAFT_JAR}")
                             {
-                                string[] textArray1 = new string[] { str3, " \"", Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar\"" };
+                                string[] textArray1 = new string[] { str3, " \"", System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar\"" };
                                 str3 = string.Concat(textArray1);
                             }
                             else
@@ -170,10 +170,10 @@
             int num = 0;
             foreach (ForgeJson.LibrariesItem item in json.libraries)
             {
-                if (!(item.downloads.artifact.url == "") && (this.SLC.FileExist(Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\')) != null))
+                if (!(item.downloads.artifact.url == "") && (this.SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\')) != null))
                 {
                     num++;
-                    GacDownload.Download(Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\'), item.downloads.artifact.url);
+                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\'), item.downloads.artifact.url);
                 }
             }
             bool flag = true;

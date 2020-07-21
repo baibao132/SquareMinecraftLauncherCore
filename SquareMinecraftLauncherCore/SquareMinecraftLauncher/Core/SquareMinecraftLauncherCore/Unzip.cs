@@ -36,8 +36,8 @@ namespace SquareMinecraftLauncher
                 unZipDir = zipFilePath.Replace(Path.GetFileName(zipFilePath), Path.GetFileNameWithoutExtension(zipFilePath));
             if (!unZipDir.EndsWith("\\"))
                 unZipDir += "\\";
-            if (!Directory.Exists(unZipDir))
-                Directory.CreateDirectory(unZipDir);
+            if (!System.IO.Directory.Exists(unZipDir))
+                System.IO.Directory.CreateDirectory(unZipDir);
 
             try
             {
@@ -51,7 +51,7 @@ namespace SquareMinecraftLauncher
                         string fileName = Path.GetFileName(theEntry.Name);
                         if (directoryName.Length > 0)
                         {
-                            Directory.CreateDirectory(unZipDir + directoryName);
+                            System.IO.Directory.CreateDirectory(unZipDir + directoryName);
                         }
                         if (!directoryName.EndsWith("\\"))
                             directoryName += "\\";
@@ -102,7 +102,7 @@ namespace SquareMinecraftLauncher
             bool result = false;
             try
             {
-                if (Directory.Exists(fileToZip))
+                if (System.IO.Directory.Exists(fileToZip))
                     result = ZipDirectory(fileToZip, zipedFile, password);
                 else if (File.Exists(fileToZip))
                     result = ZipFile(fileToZip, zipedFile, password);
@@ -126,7 +126,7 @@ namespace SquareMinecraftLauncher
             bool result = false;
             try
             {
-                if (Directory.Exists(fileToZip))
+                if (System.IO.Directory.Exists(fileToZip))
                     result = ZipDirectory(fileToZip, zipedFile, null);
                 else if (File.Exists(fileToZip))
                     result = ZipFile(fileToZip, zipedFile, null);
@@ -209,7 +209,7 @@ namespace SquareMinecraftLauncher
         private static bool ZipDirectory(string strFile, string strZip, string password)
         {
             bool result = false;
-            if (!Directory.Exists(strFile)) return false;
+            if (!System.IO.Directory.Exists(strFile)) return false;
             if (strFile[strFile.Length - 1] != Path.DirectorySeparatorChar)
                 strFile += Path.DirectorySeparatorChar;
             ZipOutputStream s = new ZipOutputStream(File.Create(strZip));
@@ -245,11 +245,11 @@ namespace SquareMinecraftLauncher
             Crc32 crc = new Crc32();
             try
             {
-                string[] filenames = Directory.GetFileSystemEntries(strFile);
+                string[] filenames = System.IO.Directory.GetFileSystemEntries(strFile);
                 foreach (string file in filenames)
                 {
 
-                    if (Directory.Exists(file))
+                    if (System.IO.Directory.Exists(file))
                     {
                         zip(file, s, staticFile);
                     }
