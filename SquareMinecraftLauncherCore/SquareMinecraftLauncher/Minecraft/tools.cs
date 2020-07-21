@@ -409,7 +409,7 @@ namespace SquareMinecraftLauncher.Minecraft
                             list.Add(item);
                         }
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         continue;
                     }

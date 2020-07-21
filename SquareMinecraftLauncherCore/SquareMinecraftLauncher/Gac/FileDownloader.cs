@@ -131,7 +131,7 @@ namespace Gac
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                throw new Exception("无法连接下载地址");
+                throw new Exception("无法连接下载地址  " + downloadUrl);
             }
         }
 

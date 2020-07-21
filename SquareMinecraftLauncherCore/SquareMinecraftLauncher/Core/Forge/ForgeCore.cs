@@ -119,7 +119,7 @@
                     ForgeY.Artifact artifact2 = new ForgeY.Artifact();
                     item.downloads.artifact = artifact2;
                 }
-                if (item.downloads.artifact.url.IndexOf("files.minecraftforge.net") < 0)
+                if (item.downloads.artifact.url == null || item.downloads.artifact.url.IndexOf("files.minecraftforge.net") < 0)
                 {
                     item.downloads.artifact.url = "";
                     versionText.libraries.Add(item);
