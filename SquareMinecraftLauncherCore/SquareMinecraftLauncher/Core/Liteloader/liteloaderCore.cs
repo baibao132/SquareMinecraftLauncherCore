@@ -1,9 +1,9 @@
 ﻿namespace SquareMinecraftLauncher.Core
 {
+    using global::SquareMinecraftLauncher.Core.Forge;
+    using global::SquareMinecraftLauncher.Minecraft;
     using Newtonsoft.Json;
     using SquareMinecraftLauncher;
-    using SquareMinecraftLauncher.Core.Forge;
-    using SquareMinecraftLauncher.Minecraft;
     using System;
     using System.IO;
     using System.Threading.Tasks;

@@ -2,12 +2,12 @@
 {
     using DES;
     using global::SquareMinecraftLauncher.Core.Forge;
+    using global::SquareMinecraftLauncher.Core.json;
     using global::SquareMinecraftLauncher.Minecraft;
     using json3;
     using MD5;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using SquareMinecraftLauncher.Core.json;
     using System;
     using System.Collections.Generic;
     using System.IO;

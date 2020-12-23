@@ -11,9 +11,9 @@
     internal class ForgeCore
     {
         private MinecraftDownload download = new MinecraftDownload();
-        private SquareMinecraftLauncher.Download Download = new SquareMinecraftLauncher.Download();
+        private Download Download = new Download();
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
-        private SquareMinecraftLauncher.Minecraft.Tools Tools = new SquareMinecraftLauncher.Minecraft.Tools();
+        private Tools Tools = new Tools();
 
         public string ForgeJson(string version, string ForgePath)
         {

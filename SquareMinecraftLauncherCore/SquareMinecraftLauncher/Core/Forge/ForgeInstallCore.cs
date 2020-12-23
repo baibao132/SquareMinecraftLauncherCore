@@ -1,9 +1,9 @@
 ﻿namespace SquareMinecraftLauncher.Core
 {
+    using global::SquareMinecraftLauncher.Core.ForgeInstall;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SquareMinecraftLauncher;
-    using SquareMinecraftLauncher.Core.ForgeInstall;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

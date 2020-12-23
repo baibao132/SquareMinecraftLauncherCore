@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using SikaDeerLauncher;
 using Newtonsoft.Json;
 using System.Windows;
 using System.Windows.Media.Imaging;

@@ -15,7 +15,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
     {
         SetJson SetJson = new SetJson();
         Tools tools = new Tools();
-        SquareMinecraftLauncher.Core.SquareMinecraftLauncherCore SMLC = new SquareMinecraftLauncherCore();
+        SquareMinecraftLauncherCore SMLC = new SquareMinecraftLauncherCore();
         internal string Uninstall(string version)
         {
             var json = SMLC.GetFile(System.Directory.GetCurrentDirectory() + "\\.minecraft\\versions\\" + version + "\\" + version + ".json");
