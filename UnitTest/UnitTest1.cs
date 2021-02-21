@@ -10,8 +10,9 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-                OAuth microsoftLogin = new MicrosoftLogin();
-            Console.WriteLine( microsoftLogin.GetToken(microsoftLogin.Login()));
+                MicrosoftLogin microsoftLogin = new MicrosoftLogin();
+            Xbox XboxLogin = new Xbox();
+            Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()))),false));
         }
     }
 }

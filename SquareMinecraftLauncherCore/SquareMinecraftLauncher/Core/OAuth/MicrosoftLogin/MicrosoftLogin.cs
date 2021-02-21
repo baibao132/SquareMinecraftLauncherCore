@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace SquareMinecraftLauncher.Core.OAuth
 {
-    public class MicrosoftLogin : OAuth
+    public class MicrosoftLogin
     {
         Download web = new Download();
         public string GetToken(string code)
@@ -26,7 +26,7 @@ namespace SquareMinecraftLauncher.Core.OAuth
             return jsonConvert.access_token;
         }
 
-        string OAuth.Login()
+        public string Login()
         {
             Thread thd = new Thread(new ThreadStart(MicrosoftLoginFroms.start.Main));
             thd.SetApartmentState(ApartmentState.STA);
