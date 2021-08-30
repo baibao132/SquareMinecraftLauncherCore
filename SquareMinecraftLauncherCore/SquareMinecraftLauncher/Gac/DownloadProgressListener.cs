@@ -50,6 +50,7 @@ namespace Gac
                 downMsg.Tag = DownStatus.End;
                 downMsg.SpeedInfo = "0 K";
                 downMsg.SurplusInfo = "已完成";
+                
             }
             else
             {

@@ -1,12 +1,9 @@
 ﻿namespace SquareMinecraftLauncher.Minecraft
 {
-    using global::SquareMinecraftLauncher.Core;
-    using json4;
-    using main;
+    using SquareMinecraftLauncher.Core;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SquareMinecraftLauncher;
-    using SquareMinecraftLauncher.Core;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

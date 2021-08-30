@@ -68,8 +68,9 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                     lib.natives = i.natives;
                     libItem.Add(lib);
                 }
-                string mainclass = jo.mainClass;//fabricmcMainClass
-                string Arguments = ArgumentsJson(json1) + "\"--tweakClass\",\"" + jo.launchwrapper.tweakers.client[0] + "\"";//组成新的Arguments
+                string mainclass = jo.mainClass.client;//fabricmcMainClass
+                string Arguments = ArgumentsJson(json1); //组成新的Arguments
+                Arguments = Arguments.Substring(0,Arguments.Length-1);
                 SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", new NewJson().newJson(libItem, Arguments, mainclass, jo1));
                 return;
             }

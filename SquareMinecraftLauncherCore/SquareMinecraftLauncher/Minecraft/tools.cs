@@ -199,14 +199,19 @@ namespace SquareMinecraftLauncher.Minecraft
                             if (strArray2[2].IndexOf('-') != -1)
                             {
                                 string[] urlArray = strArray2[2].Split('-');
-                                if (urlArray.Length == 3) 
+                                if (urlArray.Length == 3)
                                 {
-                                    str3 = urlArray[0] + "-" +urlArray[1];
+                                    str3 = urlArray[0] + "-" + urlArray[1];
+                                }
+                                else
+                                {
+                                    str3 = urlArray[0];
+                                    if (urlArray[1].IndexOf('.') != -1) str3 = strArray2[2];
                                 }
                             }
                             string[] textArray1 = new string[] { strArray2[0].Replace('.', Convert.ToChar(@"\")), @"\", strArray2[1], @"\", str3, @"\", strArray2[1], "-", strArray2[2], ".jar" };
                             str2 = string.Concat(textArray1);
-                            download2.Url = "https://files.minecraftforge.net/maven/" + str2.Replace('\\', Convert.ToChar("/"));
+                            download2.Url = "https://bmclapi2.bangbang93.com/maven/" + str2.Replace('\\', Convert.ToChar("/"));
                         }
                         if (strArray[1] == "OptiFine")
                         {
@@ -544,26 +549,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public string GetJavaPath()
         {
-            RegistryKey key;
-            string str = "";
-            if (Environment.Is64BitOperatingSystem)
-            {
-                key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            }
-            else
-            {
-                key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-            }
-            try
-            {
-                str = key.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment\1.8", false).GetValue("JavaHome", true).ToString() + @"\bin\javaw.exe";
-            }
-            catch
-            {
-            }
-            key.Close();
-            if (str == "")
-            {
+                string str = "";
                 int length = Environment.SystemDirectory.Length;
                 string str2 = Environment.SystemDirectory.Remove(3, length - 3);
                 string[] directories = new string[0];
@@ -599,7 +585,6 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     str = directories[0] + @"\bin\javaw.exe";
                 }
-            }
             return str;
         }
         /// <summary>
@@ -1254,14 +1239,17 @@ namespace SquareMinecraftLauncher.Minecraft
         /// 是否存在Fabric
         /// </summary>
         /// <param name="version">版本</param>
+        /// <param name="FabricVersion">返回 Fabric版本</param>
         /// <returns></returns>
-        public bool FabricExist(string version) 
+        public bool FabricExist(string version,ref string FabricVersion) 
         {
             var libraries = JsonConvert.DeserializeObject<ForgeY.Root>(SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json"));
             foreach (var i in libraries.libraries)
             {
-                if (i.name.Split(':')[0] == "net.fabricmc")
+                string[] n = i.name.Split(':');
+                if (n[0] == "net.fabricmc")
                 {
+                    FabricVersion = n[2];
                     return true;
                 }
             }
@@ -1269,10 +1257,21 @@ namespace SquareMinecraftLauncher.Minecraft
         }
 
         /// <summary>
-        /// 设置Minecraft目录路径
+        /// 是否存在Fabric
         /// </summary>
-        /// <param name="Path">.minecraft路径</param>
-        public void SetMinecraftFilesPath(string Path) 
+        /// <param name="version">版本</param>
+        /// <returns></returns>
+        public bool FabricExist(string version)
+        {
+            string a = "";
+            return FabricExist(version, ref a);
+        }
+
+            /// <summary>
+            /// 设置Minecraft目录路径
+            /// </summary>
+            /// <param name="Path">.minecraft路径</param>
+            public void SetMinecraftFilesPath(string Path) 
         {
             System.Directory.Files = Path != null?Path:System.IO.Directory.GetCurrentDirectory();
         }

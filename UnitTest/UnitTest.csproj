@@ -60,10 +60,6 @@
       <Project>{f97010a9-5d34-4ca8-8696-4ed3f2fb0ab5}</Project>
       <Name>SquareMinecraftLauncherCore</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\baibao\source\repos\WindowsFormsApp1\WindowsFormsApp1\MicrosoftLoginFroms.csproj">
-      <Project>{40c15532-3d42-4a03-a947-9633354e5ecb}</Project>
-      <Name>MicrosoftLoginFroms</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

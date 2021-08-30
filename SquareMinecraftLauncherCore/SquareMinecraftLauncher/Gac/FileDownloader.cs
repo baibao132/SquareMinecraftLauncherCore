@@ -12,11 +12,11 @@ namespace Gac
         /// <summary>
         /// 已下载文件长度
         /// </summary>
-        private long downloadSize = 0;
+        public long downloadSize = 0;
         /// <summary>
         /// 原始文件长度
         /// </summary>
-        private long fileSize = 0;
+        public long fileSize = 0;
         /// <summary>
         /// 线程数
         /// </summary>
@@ -194,6 +194,7 @@ namespace Gac
                     if (listener != null)
                     {
                         listener.OnDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
+
                         Console.WriteLine(this.downloadSize);
                     }
                 }
@@ -203,6 +204,7 @@ namespace Gac
                 Console.WriteLine(e.Message);
                 throw new Exception("下载文件失败");
             }
+            if(downloadSize == fileSize) File.Move(saveFile, saveFile.Replace(".Square",""));
             return this.downloadSize;
         }
     }

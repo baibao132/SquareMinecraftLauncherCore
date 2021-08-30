@@ -25,7 +25,7 @@ namespace Gac
         {
             Thread tsk = new Thread(() =>
             {
-                download(DownUrl, Dir, FileName,Id);
+                download(DownUrl, Dir, FileName+".Square",Id);
             });
             list.Add(tsk);
         }

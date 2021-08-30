@@ -4,7 +4,6 @@
     using global::SquareMinecraftLauncher.Core.json;
     using global::SquareMinecraftLauncher.Minecraft;
     using Newtonsoft.Json;
-    using SquareMinecraftLauncher.Core;
     using System;
     using System.IO;
 

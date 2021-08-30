@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using SquareMinecraftLauncher.Core.OAuth;
+using SquareMinecraftLauncher.Minecraft.MCServerPing;
 
 namespace UnitTest
 {
@@ -10,9 +11,10 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-                MicrosoftLogin microsoftLogin = new MicrosoftLogin();
-            Xbox XboxLogin = new Xbox();
-            Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()))),false));
+            //    MicrosoftLogin microsoftLogin = new MicrosoftLogin();
+            //Xbox XboxLogin = new Xbox();
+            //Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()))),false));
+            MinecraftServer.server("mssj.starmc.cn", 54520);
         }
     }
 }

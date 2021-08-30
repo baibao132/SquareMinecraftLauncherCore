@@ -163,35 +163,32 @@
                 }
             });
         }
-
+        GacDownload GacDownload = new GacDownload();
         internal void libraries(ForgeJson.Root json)
         {
-            GacDownload GacDownload = new GacDownload();
             int num = 0;
+            List<Minecraft.MCDownload> download = new List<Minecraft.MCDownload>();
             foreach (ForgeJson.LibrariesItem item in json.libraries)
             {
                 if (!(item.downloads.artifact.url == "") && (this.SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\')) != null))
                 {
                     num++;
-                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\'), item.downloads.artifact.url);
+                    Minecraft.MCDownload download1 = new Minecraft.MCDownload();
+                    download1.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\');
+                    download1.Url = item.downloads.artifact.url.Replace("https://files.minecraftforge.net/maven/", "https://bmclapi2.bangbang93.com/maven/");
+                    download.Add(download1);
                 }
             }
+            ForgeDownload forgedownload = new ForgeDownload(5,download.ToArray());
+            forgedownload.StartDownload();
             bool flag = true;
                 while (flag)
                 {
-                    if (GacDownload.Failure != 0)
+                    if (forgedownload.error != 0)
                     {
-                        if ((GacDownload.Complete + GacDownload.Failure) == num)
-                        {
-                            if (!ping.CheckServeStatus())
-                            {
-                                throw new SquareMinecraftLauncherException("安装失败");
-                            }
-                            libraries(json);
-                            return;
-                        }
+                          throw new SquareMinecraftLauncherException("安装失败");
                     }
-                    else if (GacDownload.Complete == num)
+                    else if (forgedownload.GetEndDownload())
                     {
                         flag = false;
                     }

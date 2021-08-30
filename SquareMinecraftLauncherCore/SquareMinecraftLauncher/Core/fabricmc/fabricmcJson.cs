@@ -8,12 +8,31 @@ namespace SquareMinecraftLauncher.Core.fabricmc
 {
     internal class fabricmcJson
     {
-        public class CommonItem
+        public class Common
         {
             /// <summary>
             /// 
             /// </summary>
             public string name { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string url { get; set; }
+        }
+
+        public class Server
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public string _comment { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string name { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
             public string url { get; set; }
         }
 
@@ -26,51 +45,23 @@ namespace SquareMinecraftLauncher.Core.fabricmc
             /// <summary>
             /// 
             /// </summary>
-            public List<CommonItem> common { get; set; }
+            public List<Common> common { get; set; }
             /// <summary>
             /// 
             /// </summary>
-            public List<string> server { get; set; }
+            public List<Server> server { get; set; }
         }
 
-        public class Arguments
+        public class MainClass
         {
             /// <summary>
             /// 
             /// </summary>
-            public List<string> client { get; set; }
+            public string client { get; set; }
             /// <summary>
             /// 
             /// </summary>
-            public List<string> common { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public List<string> server { get; set; }
-        }
-
-        public class Tweakers
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public List<string> client { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public List<string> common { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public List<string> server { get; set; }
-        }
-
-        public class Launchwrapper
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public Tweakers tweakers { get; set; }
+            public string server { get; set; }
         }
 
         public class Root
@@ -86,15 +77,8 @@ namespace SquareMinecraftLauncher.Core.fabricmc
             /// <summary>
             /// 
             /// </summary>
-            public string mainClass { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public Arguments arguments { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public Launchwrapper launchwrapper { get; set; }
+            public MainClass mainClass { get; set; }
         }
+
     }
 }

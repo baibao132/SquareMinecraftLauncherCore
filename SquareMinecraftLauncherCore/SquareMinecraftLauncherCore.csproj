@@ -60,7 +60,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>SquareMinecraftLauncher.pfx</AssemblyOriginatorKeyFile>
@@ -120,6 +120,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
       <HintPath>..\packages\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -145,6 +148,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +173,7 @@
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\XboxLogin\XboxErr.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\XboxLogin\XboxToken.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIYJson.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\GacDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Windows\System.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\fabricmc\fabricUninstall.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\JsonIntegration\SetJson.cs" />
@@ -183,7 +188,6 @@
     <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeJson\Forge1.13.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeJson\ForgeY.cs" />
     <Compile Include="json\mcweb.cs" />
-    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\GacDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Liteloader\liteloaderCore.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\JsonIntegration\NewJson.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Optifine\OptifineCore.cs" />
@@ -194,6 +198,7 @@
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIY var.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\DES.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\MD5.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\StartGame.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\tools.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\Unzip.cs" />

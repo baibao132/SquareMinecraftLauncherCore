@@ -130,6 +130,7 @@
             }
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
+                if (versionText.libraries[i].name == "org.apache.logging.log4j:log4j-api:2.8.1" || versionText.libraries[i].name == "org.apache.logging.log4j:log4j-core:2.8.1" || versionText.libraries[i].name == "net.sf.jopt-simple:jopt-simple:5.0.3") continue;
                 str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
                 if (((versionText.libraries[i].downloads == null) || (versionText.libraries[i].downloads.artifact == null)) && (versionText.libraries[i].url == null))
                 {
@@ -188,7 +189,7 @@
                     }
                 }
             }
-            return (str + ",\"mainClass\": \"" + ForgeText.mainClass + "\"");
+            return str + ",\"mainClass\": \"" + ForgeText.mainClass + "\"";
         }
 
         internal string ForgeKeep(string FileText, ForgeY.Root ForgePath, string versionjson, string version)

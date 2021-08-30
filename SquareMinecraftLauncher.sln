@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquareMinecraftLauncherCore", "SquareMinecraftLauncherCore\SquareMinecraftLauncherCore.csproj", "{F97010A9-5D34-4CA8-8696-4ED3F2FB0AB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosoftLoginFroms", "C:\Users\baibao\source\repos\WindowsFormsApp1\WindowsFormsApp1\MicrosoftLoginFroms.csproj", "{40C15532-3D42-4A03-A947-9633354E5ECB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{3BE88E93-662C-45E4-9383-28712A293432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosoftLoginFroms", "..\..\source\repos\WindowsFormsApp1\WindowsFormsApp1\MicrosoftLoginFroms.csproj", "{40C15532-3D42-4A03-A947-9633354E5ECB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,18 +31,6 @@ Global
 		{F97010A9-5D34-4CA8-8696-4ED3F2FB0AB5}.Release|x64.Build.0 = Release|Any CPU
 		{F97010A9-5D34-4CA8-8696-4ED3F2FB0AB5}.Release|x86.ActiveCfg = Release|Any CPU
 		{F97010A9-5D34-4CA8-8696-4ED3F2FB0AB5}.Release|x86.Build.0 = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x64.Build.0 = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x86.Build.0 = Debug|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x64.ActiveCfg = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x64.Build.0 = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x86.ActiveCfg = Release|Any CPU
-		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x86.Build.0 = Release|Any CPU
 		{3BE88E93-662C-45E4-9383-28712A293432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3BE88E93-662C-45E4-9383-28712A293432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BE88E93-662C-45E4-9383-28712A293432}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -55,6 +43,18 @@ Global
 		{3BE88E93-662C-45E4-9383-28712A293432}.Release|x64.Build.0 = Release|Any CPU
 		{3BE88E93-662C-45E4-9383-28712A293432}.Release|x86.ActiveCfg = Release|Any CPU
 		{3BE88E93-662C-45E4-9383-28712A293432}.Release|x86.Build.0 = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x64.Build.0 = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Debug|x86.Build.0 = Debug|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x64.ActiveCfg = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x64.Build.0 = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x86.ActiveCfg = Release|Any CPU
+		{40C15532-3D42-4A03-A947-9633354E5ECB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

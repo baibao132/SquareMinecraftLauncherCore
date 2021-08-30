@@ -51,7 +51,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                 xml = xml.Replace("</version>", "|");
                 var xmlArray = xml.Split('|');
                 List<string> xmlArray1 = new List<string>();
-                for (int i = 1; i < xmlArray.Length - 1; i++)
+                for (int i = xmlArray.Length - 2; i > 10; i--)
                 {
                     if (xmlArray[i] != "")
                     {
