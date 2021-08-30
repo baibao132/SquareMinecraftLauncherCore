@@ -5,6 +5,12 @@
 作者：BaiBao
 请注意该项目遵循MIT开源协议  
 
+<a href="https://github.com/baibao132/SquareMinecraftLauncherCore/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/baibao132/SquareMinecraftLauncherCore"></a>
+<a href="https://github.com/baibao132/SquareMinecraftLauncherCore/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/baibao132/SquareMinecraftLauncherCore"></a>
+<a href="https://github.com/baibao132/SquareMinecraftLauncherCore/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/baibao132/SquareMinecraftLauncherCore"></a>
+<a href="https://github.com/baibao132/SquareMinecraftLauncherCore/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/baibao132/SquareMinecraftLauncherCore"></a>
+
+
 
 ## 第三方API和库
 
