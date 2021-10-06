@@ -213,4 +213,10 @@ namespace SquareMinecraftLauncher.Minecraft
         Optifine,
         Fabric
     }
+
+    public class JavaVersion
+    {
+        public string Version { get; internal set; }
+        public string Path{ get; internal set; }
+    }
 }

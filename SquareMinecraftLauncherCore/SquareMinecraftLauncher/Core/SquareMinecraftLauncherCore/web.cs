@@ -3,6 +3,8 @@
     using System;
     using System.IO;
     using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
 
     public sealed class Download
@@ -57,40 +59,38 @@
         {
             return Post(URL, jsonParas, "application/json");
         }
-            internal string Post(string URL, string jsonParas,string Type)
+        internal string Post(string URL, string jsonParas,string Type)
         {
-            Stream requestStream;
-            HttpWebResponse response;
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
-            request.Method = "POST";
-            request.ContentType = Type;
-            request.ReadWriteTimeout = 1000;
-            string s = jsonParas;
-            byte[] bytes = Encoding.UTF8.GetBytes(s);
-            request.ContentLength = bytes.Length;
-            try
+            string result = "";
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(URL);
+            req.Method = "POST";
+            req.ContentType = Type;
+            req.Accept = Type;
+            #region 添加Post 参数
+            byte[] data = Encoding.UTF8.GetBytes(jsonParas);
+            req.ContentLength = data.Length;
+            using (Stream reqStream = req.GetRequestStream())
             {
-                requestStream = request.GetRequestStream();
+                reqStream.Write(data, 0, data.Length);
+                reqStream.Close();
             }
-            catch (Exception)
+            #endregion
+
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            //获取响应内容
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
             {
-                requestStream = null;
-                return "";
+                result = reader.ReadToEnd();
             }
-            requestStream.Write(bytes, 0, bytes.Length);
-            requestStream.Close();
-            try
-            {
-                response = (HttpWebResponse) request.GetResponse();
-            }
-            catch (WebException exception2)
-            {
-                response = exception2.Response as HttpWebResponse;
-            }
-            StreamReader reader1 = new StreamReader(response.GetResponseStream());
-            string str2 = reader1.ReadToEnd();
-            reader1.Close();
-            return str2;
+            return result;
+        }
+
+        private bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
     }
 }

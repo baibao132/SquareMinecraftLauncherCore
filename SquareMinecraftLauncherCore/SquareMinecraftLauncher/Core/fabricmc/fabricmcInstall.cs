@@ -1,4 +1,4 @@
-锘縰sing Newtonsoft.Json;
+using Newtonsoft.Json;
 using SquareMinecraftLauncher.Core.Forge;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
             if (json != null)
             {
                 var jo = JsonConvert.DeserializeObject<fabricmcJson.Root>(json);
-                foreach (var i in jo.libraries.common)//澧炲姞fabicmcLibraries
+                foreach (var i in jo.libraries.common)//增加fabicmcLibraries
                 {
                     ForgeY.LibrariesItem lib = new ForgeY.LibrariesItem();
                     lib.name = i.name;
@@ -39,7 +39,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                     }
                     libItem.Add(lib);
                 }
-                /*/澧炲姞fabricmc鏈韩/*/
+                /*/增加fabricmc本身/*/
                 ForgeY.LibrariesItem lib1 = new ForgeY.LibrariesItem();
                 lib1.name = "net.fabricmc:fabric-loader:" + loaderVersion;
                 ForgeY.Downloads downloads1 = new ForgeY.Downloads();
@@ -56,10 +56,10 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                 Artifact2.url = "https://maven.fabricmc.net/";
                 lib2.downloads = downloads2;
                 libItem.Add(lib2);
-                /*/缁撴潫/*/
+                /*/结束/*/
                 var json1 = SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
                 var jo1 = JsonConvert.DeserializeObject<ForgeY.Root>(json1);
-                foreach (var i in jo1.libraries)//澧炲姞鐗堟湰libraries
+                foreach (var i in jo1.libraries)//增加版本libraries
                 {
                     ForgeY.LibrariesItem lib = new ForgeY.LibrariesItem();
                     lib.name = i.name;
@@ -69,12 +69,12 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                     libItem.Add(lib);
                 }
                 string mainclass = jo.mainClass.client;//fabricmcMainClass
-                string Arguments = ArgumentsJson(json1); //缁勬垚鏂扮殑Arguments
+                string Arguments = ArgumentsJson(json1); //组成新的Arguments
                 Arguments = Arguments.Substring(0,Arguments.Length-1);
                 SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", new NewJson().newJson(libItem, Arguments, mainclass, jo1));
                 return;
             }
-            throw new SquareMinecraftLauncherException("璁块棶澶辫触");
+            throw new SquareMinecraftLauncherException("访问失败");
         }
         internal string ArgumentsJson(string json)
         {

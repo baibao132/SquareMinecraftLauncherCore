@@ -11,10 +11,10 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            //    MicrosoftLogin microsoftLogin = new MicrosoftLogin();
-            //Xbox XboxLogin = new Xbox();
-            //Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()))),false));
-            MinecraftServer.server("mssj.starmc.cn", 54520);
+            MicrosoftLogin microsoftLogin = new MicrosoftLogin();
+            Xbox XboxLogin = new Xbox();
+            Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()).access_token))));
+            //MinecraftServer.server("mssj.starmc.cn", 54520);
         }
     }
 }

@@ -12,20 +12,35 @@ namespace SquareMinecraftLauncher.Core.OAuth
     public class MicrosoftLogin
     {
         Download web = new Download();
-        public string GetToken(string code)
+        /// <summary>
+        /// 取微软Token
+        /// </summary>
+        /// <param name="code">通过microsoftLogin.Login获取</param>
+        /// <returns></returns>
+        public Token GetToken(string code)
         {
             string json = web.Post("https://login.live.com/oauth20_token.srf", "client_id=00000000402b5328&code= " + code + " &grant_type=authorization_code&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf", "application/x-www-form-urlencoded");
             var jsonConvert = JsonConvert.DeserializeObject<MicrosoftToken.Root>(json);
-            return jsonConvert.access_token;
+            Token token = new Token();
+            token.access_token = jsonConvert.access_token;
+            token.refresh_token = jsonConvert.refresh_token;
+            return token;
         }
-
-        public string RefreshingTokens(string code)
+        /// <summary>
+        /// 重新获取access_token
+        /// </summary>
+        /// <param name="refresh_token"></param>
+        /// <returns></returns>
+        public string RefreshingTokens(string refresh_token)
         {
-            string json = web.Post("https://login.live.com/oauth20_token.srf", "client_id=00000000402b5328&refresh_token=" + code + "&grant_type=refresh_token&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf", "application/x-www-form-urlencoded");
+            string json = web.Post("https://login.live.com/oauth20_token.srf", "client_id=00000000402b5328&refresh_token=" + refresh_token + "&grant_type=refresh_token&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf", "application/x-www-form-urlencoded");
             var jsonConvert = JsonConvert.DeserializeObject<MicrosoftToken.Root>(json);
             return jsonConvert.access_token;
         }
-
+        /// <summary>
+        /// 微软登录
+        /// </summary>
+        /// <returns></returns>
         public string Login()
         {
             Thread thd = new Thread(new ThreadStart(MicrosoftLoginFroms.start.Main));

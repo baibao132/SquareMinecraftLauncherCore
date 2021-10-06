@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquareMinecraftLauncherCore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{3BE88E93-662C-45E4-9383-28712A293432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosoftLoginFroms", "..\..\source\repos\WindowsFormsApp1\WindowsFormsApp1\MicrosoftLoginFroms.csproj", "{40C15532-3D42-4A03-A947-9633354E5ECB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosoftLoginFroms", "..\..\..\source\repos\WindowsFormsApp1\WindowsFormsApp1\MicrosoftLoginFroms.csproj", "{40C15532-3D42-4A03-A947-9633354E5ECB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

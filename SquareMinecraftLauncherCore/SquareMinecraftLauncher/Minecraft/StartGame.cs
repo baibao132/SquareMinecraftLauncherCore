@@ -209,10 +209,6 @@
                     {
                         Game = bx + JVMparameter + " -Djava.library.path=\"" + nativespath + "\" -cp ";
                     }
-                    if (tools.GetMissingLibrary(version).Length != 0)
-                    {
-                        throw new SquareMinecraftLauncherException("Libraries文件不完整");
-                    }
                     MCDownload[] Lib = tools.GetAllLibrary(version);
                     string Libname = "\"";
                     foreach (var Libname1 in Lib)

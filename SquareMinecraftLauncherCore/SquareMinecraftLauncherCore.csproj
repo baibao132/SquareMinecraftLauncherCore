@@ -58,6 +58,7 @@
     <NoWarn>1591,0168,1570</NoWarn>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -164,6 +165,7 @@
     <Compile Include="json\UPSkin.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\MicrosoftLogin\MicrosoftLogin.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\MicrosoftLogin\MicrosoftToken.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\OAuth\MicrosoftLogin\Token.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\MinecraftLogin\MinecraftLogin.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\MinecraftLogin\MinecraftLoginErr.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\MinecraftLogin\MinecraftLoginResult.cs" />

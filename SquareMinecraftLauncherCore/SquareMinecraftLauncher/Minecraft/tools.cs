@@ -10,6 +10,7 @@ using SquareMinecraftLauncher.Core.fabricmc;
 using SquareMinecraftLauncher.Core.Forge;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -547,46 +548,179 @@ namespace SquareMinecraftLauncher.Minecraft
         /// 取java路径
         /// </summary>
         /// <returns></returns>
-        public string GetJavaPath()
+        public List<JavaVersion> GetJavaPath()
         {
-                string str = "";
-                int length = Environment.SystemDirectory.Length;
-                string str2 = Environment.SystemDirectory.Remove(3, length - 3);
-                string[] directories = new string[0];
-                if (this.GetOSBit() == 0x40)
+            List<JavaVersion> vs = new List<JavaVersion>();
+
+            try
+            {
+                string environmentPath = Environment.GetEnvironmentVariable("JAVA_HOME");
+
+                if (!string.IsNullOrEmpty(environmentPath) && File.Exists(environmentPath + @"\bin\javaw.exe"))
                 {
-                    try
+                    vs.Add(new JavaVersion() { Path = $@"{environmentPath}\bin\javaw.exe", Version = GetProductVersion(environmentPath + @"\bin\javaw.exe") });
+                }
+                //寻找 JDK
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\JavaSoft\JDK\"))
+                {
+                    if (rk != null)
                     {
-                        directories = System.IO.Directory.GetDirectories(str2 + @"Program Files\Java\");
-                    }
-                    catch
-                    {
-                    }
-                    if (directories.Length != 0)
-                    {
-                        if (this.SLC.FileExist(directories[0] + @"\bin\javaw.exe") == null)
+                        string currentVersion = rk.GetValue("CurrentVersion").ToString();
+
+                        RegistryKey key = rk.OpenSubKey(currentVersion);
+                        string path = key.GetValue("JavaHome").ToString();
+
+                        if (File.Exists(path + @"\bin\javaw.exe"))
                         {
-                            str = directories[0] + @"\bin\javaw.exe";
+                            vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
                         }
-                        return str;
                     }
                 }
-                if (directories.Length == 0)
+
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\JavaSoft\JDK\"))
                 {
-                    try
+                    if (rk != null)
                     {
-                        directories = System.IO.Directory.GetDirectories(str2 + @"Program Files (x86)\Java\");
-                    }
-                    catch
-                    {
+                        string currentVersion = rk.GetValue("CurrentVersion").ToString();
+
+                        RegistryKey key = rk.OpenSubKey(currentVersion);
+                        string path = key.GetValue("JavaHome").ToString();
+
+                        if (File.Exists(path + @"\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
+                        }
                     }
                 }
-                if ((directories.Length != 0) && (this.SLC.FileExist(directories[0] + @"\bin\javaw.exe") == null))
+                //寻找 JRE
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment\"))
                 {
-                    str = directories[0] + @"\bin\javaw.exe";
+                    if (rk != null)
+                    {
+                        string currentVersion = rk.GetValue("CurrentVersion").ToString();
+
+                        RegistryKey key = rk.OpenSubKey(currentVersion);
+                        string path = key.GetValue("JavaHome").ToString();
+
+                        if (File.Exists(path + @"\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
+                        }
+                    }
                 }
-            return str;
+
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\JavaSoft\Java Runtime Environment\"))
+                {
+                    if (rk != null)
+                    {
+                        string currentVersion = rk.GetValue("CurrentVersion").ToString();
+
+                        RegistryKey key = rk.OpenSubKey(currentVersion);
+                        string path = key.GetValue("JavaHome").ToString();
+
+                        if (File.Exists(path + @"\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
+                        }
+                    }
+                }
+
+                //寻找 Microsoft 的 JDK
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\JDK\"))
+                {
+                    if (rk != null)
+                    {
+                        foreach (string currentVersion in rk.GetSubKeyNames())
+                        {
+                            RegistryKey key = rk.OpenSubKey(currentVersion + @"\hotspot\MSI");
+                            string path = key.GetValue("Path").ToString();
+
+                            if (File.Exists(path + @"bin\javaw.exe"))
+                            {
+                                vs.Add(new JavaVersion() { Path = path+ @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
+                            }
+                        }
+                    }
+                }
+
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\JDK\"))
+                {
+                    if (rk != null)
+                    {
+                        foreach (string currentVersion in rk.GetSubKeyNames())
+                        {
+                            RegistryKey key = rk.OpenSubKey(currentVersion + @"\hotspot\MSI");
+                            string path = key.GetValue("Path").ToString();
+
+                            if (File.Exists(path + @"bin\javaw.exe"))
+                            {
+                                vs.Add(new JavaVersion() { Path = path+ @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
+                            }
+                        }
+                    }
+                }
+
+                //寻找 Minecraft Launcher 的 Java
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Mojang\InstalledProducts\Minecraft Launcher\"))
+                {
+                    if (rk != null)
+                    {
+                        string path = rk.GetValue("InstallLocation").ToString();
+
+                        if (File.Exists(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe") });
+                        }
+
+                        if (File.Exists(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe") });
+                        }
+
+                        if (File.Exists(path + @"runtime\jre-x64\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-x64\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-x64\bin\javaw.exe") });
+                        }
+                    }
+                }
+
+                using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Mojang\InstalledProducts\Minecraft Launcher\"))
+                {
+                    if (rk != null)
+                    {
+                        string path = rk.GetValue("InstallLocation").ToString();
+
+                        if (File.Exists(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe") });
+                        }
+
+                        if (File.Exists(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe") });
+                        }
+
+                        if (File.Exists(path + @"runtime\jre-x64\bin\javaw.exe"))
+                        {
+                            vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-x64\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-x64\bin\javaw.exe") });
+                        }
+                    }
+                }
+
+                return vs;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
+        private static string GetProductVersion(string path)
+        {
+            FileVersionInfo info = FileVersionInfo.GetVersionInfo(path);
+            return info.ProductName;
+        }
+
         /// <summary>
         /// 取Liteloader列表
         /// </summary>
@@ -706,8 +840,9 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <summary>
         /// 取合适内存
         /// </summary>
+        /// <param name="JavaPath">Java路径</param>
         /// <returns></returns>
-        public MemoryInformation GetMemorySize()
+        public MemoryInformation GetMemorySize(string JavaPath)
         {
             this.YESAPI.Tts();
             MEMORY_INFO meminfo = new MEMORY_INFO();
@@ -722,7 +857,7 @@ namespace SquareMinecraftLauncher.Minecraft
             }
             if (this.GetOSBit() == 64)
             {
-                if (GetJavaPath().IndexOf("x86") >= 0)
+                if (JavaPath.IndexOf("x86") >= 0)
                 {
                     information.AppropriateMemory = 512;
                     return information;

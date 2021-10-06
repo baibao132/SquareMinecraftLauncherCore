@@ -11,21 +11,19 @@ namespace SquareMinecraftLauncher.Core.OAuth
     public class MinecraftLogin
     {
         Download web = new Download();
-        public string GetToken(string[] code,bool access_token)
+        /// <summary>
+        /// 取微软登录Minecraft的access_token
+        /// </summary>
+        /// <param name="code">通过XboxLogin.XSTSLogin函数获取</param>
+        /// <returns></returns>
+        public string GetToken(string[] code)
         {
-            string json = web.Post("https://api.minecraftservices.com/authentication/login_with_xbox", "{ \"identityToken\": \"XBL3.0x=" + code[0] + ";" + code[1] + " \" }");
+            string json = web.Post("https://api.minecraftservices.com/authentication/login_with_xbox", "{ \"identityToken\": \"XBL3.0 x=" + code[1] + ";" + code[0] + " \" }");
             if(json == "")throw new SquareMinecraftLauncherException("Minecraft登录异常");
             try
             {
                 var j = JsonConvert.DeserializeObject<MinecraftLoginResult.Root>(json);
-                if (access_token)
-                {
-                    return j.access_token;
-                }
-                else
-                {
-                    return j.token_type;
-                }
+                return j.access_token;
             }
             catch (Exception ex) 
             {
