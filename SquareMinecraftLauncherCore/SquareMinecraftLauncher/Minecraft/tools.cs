@@ -67,9 +67,9 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public bool ForgeExist(string version)
         {
-            return(GetLocalForgeVersion(version) != null);
+            return (GetLocalForgeVersion(version) != null);
         }
-        public bool ForgeExist(string version,ref string ForgeVersion)
+        public bool ForgeExist(string version, ref string ForgeVersion)
         {
             ForgeVersion = GetLocalForgeVersion(version);
             if (ForgeVersion != null)
@@ -102,7 +102,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         await new ForgeInstallCore().ForgeInstall(@"SquareMinecraftLauncher\Forge\install_profile.json", version, java);
                         char[] separator = new char[] { '\\' };
-                        string[] strArray = ((JObject) JsonConvert.DeserializeObject(this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\install_profile.json")))["path"].ToString().Replace(':', '\\').Split(separator);
+                        string[] strArray = ((JObject)JsonConvert.DeserializeObject(this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\install_profile.json")))["path"].ToString().Replace(':', '\\').Split(separator);
                         string[] textArray3 = new string[] { strArray[0].Replace('.', '\\'), @"\", strArray[1], @"\", strArray[2] };
                         string str2 = string.Concat(textArray3);
                         string path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
@@ -156,7 +156,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     dSI = "https://libraries.minecraft.net/";
                 }
-                else if(DSI == null)
+                else if (DSI == null)
                 {
                     dSI = "https://bmclapi2.bangbang93.com/libraries/";
                 }
@@ -175,7 +175,8 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         str2 = this.SLC.libAnalysis(item.name, false, "");
                     }
-                    MCDownload download2 = new MCDownload {
+                    MCDownload download2 = new MCDownload
+                    {
                         name = item.name,
                         mainClass = root.mainClass
                     };
@@ -187,7 +188,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         if (item.downloads.artifact.url.IndexOf("libraries.minecraft.net") < 0 && item.downloads.artifact.url.IndexOf("files.minecraftforge.net") < 0)
                         {
-                            if (item.downloads.artifact.url != "" && item.downloads.artifact.url != null  && item.downloads.artifact.url.IndexOf(" ") < 0)
+                            if (item.downloads.artifact.url != "" && item.downloads.artifact.url != null && item.downloads.artifact.url.IndexOf(" ") < 0)
                             {
                                 download2.Url = item.downloads.artifact.url + str2.Replace('\\', Convert.ToChar("/"));
                             }
@@ -295,7 +296,8 @@ namespace SquareMinecraftLauncher.Minecraft
                     if ((token["natives"] != null) && (token["natives"]["windows"] != null))
                     {
                         string str2 = this.SLC.libAnalysis(token["name"].ToString(), false, token["natives"]["windows"].ToString());
-                        MCDownload item = new MCDownload {
+                        MCDownload item = new MCDownload
+                        {
                             Url = dSI + str2.Replace('\\', '/'),
                             path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2
                         };
@@ -375,7 +377,8 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         continue;
                     }
-                    AllTheExistingVersion item = new AllTheExistingVersion {
+                    AllTheExistingVersion item = new AllTheExistingVersion
+                    {
                         path = str,
                         version = str2
                     };
@@ -393,7 +396,8 @@ namespace SquareMinecraftLauncher.Minecraft
                         {
                             char[] chArray2 = new char[] { '&' };
                             string[] strArray3 = strArray2[i].Split(chArray2);
-                            mc mc = new mc {
+                            mc mc = new mc
+                            {
                                 version = strArray3[0],
                                 url = strArray3[1]
                             };
@@ -415,7 +419,7 @@ namespace SquareMinecraftLauncher.Minecraft
                             list.Add(item);
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         continue;
                     }
@@ -450,13 +454,15 @@ namespace SquareMinecraftLauncher.Minecraft
             {
                 throw new SquareMinecraftLauncherException(Regex.Unescape(JsonConvert.DeserializeObject<BlessingSkinError>(str).errorMessage));
             }
-            Skin skin = new Skin {
+            Skin skin = new Skin
+            {
                 accessToken = root.accessToken
             };
             List<SkinName> list = new List<SkinName>();
             foreach (BlessingSkin.AvailableProfilesItem item in root.availableProfiles)
             {
-                SkinName name = new SkinName {
+                SkinName name = new SkinName
+                {
                     Name = item.name,
                     uuid = item.id
                 };
@@ -527,9 +533,10 @@ namespace SquareMinecraftLauncher.Minecraft
             if ((str2 != "[]") && (str2 != null))
             {
                 List<ForgeList> list = new List<ForgeList>();
-                foreach (JToken token in (JArray) JsonConvert.DeserializeObject(str2))
+                foreach (JToken token in (JArray)JsonConvert.DeserializeObject(str2))
                 {
-                    ForgeList item = new ForgeList {
+                    ForgeList item = new ForgeList
+                    {
                         version = token["mcversion"].ToString(),
                         ForgeVersion = token["version"].ToString(),
                         ForgeTime = token["modified"].ToString()
@@ -637,7 +644,7 @@ namespace SquareMinecraftLauncher.Minecraft
 
                             if (File.Exists(path + @"bin\javaw.exe"))
                             {
-                                vs.Add(new JavaVersion() { Path = path+ @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
+                                vs.Add(new JavaVersion() { Path = path + @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
                             }
                         }
                     }
@@ -654,7 +661,7 @@ namespace SquareMinecraftLauncher.Minecraft
 
                             if (File.Exists(path + @"bin\javaw.exe"))
                             {
-                                vs.Add(new JavaVersion() { Path = path+ @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
+                                vs.Add(new JavaVersion() { Path = path + @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
                             }
                         }
                     }
@@ -737,7 +744,7 @@ namespace SquareMinecraftLauncher.Minecraft
             {
                 throw new SquareMinecraftLauncherException("获取失败");
             }
-            foreach (JToken token in (JArray) JsonConvert.DeserializeObject(text1))
+            foreach (JToken token in (JArray)JsonConvert.DeserializeObject(text1))
             {
                 LiteloaderList item = new LiteloaderList();
                 List<Lib> list3 = new List<Lib>();
@@ -745,7 +752,8 @@ namespace SquareMinecraftLauncher.Minecraft
                 item.mcversion = token["mcversion"].ToString();
                 foreach (JToken token2 in token["build"]["libraries"])
                 {
-                    Lib lib = new Lib {
+                    Lib lib = new Lib
+                    {
                         name = token2["name"].ToString()
                     };
                     list3.Add(lib);
@@ -825,10 +833,11 @@ namespace SquareMinecraftLauncher.Minecraft
                 throw new SquareMinecraftLauncherException("请求失败");
             }
             List<MCVersionList> list = new List<MCVersionList>();
-            foreach (JToken token in (JArray) JsonConvert.DeserializeObject(new mcbbsnews().TakeTheMiddle(text, "\"versions\":", "]}") + "]"))
+            foreach (JToken token in (JArray)JsonConvert.DeserializeObject(new mcbbsnews().TakeTheMiddle(text, "\"versions\":", "]}") + "]"))
             {
                 string str2 = this.SLC.MCVersionAnalysis(token["type"].ToString());
-                MCVersionList item = new MCVersionList {
+                MCVersionList item = new MCVersionList
+                {
                     type = str2,
                     id = token["id"].ToString(),
                     releaseTime = token["releaseTime"].ToString()
@@ -847,8 +856,9 @@ namespace SquareMinecraftLauncher.Minecraft
             this.YESAPI.Tts();
             MEMORY_INFO meminfo = new MEMORY_INFO();
             GlobalMemoryStatus(ref meminfo);
-            MemoryInformation information = new MemoryInformation {
-                TotalMemory = (int) (meminfo.dwTotalVirtual / 0x100000)
+            MemoryInformation information = new MemoryInformation
+            {
+                TotalMemory = (int)(meminfo.dwTotalVirtual / 0x100000)
             };
             if (information.TotalMemory == 0)
             {
@@ -978,9 +988,10 @@ namespace SquareMinecraftLauncher.Minecraft
                 case "[]":
                     throw new SquareMinecraftLauncherException("OptiFine不支持该版本");
             }
-            foreach (JToken token in (JArray) JsonConvert.DeserializeObject(str))
+            foreach (JToken token in (JArray)JsonConvert.DeserializeObject(str))
             {
-                OptiFineList item = new OptiFineList {
+                OptiFineList item = new OptiFineList
+                {
                     mcversion = token["mcversion"].ToString(),
                     filename = token["filename"].ToString(),
                     type = token["type"].ToString(),
@@ -1108,7 +1119,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <param name="version">版本</param>
         /// <param name="LiteloaderVersion">返回Liteloader版本</param>
         /// <returns></returns>
-        public bool LiteloaderExist(string version,ref string LiteloaderVersion)
+        public bool LiteloaderExist(string version, ref string LiteloaderVersion)
         {
             using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(version).libraries.GetEnumerator())
             {
@@ -1134,7 +1145,7 @@ namespace SquareMinecraftLauncher.Minecraft
         {
             LiteloaderCore core = new LiteloaderCore();
             var t = await core.LiteloaderJson(version);
-            this.SLC.wj(@".minecraft\versions\" + version + @"\" + version + ".json",t );
+            this.SLC.wj(@".minecraft\versions\" + version + @"\" + version + ".json", t);
             return true;
         }
         /// <summary>
@@ -1159,7 +1170,8 @@ namespace SquareMinecraftLauncher.Minecraft
             var root = JsonConvert.DeserializeObject<json2.Root>(str);
             if (root.errorMessage == null)
             {
-                Getlogin getlogin = new Getlogin {
+                Getlogin getlogin = new Getlogin
+                {
                     uuid = root.selectedProfile.id,
                     token = root.accessToken,
                     name = root.selectedProfile.name
@@ -1167,7 +1179,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 Console.WriteLine(getlogin.token);
                 string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
                 Console.WriteLine(str1);
-                  string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
+                string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
                 getlogin.twitch = string.Concat(textArray2);
                 return getlogin;
             }
@@ -1211,7 +1223,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <param name="version">版本</param>
         /// <param name="OptifineVersion">返回Optifine版本</param>
         /// <returns></returns>
-        public bool OptifineExist(string version,ref string OptifineVersion)
+        public bool OptifineExist(string version, ref string OptifineVersion)
         {
             using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(version).libraries.GetEnumerator())
             {
@@ -1318,7 +1330,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         break;
                     }
-                    
+
                     this.SLC.liKeep(str);
                     return;
 
@@ -1376,7 +1388,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <param name="version">版本</param>
         /// <param name="FabricVersion">返回 Fabric版本</param>
         /// <returns></returns>
-        public bool FabricExist(string version,ref string FabricVersion) 
+        public bool FabricExist(string version, ref string FabricVersion)
         {
             var libraries = JsonConvert.DeserializeObject<ForgeY.Root>(SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json"));
             foreach (var i in libraries.libraries)
@@ -1402,13 +1414,13 @@ namespace SquareMinecraftLauncher.Minecraft
             return FabricExist(version, ref a);
         }
 
-            /// <summary>
-            /// 设置Minecraft目录路径
-            /// </summary>
-            /// <param name="Path">.minecraft路径</param>
-            public void SetMinecraftFilesPath(string Path) 
+        /// <summary>
+        /// 设置Minecraft目录路径
+        /// </summary>
+        /// <param name="Path">.minecraft路径</param>
+        public void SetMinecraftFilesPath(string Path)
         {
-            System.Directory.Files = Path != null?Path:System.IO.Directory.GetCurrentDirectory();
+            System.Directory.Files = Path != null ? Path : System.IO.Directory.GetCurrentDirectory();
         }
 
         [StructLayout(LayoutKind.Sequential)]

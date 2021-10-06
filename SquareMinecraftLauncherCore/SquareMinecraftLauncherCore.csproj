@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SquareMinecraftLauncher</RootNamespace>
     <AssemblyName>SquareMinecraftLauncherCore</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -264,6 +264,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsFormsApp1\MicrosoftLoginFroms.csproj">
+      <Project>{40c15532-3d42-4a03-a947-9633354e5ecb}</Project>
+      <Name>MicrosoftLoginFroms</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
