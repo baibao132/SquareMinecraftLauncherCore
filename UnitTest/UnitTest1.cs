@@ -12,8 +12,10 @@ namespace UnitTest
         public void TestMethod1()
         {
             MicrosoftLogin microsoftLogin = new MicrosoftLogin();
+            MinecraftLogin minecraftLogin = new MinecraftLogin();
             Xbox XboxLogin = new Xbox();
-            Console.WriteLine(new MinecraftLogin().GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login()).access_token))));
+            Console.WriteLine(minecraftLogin.GetMincraftuuid(minecraftLogin.GetToken(XboxLogin.XSTSLogin(XboxLogin.GetToken(microsoftLogin.GetToken(microsoftLogin.Login(true)).access_token)))).uuid);
+
             //MinecraftServer.server("mssj.starmc.cn", 54520);
         }
     }

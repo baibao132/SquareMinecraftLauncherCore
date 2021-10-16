@@ -26,6 +26,22 @@ namespace SquareMinecraftLauncher.Core.OAuth
             /// 
             /// </summary>
             public string variant { get; set; }
+        }
+
+        public class CapesItem
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public string id { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string state { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string url { get; set; }
             /// <summary>
             /// 
             /// </summary>
@@ -49,9 +65,7 @@ namespace SquareMinecraftLauncher.Core.OAuth
             /// <summary>
             /// 
             /// </summary>
-            public List<string> capes { get; set; }
+            public List<CapesItem> capes { get; set; }
         }
-
-
     }
 }

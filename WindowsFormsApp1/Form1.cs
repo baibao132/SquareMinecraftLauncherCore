@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace MicrosoftLoginFroms
 {
@@ -20,11 +21,14 @@ namespace MicrosoftLoginFroms
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            webBrowser1.Url = new Uri("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf");
+            Console.WriteLine(url1);
+            webBrowser1.Navigate(new Uri(url1));
         }
+        public static string url1 = "";
         public static string url = "";
         private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
+
             if (webBrowser1.Url.AbsoluteUri.IndexOf("https://login.live.com/oauth20_desktop.srf") >= 0)
             {
                 url = webBrowser1.Url.AbsoluteUri;

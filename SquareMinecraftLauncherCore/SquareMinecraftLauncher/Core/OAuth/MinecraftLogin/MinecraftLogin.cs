@@ -33,9 +33,9 @@ namespace SquareMinecraftLauncher.Core.OAuth
             
         }
 
-        public MinecraftLoginToken GetPossessionGame(string code) 
+        public MinecraftLoginToken GetMincraftuuid(string token) 
         {
-            string json =  web.Post("https://api.minecraftservices.com/entitlements/profile", "Authorization:" + code);
+            string json =  web.Get("https://api.minecraftservices.com/minecraft/profile", "Authorization: Bearer " + token);
             if (json == "") throw new SquareMinecraftLauncherException("Minecraft登录异常");
             try
             {

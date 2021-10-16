@@ -20,9 +20,11 @@ namespace MicrosoftLoginFroms
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            webBrowser1.Url = new Uri("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf");
+            webBrowser1.Url = new Uri(url1);
         }
         public static string url = "";
+        internal static string url1;
+
         private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             if (webBrowser1.Url.AbsoluteUri.IndexOf("https://login.live.com/oauth20_desktop.srf") >= 0)

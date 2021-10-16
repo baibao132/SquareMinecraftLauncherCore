@@ -265,11 +265,5 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WindowsFormsApp1\MicrosoftLoginFroms.csproj">
-      <Project>{40c15532-3d42-4a03-a947-9633354e5ecb}</Project>
-      <Name>MicrosoftLoginFroms</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -172,7 +172,7 @@
         /// <param name="RearParameter">后置参数</param>
         public async Task StartGame(string version, string java, int RAM, string name, string uuid, string token, string JVMparameter, string RearParameter)
         {
-            if (version == "" || version == null || java == "" || java == null || name == null || name == "" || uuid == "" || uuid == null || token == "" || token == null || RAM == 0)
+            if (string.IsNullOrEmpty(version)|| string.IsNullOrEmpty(java) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(uuid) || string.IsNullOrEmpty(token) || RAM == 0)
             {
                 throw new SquareMinecraftLauncherException("任何一项都不能为空");
             }
@@ -200,7 +200,7 @@
                 if (SLC.FileExist(java) != "")
                 {
 
-                    string bx = "-Dminecraft.client.jar=" + System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar" + " -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Xmn128m -Xmx" + RAM + "m -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
+                    string bx = "-Dminecraft.client.jar=" + System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar" + " -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Xmn512m -Xmx" + RAM + "m -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
                     if (JVMparameter == "" || JVMparameter == null)
                     {
                         Game = bx + "-Djava.library.path=\"" + nativespath + "\" -cp ";

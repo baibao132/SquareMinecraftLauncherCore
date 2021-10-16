@@ -19,6 +19,26 @@
             return (HttpWebResponse) request1.GetResponse();
         }
 
+        internal string Get(string URL, string Type)
+        {
+            string result = "";
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(URL);
+            var header = new WebHeaderCollection();
+            header.Add(Type);
+            req.Headers = header;
+
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            //获取响应内容
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                result = reader.ReadToEnd();
+            }
+            return result;
+        }
+
         public string getHtml(string url)
         {
             Stream stream;
