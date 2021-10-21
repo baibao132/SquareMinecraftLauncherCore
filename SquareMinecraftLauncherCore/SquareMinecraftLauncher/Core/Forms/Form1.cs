@@ -40,6 +40,11 @@ namespace MicrosoftLoginFroms
         {
 
         }
+        public static bool close = false;
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(url == "")close = true;
+        }
     }
 
     

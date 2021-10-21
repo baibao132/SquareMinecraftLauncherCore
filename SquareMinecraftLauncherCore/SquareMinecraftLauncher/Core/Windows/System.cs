@@ -10,8 +10,10 @@ namespace System
     {
         internal static string GetCurrentDirectory()
         {
+            
             if (Files != null)
             {
+                Files = Files.Replace(".minecraft", "");
                 return Files;
             }
             return System.IO.Directory.GetCurrentDirectory();

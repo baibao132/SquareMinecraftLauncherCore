@@ -1,6 +1,5 @@
 ﻿namespace SquareMinecraftLauncher.Minecraft
 {
-    using SquareMinecraftLauncher.Core;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SquareMinecraftLauncher;
@@ -15,6 +14,7 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using windows;
+    using global::SquareMinecraftLauncher.Core;
 
     public sealed class Game
     {

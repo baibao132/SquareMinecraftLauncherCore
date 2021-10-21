@@ -88,6 +88,8 @@
             req.Method = "POST";
             req.ContentType = Type;
             req.Accept = Type;
+            req.Headers.Add("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
+            req.UserAgent = "Mozilla/5.0 (Windows NT 5.2; rv:12.0) Gecko/20100101 Firefox/12.0";
             #region 添加Post 参数
             byte[] data = Encoding.UTF8.GetBytes(jsonParas);
             req.ContentLength = data.Length;
@@ -98,7 +100,10 @@
             }
             #endregion
 
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            HttpWebResponse resp;
+            try { resp = (HttpWebResponse)req.GetResponse(); }
+            catch (WebException ex) { resp = (HttpWebResponse)ex.Response; }
+            //HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
             Stream stream = resp.GetResponseStream();
             //获取响应内容
             using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))

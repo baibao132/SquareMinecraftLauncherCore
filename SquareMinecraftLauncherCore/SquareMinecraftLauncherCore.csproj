@@ -138,6 +138,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -149,6 +150,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="json\MinecraftSkin.cs" />
+    <Compile Include="json\MinecraftSkinItem.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\Curseforge\curseforge.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\Curseforge\CurseForgeInterface.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\Curseforge\SearchJson.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forms\Form1.cs">
       <SubType>Form</SubType>
@@ -200,7 +206,13 @@
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIY var.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\DES.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\MD5.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\category.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\CurseForge.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\ModCurseForge.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\ResourcePackCurseForge.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\WorldCurseForge.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\MinecraftServer.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\ModpackCurseForge.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\StartGame.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\tools.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\Unzip.cs" />
@@ -211,6 +223,8 @@
     <Compile Include="SquareMinecraftLauncher\Gac\FileDownloader.cs" />
     <Compile Include="SquareMinecraftLauncher\Gac\IDownloadProgressListener.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeCore.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\youdao\ydjson.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\youdao\youdao.cs" />
     <Compile Include="json\1.13Json.cs" />
     <Compile Include="json\BlessingSkin.cs" />
     <Compile Include="json\BlessingSkinError.cs" />

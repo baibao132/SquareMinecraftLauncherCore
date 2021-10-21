@@ -1,6 +1,6 @@
 ﻿namespace SquareMinecraftLauncher
 {
-    using SquareMinecraftLauncher.Core;
+    using global::SquareMinecraftLauncher.Core;
     using System;
 
     public sealed class SquareMinecraftLauncherException : Exception

@@ -1157,11 +1157,11 @@ namespace SquareMinecraftLauncher.Minecraft
         public Getlogin MinecraftLogin(string username, string password)
         {
             this.YESAPI.Tts();
-            if (((username == "") || (password == "")) || ((username == null) || (password == null)))
+            if ((username == "") || (password == "") || (username == null) || (password == null))
             {
                 throw new SquareMinecraftLauncherException("账号密码不得为空");
             }
-            string str = this.web.Post("https://authserver.mojang.com/authenticate", "{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\", \"requestUser\":\"true\"}");
+            string str = this.web.Post("https://authserver.mojang.com/authenticate", "{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\",\"clientToken\": \"sefsezfe22\", \"requestUser\":\"true\"}");
             if ((str == null) || !(str != ""))
             {
                 throw new SquareMinecraftLauncherException("请检查网络");
@@ -1177,8 +1177,8 @@ namespace SquareMinecraftLauncher.Minecraft
                     name = root.selectedProfile.name
                 };
                 Console.WriteLine(getlogin.token);
-                string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
-                Console.WriteLine(str1);
+               // string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
+               // Console.WriteLine(str1);
                 string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
                 getlogin.twitch = string.Concat(textArray2);
                 return getlogin;
@@ -1194,8 +1194,25 @@ namespace SquareMinecraftLauncher.Minecraft
                     throw new SquareMinecraftLauncherException("密码账户错误");
                 }
             }
+            if(root.error == "GoneException") throw new SquareMinecraftLauncherException("账户已迁移微软");
             throw new SquareMinecraftLauncherException(root.error);
         }
+
+        /// <summary>
+        /// 获取正版登录皮肤
+        /// </summary>
+        /// <returns></returns>
+        public string GetMinecraftSkin(string uuid)
+        {
+            string json = web.getHtml("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
+            JsonConvert.DeserializeObject<MinecraftSkin.Root>(json);
+            byte[] outputb = Convert.FromBase64String(json);
+            string orgStr = Encoding.Default.GetString(outputb);
+            var obj = JsonConvert.DeserializeObject<MinecraftSkinItem.Root> (orgStr);
+            return obj.textures.SKIN.url;
+
+        }
+
         /// <summary>
         /// Optifine是否存在
         /// </summary>
