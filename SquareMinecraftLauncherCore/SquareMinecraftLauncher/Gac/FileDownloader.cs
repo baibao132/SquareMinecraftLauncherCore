@@ -195,7 +195,7 @@ namespace Gac
                     {
                         listener.OnDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
 
-                        Console.WriteLine(this.downloadSize);
+                     //   Console.WriteLine(this.downloadSize);
                     }
                 }
             }
@@ -204,7 +204,7 @@ namespace Gac
                 Console.WriteLine(e.Message);
                 throw new Exception("下载文件失败");
             }
-            if(downloadSize == fileSize) File.Move(saveFile, saveFile.Replace(".Square",""));
+            if (downloadSize == fileSize) try { File.Move(saveFile, saveFile.Replace(".Square", "")); } catch (Exception) { File.Delete(saveFile); }
             return this.downloadSize;
         }
     }

@@ -12,7 +12,7 @@ namespace SquareMinecraftLauncher.Minecraft
         Curseforge Curseforge = new Curseforge();
         public MCDownload download(GameVersionLatestFilesItem LatestFilesItem)
         {
-            string url = Curseforge.download(LatestFilesItem.projectFileId);
+            string url = Curseforge.download(LatestFilesItem.projectFileId, LatestFilesItem.projectFileName);
             string path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\" + LatestFilesItem.projectFileName;
             MCDownload download = new MCDownload();
             download.Url = url;

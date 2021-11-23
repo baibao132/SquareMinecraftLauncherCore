@@ -168,7 +168,7 @@
                 }
                 return download;
             }
-            download.Url = "https://bmclapi2.bangbang93.com/version/" + version + "/client";
+            download.Url = "https://download.mcbbs.net/version/" + version + "/client";
             string[] textArray2 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
             download.path = string.Concat(textArray2);
             return download;

@@ -48,9 +48,9 @@ namespace SquareMinecraftLauncher.Core.Curseforge
             return obj;
         }
 
-        public string download(int id)
+        public string download(int id,string file)
         {
-            return web.getHtml(url + string.Format("/api/v2/addon/0/file/{0}/download-url", id));
+            return string.Format("http://mirror.baibaoblog.cn:88/file/{0}/{1}", id,file);
         }
     }
 }

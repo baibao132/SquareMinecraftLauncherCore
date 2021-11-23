@@ -1,4 +1,4 @@
-﻿using ICSharpCode.SharpZipLib.Checksums;
+﻿using ICSharpCode.SharpZipLib.Checksum;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;

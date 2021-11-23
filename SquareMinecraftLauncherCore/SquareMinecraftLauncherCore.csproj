@@ -59,6 +59,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -125,8 +126,8 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
-      <HintPath>..\packages\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.3.11, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.3.3\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -138,6 +139,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
@@ -152,6 +154,7 @@
   <ItemGroup>
     <Compile Include="json\MinecraftSkin.cs" />
     <Compile Include="json\MinecraftSkinItem.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\AssetDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\curseforge.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\CurseForgeInterface.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\SearchJson.cs" />
@@ -182,10 +185,11 @@
     <Compile Include="SquareMinecraftLauncher\Core\OAuth\XboxLogin\XboxToken.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIYJson.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\GacDownload.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\SearchBase.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Windows\System.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\fabricmc\fabricUninstall.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\JsonIntegration\SetJson.cs" />
-    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\YESAPI.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\API.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forge\DATA.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\fabricmc\fabricmc.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\fabricmc\fabricmcInstall.cs" />

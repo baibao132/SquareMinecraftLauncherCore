@@ -491,10 +491,7 @@
             {
                 File.WriteAllText(path, text, Encoding.UTF8);
             }
-            catch (Exception exception1)
-            {
-                throw new SquareMinecraftLauncherException(exception1.Message);
-            }
+            catch (Exception exception1){}
         }
     }
 }

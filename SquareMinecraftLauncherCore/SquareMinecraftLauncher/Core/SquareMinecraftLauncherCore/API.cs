@@ -5,11 +5,15 @@
     using System.Threading;
     using System.Windows.Forms;
 
-    internal class YESAPI
+    internal class API
     {
         private static bool a;
         private Download web = new Download();
 
+        internal API()
+        {
+            Tts();
+        }
         internal void p()
         {
             Control.CheckForIllegalCrossThreadCalls = false;
@@ -17,9 +21,10 @@
             {
                 if (!a)
                 {
-                    string b = web.Post("http://hn2.api.okayapi.com/?s=App.Statistics.GetDailyRequest&start_date=" + DateTime.Now.ToString("yyyy-MM-dd") + "&end_date=" + DateTime.Now.ToString("yyyy-MM-dd") + "&app_key=BA9F2CD7DE34B7B063EB382BA5F346F1", "");
+                    string b = web.getHtml("http://mirror.baibaoblog.cn:88/tj.php");
                     if (b != null)
                     {
+                        Console.WriteLine(b);
                         a = true;
                         Console.WriteLine("调用完成");
                     }

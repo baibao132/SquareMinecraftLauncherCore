@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SquareMinecraftLauncher.SquareMinecraftLauncher.Minecraft
+namespace SquareMinecraftLauncher.Minecraft
 {
     public class ModpackCurseForge : CurseForgeInterface
     {
         Curseforge Curseforge = new Curseforge();
         public MCDownload download(GameVersionLatestFilesItem LatestFilesItem)
         {
-            string url = Curseforge.download(LatestFilesItem.projectFileId);
+            string url = Curseforge.download(LatestFilesItem.projectFileId, LatestFilesItem.projectFileName);
             string path = Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + LatestFilesItem.projectFileName;
             MCDownload download = new MCDownload();
             download.Url = url;

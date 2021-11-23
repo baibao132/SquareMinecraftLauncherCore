@@ -371,7 +371,7 @@
                 if (SLC.FileExist(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar") != null)
                 {
                     this.SLC.SetFile("SquareMinecraftLauncher");
-                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar", "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/26/authlib-injector-1.1.26-41a7a47.jar");
+                    GacDownload.Download(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\yggdrasilSquareMinecraftLauncher.jar", "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/39/authlib-injector-1.1.39.jar");
                     while (true)
                     {
                         if (GacDownload.Complete == 0 && GacDownload.Failure == 1)

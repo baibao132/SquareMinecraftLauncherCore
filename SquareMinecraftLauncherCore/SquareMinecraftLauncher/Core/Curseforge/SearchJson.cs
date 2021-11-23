@@ -36,7 +36,7 @@ namespace SquareMinecraftLauncher.Core.Curseforge
             /// <summary>
             /// 
             /// </summary>
-            internal int projectFileId { get; set; }
+            public int projectFileId { get; set; }
             /// <summary>
             /// 文件名
             /// </summary>
@@ -45,7 +45,7 @@ namespace SquareMinecraftLauncher.Core.Curseforge
 
         public class CurseForgeItem
     {
-            internal int id { get; set; }
+            public int id { get; set; }
             /// <summary>
             /// 名称
             /// </summary>

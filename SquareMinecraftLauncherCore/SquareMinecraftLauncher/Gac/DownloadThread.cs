@@ -39,7 +39,7 @@ namespace Gac
                     {
                         int startPos = (int)(block * (threadId - 1) + downLength);//开始位置
                         int endPos = (int)(block * threadId - 1);//结束位置
-                        Console.WriteLine("Thread " + this.threadId + " start download from position " + startPos + "  and endwith " + endPos);
+                     //   Console.WriteLine("Thread " + this.threadId + " start download from position " + startPos + "  and endwith " + endPos);
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downUrl);
                         request.Referer = downUrl.ToString();
                         request.Method = "GET";
@@ -52,7 +52,7 @@ namespace Gac
                         request.AddRange(startPos, endPos);
                         //Console.WriteLine(request.Headers.ToString()); //输出构建的http 表头
                         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                        WebResponse wb = request.GetResponse();
+                        WebResponse wb = response;
                         using (Stream _stream = wb.GetResponseStream())
                         {
                             byte[] buffer = new byte[1024 * 50]; //缓冲区大小
@@ -70,7 +70,7 @@ namespace Gac
                                 }
                                 threadfile.Close(); //using 用完后可以自动释放..手动释放一遍.木有问题的(其实是多余的)
                                 _stream.Close();
-                                Console.WriteLine("Thread " + this.threadId + " download finish");
+                              //  Console.WriteLine("Thread " + this.threadId + " download finish");
                                 this.finish = true;
                             }
                         }
@@ -78,7 +78,7 @@ namespace Gac
                     catch (Exception e)
                     {
                         this.downLength = -1;
-                        Console.WriteLine("Thread " + this.threadId + ":" + e.Message);
+                  //      Console.WriteLine("Thread " + this.threadId + ":" + e.Message);
                     }
                 } 
             }));
