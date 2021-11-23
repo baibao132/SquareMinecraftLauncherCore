@@ -15,7 +15,7 @@
 ## 第三方API和库
 
 #### BaiBaoAPI
-此API因资金不足先暂停使用
+只适用于本库
 
 #### BMCLAPI
 bangbang93's minecraft launcher api  
@@ -30,9 +30,6 @@ BMCLAPI和BMCL不同，属于非开源项目
 禁止在BMCLAPI上二次封装其他协议  
 捐助  
 服务器的开销是有费用的，若你觉得BMCLAPI对你有帮助，欢迎捐助，支付宝：bangbang93@bangbang93.com服务器的开销是有费用的，若你觉得BMCLAPI对你有帮助，欢迎捐助，支付宝：bangbang93@bangbang93.com  
-
-#### YESAPI
-http://open.yesapi.cn/
 
 ## Newtonsoft.Json  
 
