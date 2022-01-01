@@ -97,26 +97,21 @@ namespace SquareMinecraftLauncher.Minecraft
                 if (this.SLC.FileExist(string.Concat(textArray1)) == null)
                 {
                     ForgeCore core = new ForgeCore();
-                    this.SLC.wj(@".minecraft\versions\" + version + @"\" + version + ".json", core.ForgeJson(version, @"SquareMinecraftLauncher\Forge\version.json"));
-                    if (this.SLC.FileExist(@"SquareMinecraftLauncher\Forge\install_profile.json") == null)
+                    string IDversion = "";
+                    foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
                     {
-                        await new ForgeInstallCore().ForgeInstall(@"SquareMinecraftLauncher\Forge\install_profile.json", version, java);
-                        char[] separator = new char[] { '\\' };
-                        string[] strArray = ((JObject)JsonConvert.DeserializeObject(this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\install_profile.json")))["path"].ToString().Replace(':', '\\').Split(separator);
-                        string[] textArray3 = new string[] { strArray[0].Replace('.', '\\'), @"\", strArray[1], @"\", strArray[2] };
-                        string str2 = string.Concat(textArray3);
-                        string path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + str2;
-                        this.SLC.path(path);
-                        foreach (string str4 in System.IO.Directory.GetFiles(@"SquareMinecraftLauncher\Forge\maven\" + str2))
+                        if (version2.version == version)
                         {
-                            try
-                            {
-                                File.Copy(str4, path + @"\" + Path.GetFileName(str4));
-                            }
-                            catch
-                            {
-                            }
+                            IDversion = version2.IdVersion;
                         }
+                    }
+                    if (int.Parse(IDversion.Split('.')[1]) > 12)
+                    {
+                       await ForgeMaster.ForgeInstallHigh(version, java);
+                    }
+                    else
+                    {
+                        ForgeMaster.ForgeInstallDown(version);
                     }
                     this.SLC.DelPathOrFile(@"SquareMinecraftLauncher\Forge\");
                     return true;
@@ -215,26 +210,33 @@ namespace SquareMinecraftLauncher.Minecraft
                             str2 = string.Concat(textArray1);
                             download2.Url = "https://bmclapi2.bangbang93.com/maven/" + str2.Replace('\\', Convert.ToChar("/"));
                         }
-                        if (strArray[1] == "OptiFine")
-                        {
-                            download2.Url = item.downloads.artifact.url;
-                        }
+
                         else if (strArray[1] == "liteloader")
                         {
                             download2.Url = item.downloads.artifact.url;
                         }
                     }
+                    if (strArray[1] == "OptiFine")
+                    {
+                        string OpVersion = strArray[2];
+                        MCDownload op = download.DownloadOptifine(version, "OptiFine_" + OpVersion + ".jar");
+                        download2.path = op.path;
+                        download2.Url = op.Url;
+                    }
                     if (strArray[1] == "forge")
                     {
                         char[] chArray4 = new char[] { '-' };
                         string[] strArray3 = strArray[2].Split(chArray4);
-                        download2.Url = download.ForgeCoreDownload(strArray3[0], strArray3[1]).Url;
+                        download2.Url = download.ForgeCoreDownload(version, strArray3[1]).Url;
                         list.Add(download2);
                         download2.name = "";
                     }
                     list.Add(download2);
                 }
-                downloadArray = this.SLC.screening(list.ToArray());
+            //if (ForgeExist(version))
+            //    downloadArray = this.SLC.screening(list.ToArray());
+            //else
+            downloadArray = list.ToArray();
             }
             catch (Exception)
             {
@@ -324,7 +326,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 SLC.SetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets");
                 SLC.SetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes");
                 var jo = SLC.versionjson<json4.Root>(version);
-                string json = web.getHtml(jo.AssetIndex.url);
+                string json = web.getHtml(jo.AssetIndex.url.Replace("launchermeta.mojang.com", "bmclapi2.bangbang93.com"));
                 var FileName = jo.AssetIndex.url.Split('/');
                 SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\indexes\" + FileName[FileName.Length - 1], json);
                 mcbbs.mcbbsnews mcbbs = new mcbbs.mcbbsnews();
@@ -506,22 +508,22 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public async Task<ForgeList[]> GetForgeList(string version)
         {
-            //string localForgeVersion = this.GetLocalForgeVersion(version);
-            //if (localForgeVersion != null)
-            //{
-            //    char[] separator = new char[] { '-' };
-            //    version = localForgeVersion.Split(separator)[0];
-            //}
-            //else
-            //{
-            //    foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
-            //    {
-            //        if (version2.version == version)
-            //        {
-            //            version = version2.IdVersion;
-            //        }
-            //    }
-            //}
+            string localForgeVersion = this.GetLocalForgeVersion(version);
+            if (localForgeVersion != null)
+            {
+                char[] separator = new char[] { '-' };
+                version = localForgeVersion.Split(separator)[0];
+            }
+            else
+            {
+                foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
+                {
+                    if (version2.version == version)
+                    {
+                        version = version2.IdVersion;
+                    }
+                }
+            }
             string str2 = null;
             await Task.Factory.StartNew(() =>
             {
@@ -1158,7 +1160,7 @@ namespace SquareMinecraftLauncher.Minecraft
             {
                 throw new SquareMinecraftLauncherException("账号密码不得为空");
             }
-            string str = this.web.Post("https://authserver.mojang.com/authenticate", "{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\",\"clientToken\": \"sefsezfe22\", \"requestUser\":\"true\"}");
+            string str = this.web.Post("https://authserver.mojang.com/authenticate","{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\",\"clientToken\": \"sefsezfe22\", \"requestUser\":\"true\"}");
             if ((str == null) || !(str != ""))
             {
                 throw new SquareMinecraftLauncherException("请检查网络");
@@ -1176,8 +1178,6 @@ namespace SquareMinecraftLauncher.Minecraft
                 Console.WriteLine(getlogin.token);
                // string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
                // Console.WriteLine(str1);
-                string[] textArray2 = new string[] { "{", root.user.properties[0].name, ":[", root.user.properties[0].value, "]}" };
-                getlogin.twitch = string.Concat(textArray2);
                 return getlogin;
             }
             if (root.error == "ForbiddenOperationException")
@@ -1298,19 +1298,6 @@ namespace SquareMinecraftLauncher.Minecraft
         {
             string str = version;
             MinecraftDownload download = new MinecraftDownload();
-            version = "";
-            foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
-            {
-                if (version2.version == str)
-                {
-                    version = version2.IdVersion;
-                }
-            }
-            if (version == "")
-            {
-                throw new SquareMinecraftLauncherException("未找到该版本");
-            }
-            version = str;
             string[] strArray = new string[0];
             using (List<LibrariesItem>.Enumerator enumerator = this.SLC.versionjson<Root1>(str).libraries.GetEnumerator())
             {

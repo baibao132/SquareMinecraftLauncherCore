@@ -10,7 +10,6 @@ namespace SquareMinecraftLauncher.Minecraft
     {
         public string uuid { get; internal set; }
         public string token { get; internal set; }
-        public string twitch { get; internal set; }
         public string name { get; internal set; }
     }
     public sealed class AllTheExistingVersion

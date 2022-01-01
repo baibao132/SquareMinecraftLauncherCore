@@ -13,8 +13,18 @@ namespace UnitTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1Async()
+        public async Task TestMethod1Async()
         {
+            AssetDownload assetDownload = new AssetDownload();
+            assetDownload.DownloadProgressChanged += AssetDownload_DownloadProgressChanged;
+            await assetDownload.BuildAssetDownload(4, "1.17.1");
+
+            
+        }
+
+        private void AssetDownload_DownloadProgressChanged(AssetDownload.DownloadIntermation Log)
+        {
+            Console.WriteLine(Log.Progress);
         }
     }
 }

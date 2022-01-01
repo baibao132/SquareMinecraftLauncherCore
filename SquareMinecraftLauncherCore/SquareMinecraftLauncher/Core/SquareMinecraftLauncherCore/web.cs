@@ -12,7 +12,7 @@
         internal HttpWebResponse CreateGetHttpResponse(string url)
         {
             HttpWebRequest request1 = (HttpWebRequest) WebRequest.Create(url);
-            request1.Timeout = 0xbb8;
+            request1.Timeout = 6000;
             request1.ContentType = "text/html;chartset=UTF-8";
             request1.UserAgent = "Mozilla / 5.0(Windows NT 10.0; Win64; x64; rv: 48.0) Gecko / 20100101 Firefox / 48.0";
             request1.Method = "GET";

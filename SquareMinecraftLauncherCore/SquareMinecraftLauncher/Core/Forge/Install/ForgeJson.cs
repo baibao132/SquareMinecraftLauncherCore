@@ -31,6 +31,8 @@
 
         public class ProcessorsItem
         {
+            public List<string> sides { get; set; }
+
             public List<string> args { get; set; }
 
             public List<string> classpath { get; set; }

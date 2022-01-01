@@ -8,6 +8,7 @@
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class OptifineCore
@@ -16,7 +17,7 @@
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
         private Tools tools = new Tools();
 
-        internal string liteloaderJsonY(ForgeY.Root versionText, string type, string patch, string version, string filename)
+        internal async Task<string> liteloaderJsonY(ForgeY.Root versionText, string type, string patch, string version, string filename)
         {
             string[] textArray1 = new string[] { "\"assetIndex\": {\"id\": \"", versionText.assetIndex.id, "\",\"size\":", versionText.assetIndex.size, ",\"url\": \"", versionText.assetIndex.url, "\"},\"assets\": \"", versionText.assets, "\",\"downloads\": {\"client\": {\"url\":\"", versionText.downloads.client.url, "\"}},\"id\": \"", versionText.id, "\",\"libraries\": [" };
             string str = string.Concat(textArray1);
@@ -25,10 +26,39 @@
             item.name = string.Concat(textArray2);
             ForgeY.Artifact artifact = new ForgeY.Artifact();
             ForgeY.Downloads downloads = new ForgeY.Downloads();
-            artifact.url = this.Minecraft.DownloadOptifine(version, filename).Url;
+           var DO = Minecraft.DownloadOptifine(version, filename);
+            artifact.url = DO.Url;
             downloads.artifact = artifact;
             item.downloads = downloads;
             versionText.libraries.Add(item);
+            ForgeDownload forgeDownload = new ForgeDownload(new MCDownload[] { new MCDownload() { Url = DO.Url,path = DO.path} });
+            forgeDownload.StartDownload();
+            await Task.Run(() =>
+            {
+                while (!forgeDownload.GetEndDownload())
+                {
+                    Thread.Sleep(2000);
+                }
+            });
+            Unzip unzip = new Unzip();
+            string err;
+            unzip.UnZipFile(DO.path, System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\", out err);
+            string launch = File.ReadAllText(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of.txt");
+            SLC.path(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\launchwrapper-of\"+launch);
+            try
+            {
+                File.Copy(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of-" + launch + ".jar", System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\launchwrapper-of\" + launch + @"\launchwrapper-of-" + launch + ".jar");
+                SLC.DelPathOrFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\");
+            }
+            catch (Exception ex) { }
+            ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem();
+            ForgeY.Artifact artifact2 = new ForgeY.Artifact();
+            ForgeY.Downloads downloads2 = new ForgeY.Downloads();
+            item2.name = "optifine:launchwrapper-of:" + launch;
+            artifact2.url = DO.Url;
+            downloads2.artifact = artifact;
+            item2.downloads = downloads;
+            versionText.libraries.Add(item2);
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
                 str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
@@ -85,7 +115,7 @@
                     }
                 }
             }
-            return (str + ",\"mainClass\": \"" + versionText.mainClass + "\"");
+            return (str + ",\"mainClass\": \"net.minecraft.launchwrapper.Launch\"");
         }
 
         internal async Task<string> OptifineJson(string version, OptiFineList optiFineList)
@@ -133,9 +163,9 @@
                 {
                     str2 = str2 + "\"--tweakClass\"," + "\"optifine.OptiFineTweaker\"]},";
                 }
-                return (str2 + this.liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename) + "}");
+                return (str2 + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename) + "}");
             }
-            str2 = str2 + "{" + this.liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename);
+            str2 = str2 + "{" + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename);
             ForgeJsonEarly.Root root3 = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
             try
             {

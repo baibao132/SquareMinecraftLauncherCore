@@ -5,6 +5,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -105,6 +106,7 @@
         {
             string[] textArray1 = new string[] { "\"assetIndex\": {\"id\": \"", versionText.assetIndex.id, "\",\"size\":", versionText.assetIndex.size, ",\"url\": \"", versionText.assetIndex.url, "\"},\"assets\": \"", versionText.assets, "\",\"downloads\": {\"client\": {\"url\":\"", versionText.downloads.client.url, "\"}},\"id\": \"", versionText.id, "\",\"libraries\": [" };
             string str = string.Concat(textArray1);
+            versionText = screening(ref versionText, ForgeText);
             foreach (ForgeY.LibrariesItem item in ForgeText.libraries)
             {
                 if (item.downloads == null)
@@ -130,7 +132,7 @@
             }
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
-                if (versionText.libraries[i].name == "org.apache.logging.log4j:log4j-api:2.8.1" || versionText.libraries[i].name == "org.apache.logging.log4j:log4j-core:2.8.1" || versionText.libraries[i].name == "net.sf.jopt-simple:jopt-simple:5.0.3") continue;
+              //  if (versionText.libraries[i].name == "org.apache.logging.log4j:log4j-api:2.8.1" || versionText.libraries[i].name == "org.apache.logging.log4j:log4j-core:2.8.1" || versionText.libraries[i].name == "net.sf.jopt-simple:jopt-simple:5.0.3") continue;
                 str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
                 if (((versionText.libraries[i].downloads == null) || (versionText.libraries[i].downloads.artifact == null)) && (versionText.libraries[i].url == null))
                 {
@@ -190,6 +192,28 @@
                 }
             }
             return str + ",\"mainClass\": \"" + ForgeText.mainClass + "\"";
+        }
+
+        internal ForgeY.Root screening(ref ForgeY.Root Lib,ForgeY.Root forge)
+        {
+            ForgeY.Root root = new ForgeY.Root();
+            List<ForgeY.LibrariesItem> list = new List<ForgeY.LibrariesItem>();
+            for (int i = 0; i < Lib.libraries.Count; i++)
+            {
+                bool l = false;
+                for (int j = 0; j < forge.libraries.Count; j++)
+                {
+                    if (string.Equals(forge.libraries[j].name.Split(':')[1] ,Lib.libraries[i].name.Split(':')[1]))
+                    {
+                         l = true;
+                         break;
+                    }
+                }
+                if (!l)
+                    list.Add(Lib.libraries[i]);
+            }
+            root.libraries = list;
+            return root;
         }
 
         internal string ForgeKeep(string FileText, ForgeY.Root ForgePath, string versionjson, string version)

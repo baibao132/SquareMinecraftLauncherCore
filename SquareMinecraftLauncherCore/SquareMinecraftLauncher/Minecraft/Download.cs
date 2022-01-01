@@ -42,7 +42,8 @@
                     throw new SquareMinecraftLauncherException("未找到该版本");
                 }
             }
-            return new MCDownload { path = System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\" + filename, Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/" + filename };
+            if (filename.IndexOf("pre") > 0) filename = "preview_" + filename;
+            return new MCDownload { path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\com\optifine\OptiFine\" + filename.Replace(".jar","") +@"\"+ filename, Url = "https://bmclapi2.bangbang93.com/maven/com/optifine/" + version + "/"  + filename };
         }
 
         internal MCDownload ForgeCoreDownload(string version, string ForgeVersion)
@@ -68,18 +69,21 @@
                 str2 = "https://files.minecraftforge.net";
             }
             char[] separator = new char[] { '.' };
-            if (Convert.ToInt32(version.Split(separator)[1]) > 9)
-            {
-                string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge - ", version, " - ", ForgeVersion, "-universal.jar" };
-                download.path = string.Concat(textArray1);
-                string[] textArray2 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-universal.jar" };
-                download.Url = string.Concat(textArray2);
-                return download;
-            }
             string[] textArray3 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-universal.jar" };
             download.path = string.Concat(textArray3);
             string[] textArray4 = new string[] { str2, "/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "/forge-", version, "-", ForgeVersion, "-universal.jar" };
             download.Url = string.Concat(textArray4);
+            try
+                {
+                    new Download().CreateGetHttpResponse(download.Url);
+                }
+                catch (Exception)
+                {
+                    string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\SquareMinecraftLauncherDownload\forge-", version, "-", ForgeVersion, "-", version, "-universal.jar" };
+                    download.path = string.Concat(textArray1);
+                    string[] textArray2 = new string[] { "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/", version, "-", ForgeVersion, "-", version, "/forge-", version, "-", ForgeVersion, "-", version, "-universal.jar" };
+                    download.Url = string.Concat(textArray2);
+                }
             return download;
         }
 
@@ -101,7 +105,7 @@
                 throw new SquareMinecraftLauncherException("未找到该版本");
             }
             char[] separator = new char[] { '.' };
-            if (Convert.ToInt32(version.Split(separator)[1]) < 13)
+            if (Convert.ToInt32(version.Split(separator)[1]) < 9)
             {
                 return this.ForgeCoreDownload(str, ForgeVersion);
             }

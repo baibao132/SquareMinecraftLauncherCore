@@ -20,92 +20,41 @@ namespace SquareMinecraftLauncher.Minecraft
         bool _disposed = false;
         int AllFile = 0;
         int FinishFile = 0;
+        AssetDownloadCore gacDownload = null;
         public async Task BuildAssetDownload(int NumThreads,string version)
         {
-            _NumThreads = NumThreads;
-            _version = version;
-            if (!_disposed)
-            {
-                AllFile = new Tools().GetAllTheAsset(version).Length;
-                _disposed = true;
-            }
-            if (FinishFile == AllFile)
-            {
-                return;
-            }
-            string Path = System.IO.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Asset\";
-            if (File.Exists(Path + @"\ConsoleApp15.exe"))
-            {
-                process.StartInfo.FileName = "cmd.exe";
-                string Arguments = Path + @"ConsoleApp15.exe " + string.Format("{0} {1} {2}", version, NumThreads, System.Directory.GetCurrentDirectory());
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.CreateNoWindow = false;
-                process.Start();
-                process.StandardInput.WriteLine(Arguments + "&exit");
-                process.StandardInput.AutoFlush = true;
-                process.StandardInput.Close();
-                Thread thread = new Thread(Process_OutputDataReceived);
-                thread.Start();
-                await Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        if (FinishFile == AllFile)
-                        {
-                            return;
-                        }
-                        Thread.Sleep(2000);
-                    }
-                } );
-            }
-
-            GacDownload gac = new GacDownload();
-            gac.Download(Path + "yq.zip", "http://www.baibaoblog.cn:81/Asset/Asset.zip");
-            while (gac.Complete != 1) Thread.Sleep(500);
-            if(File.Exists(Path + "yq.zip"))
-            {
-                Unzip unzip = new Unzip();
-                string a = "";
-                unzip.UnZipFile(Path + "yq.zip", Path, out  a);
-                BuildAssetDownload(NumThreads,version);
-            }
-
+            if (DownloadProgressChanged == null) throw new SquareMinecraftLauncherException("未对事件实例化，不排除未将事件代码放置改代码前");
+            Tools tools = new Tools();
+            gacDownload = new AssetDownloadCore(NumThreads, version);
+            gacDownload.StartDownload();
+            Thread thread = new Thread(Process_OutputDataReceived);
+            thread.Start();
+            await Task.Run(() => { while (!gacDownload.GetEndDownload())Thread.Sleep(3000); });
         }
 
         [field: CompilerGenerated]
         public event DownloadProgressChangedEvent DownloadProgressChanged;
         public delegate void DownloadProgressChangedEvent(DownloadIntermation Log);
 
-        private async void Process_OutputDataReceived()
+        private void Process_OutputDataReceived()
         {
-            StreamReader streamReader = process.StandardOutput ;
-            while (!streamReader.EndOfStream)
-            {
-                string read = await streamReader.ReadLineAsync();
-                DownloadIntermation intermation = new DownloadIntermation();
-                if (read == "Error")
+            DownloadIntermation intermation = new DownloadIntermation();
+                while (!gacDownload.GetEndDownload())
                 {
-                    BuildAssetDownload(_NumThreads, _version);
-                    return;
-                }
-                else
-                {
-                    string[] str = read.Split('|');
-                    if (str.Length == 1) continue;
-                    intermation.FinishFile = Convert.ToInt32(str[0]);
-                    FinishFile = Convert.ToInt32(str[0]); 
+                    intermation.FinishFile = gacDownload.EndDownload;
                     intermation.AllFile = AllFile;
-                    intermation.Progress = (int)(Convert.ToDouble(intermation.FinishFile) * (double)(100) / Convert.ToDouble(AllFile));
-                    intermation.Speed = Convert.ToDouble(str[2]);
+                    intermation.Progress = gacDownload.Progress;
+                    intermation.Speed = gacDownload.Speed;
                     DownloadProgressChanged(intermation);
-
+                    Console.WriteLine(gacDownload.EndDownload + "|" + Math.Round(gacDownload.Progress, 1) + "|" + Math.Round(gacDownload.Speed, 1));
+                    Thread.Sleep(1000);
                 }
-            }
+            intermation.FinishFile = FinishFile;
+            intermation.AllFile = AllFile;
+            intermation.Progress = 100;
+            intermation.Speed = 2;
+            DownloadProgressChanged(intermation);
         }
-
         public class DownloadIntermation
         {
             /// <summary>
@@ -115,7 +64,7 @@ namespace SquareMinecraftLauncher.Minecraft
             /// <summary>
             /// 进度
             /// </summary>
-            public int Progress { get; internal set; }
+            public double Progress { get; internal set; }
             /// <summary>
             /// 完成文件
             /// </summary>

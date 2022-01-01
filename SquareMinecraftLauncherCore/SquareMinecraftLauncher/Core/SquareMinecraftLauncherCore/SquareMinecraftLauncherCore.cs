@@ -369,24 +369,48 @@
 
         internal MCDownload[] screening(MCDownload[] Lib)
         {
-            string path = null;
             List<MCDownload> list = new List<MCDownload>();
             for (int i = 0; i < Lib.Length; i++)
             {
-                if (path != Lib[i].path)
+                if (Lib[i].name == "NO")continue;
+                try { if (Lib[i].name.Split(':')[1] == "forge") continue; } catch (Exception ex) { }
+                bool l = false;
+                for (int j = 0; j < Lib.Length; j++)
                 {
-                    list.Add(Lib[i]);
+                    if (i == j) continue;
+                        try
+                        {
+                            if (Lib[j].name.Split(':')[1] == Lib[i].name.Split(':')[1])
+                            {
+                            l = true;
+                            Lib[j].name = "NO";
+                            break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                        //if (Lib[j].path == Lib[i].path)
+                        //{
+                        //    l = true;
+                        //    Lib[j].name = "NO";
+                        //    break;
+                        //}
+                    }
                 }
-                path = Lib[i].path;
+                if (!l)
+                list.Add(Lib[i]);
             }
             return list.ToArray();
         }
+
+
 
         internal void SetFile(string path)
         {
             if (!System.IO.Directory.Exists(path))
             {
                 System.IO.Directory.CreateDirectory(path);
+                File.SetAttributes(path, FileAttributes.Hidden);
             }
         }
 

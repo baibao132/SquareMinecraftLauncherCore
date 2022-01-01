@@ -96,6 +96,7 @@
             DATA[] dataArray = this.data(file);
                 foreach (ForgeJson.ProcessorsItem item in json.processors)
                 {
+                //    if (item.sides != null) if (item.sides[0].Equals("server")) continue;
                     string str2 = this.ArgAnalysis(item.jar);
                     string str3 = "-Xmn128m -Xss1M -Xmx512M -cp \"" + str2 + ";";
                     foreach (string str5 in item.classpath)
@@ -122,6 +123,10 @@
                     {
                         if (str6[0] == '{')
                         {
+                            if(str6.IndexOf("{ROOT}") > 0)
+                            {
+                                str3 += str6.Replace("{ROOT}", System.Directory.GetCurrentDirectory().Replace("\\","/") + @"/.minecraft");
+                            }
                             if (str6 == "{MINECRAFT_JAR}")
                             {
                                 string[] textArray1 = new string[] { str3, " \"", System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar\"" };
@@ -175,16 +180,17 @@
                     num++;
                     Minecraft.MCDownload download1 = new Minecraft.MCDownload();
                     download1.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\');
-                    download1.Url = item.downloads.artifact.url.Replace("https://files.minecraftforge.net/maven/", "https://bmclapi2.bangbang93.com/maven/");
+                    download1.Url = item.downloads.artifact.url;//.Replace("https://files.minecraftforge.net/maven/", "https://bmclapi2.bangbang93.com/maven/");
                     download.Add(download1);
                 }
             }
+            
             ForgeDownload forgedownload = new ForgeDownload(5,download.ToArray());
             forgedownload.StartDownload();
             bool flag = true;
                 while (flag)
                 {
-                    if (forgedownload.error != 0)
+                    if (forgedownload.error > 0)
                     {
                           throw new SquareMinecraftLauncherException("安装失败");
                     }
@@ -192,7 +198,7 @@
                     {
                         flag = false;
                     }
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                 }
         }
     }

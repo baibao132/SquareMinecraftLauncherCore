@@ -126,12 +126,15 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Downloader, Version=2.3.0.0, Culture=neutral, PublicKeyToken=844973e732f6cdf4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Downloader.2.3.0\lib\net45\Downloader.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.3.11, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.3.3\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\2020\source\repos\SquareMinecraftLauncher\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -154,6 +157,7 @@
   <ItemGroup>
     <Compile Include="json\MinecraftSkin.cs" />
     <Compile Include="json\MinecraftSkinItem.cs" />
+    <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeMaster.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\AssetDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\curseforge.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\CurseForgeInterface.cs" />
@@ -210,6 +214,9 @@
     <Compile Include="SquareMinecraftLauncher\Core\SquareMinecraftLauncherCore\DIY var.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\DES.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\encryption\MD5.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\AssetDownloadCore.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\AssetDownloadPlus.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\downloader.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\category.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\CurseForge.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\CurseForge\ModCurseForge.cs" />

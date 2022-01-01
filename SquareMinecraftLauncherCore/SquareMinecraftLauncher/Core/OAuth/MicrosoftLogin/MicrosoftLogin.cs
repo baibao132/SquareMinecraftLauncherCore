@@ -41,19 +41,22 @@ namespace SquareMinecraftLauncher.Core.OAuth
         /// 微软登录
         /// </summary>
         /// <returns></returns>
-        public string Login(bool AutoLogin)
+        public async Task<string> Login(bool AutoLogin)
         {
-            if (AutoLogin) MicrosoftLoginFroms.Form1.url1 = "https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf";
-            else MicrosoftLoginFroms.Form1.url1 = "https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&scope=service%3a%3auser.auth.xboxlive.com%3a%3aMBI_SSL&redirect_uri=https%3a%2f%2flogin.live.com%2foauth20_desktop.srf&response_type=code&prompt=login&uaid=057b3be0fc6a4324adfa39149843f54e&msproxy=1&issuer=mso&tenant=consumers&ui_locales=zh-CN#";
-            Thread thd = new Thread(new ThreadStart(MicrosoftLoginFroms.start.Main));
-            thd.SetApartmentState(ApartmentState.STA);
-            thd.IsBackground = true;
-            thd.Start();
-            while(MicrosoftLoginFroms.Form1.url == "")
+            await Task.Run(()=>
             {
-                if (MicrosoftLoginFroms.Form1.close) throw new SquareMinecraftLauncherException("用户取消登录");
-                Thread.Sleep(5000);
-            }
+                if (AutoLogin) MicrosoftLoginFroms.Form1.url1 = "https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf";
+                else MicrosoftLoginFroms.Form1.url1 = "https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&scope=service%3a%3auser.auth.xboxlive.com%3a%3aMBI_SSL&redirect_uri=https%3a%2f%2flogin.live.com%2foauth20_desktop.srf&response_type=code&prompt=login&uaid=057b3be0fc6a4324adfa39149843f54e&msproxy=1&issuer=mso&tenant=consumers&ui_locales=zh-CN#";
+                Thread thd = new Thread(new ThreadStart(MicrosoftLoginFroms.start.Main));
+                thd.SetApartmentState(ApartmentState.STA);
+                thd.IsBackground = true;
+                thd.Start();
+                while (MicrosoftLoginFroms.Form1.url == "")
+                {
+                    if (MicrosoftLoginFroms.Form1.close) throw new SquareMinecraftLauncherException("用户取消登录");
+                    Thread.Sleep(5000);
+                }
+            });
             return Regex.Split(MicrosoftLoginFroms.Form1.url, "code=")[1].Split('&')[0];
         }
     }
