@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Gac
 {
-  
+
     public class DownLoadFile
     {
         public int ThreadNum = 3;
@@ -16,16 +15,16 @@ namespace Gac
         }
         private void Change(DownMsg msg)
         {
-            if (msg.Tag==DownStatus.Error||msg.Tag==DownStatus.End)
+            if (msg.Tag == DownStatus.Error || msg.Tag == DownStatus.End)
             {
                 StartDown(1);
             }
         }
-        public void AddDown(string DownUrl,string Dir,string FileName="", int Id = 0)
+        public void AddDown(string DownUrl, string Dir, string FileName = "", int Id = 0)
         {
             Thread tsk = new Thread(() =>
             {
-                download(DownUrl, Dir, FileName+".Square",Id);
+                download(DownUrl, Dir, FileName + ".Square", Id);
             });
             list.Add(tsk);
         }
@@ -49,13 +48,13 @@ namespace Gac
                     }
                 }
             }
-            
+
         }
         public delegate void dlgSendMsg(DownMsg msg);
         public event dlgSendMsg doSendMsg;
         //public event doSendMsg;
         //public dlgSendMsg doSendMsg = null;
-        private void download(string path, string dir,string filename,int id = 0)
+        private void download(string path, string dir, string filename, int id = 0)
         {
 
             try
@@ -78,15 +77,15 @@ namespace Gac
                 DownMsg msg = new DownMsg();
                 msg.Id = id;
                 msg.Length = 0;
-                msg.Tag =DownStatus.Error;
+                msg.Tag = DownStatus.Error;
                 msg.ErrMessage = ex.Message;
                 doSendMsg(msg);
-               
+
                 Console.WriteLine(ex.Message);
             }
         }
 
 
     }
-   
+
 }

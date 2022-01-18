@@ -3,9 +3,6 @@ using Newtonsoft.Json.Linq;
 using SquareMinecraftLauncher.Minecraft;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SquareMinecraftLauncher.Core.fabricmc
@@ -21,21 +18,22 @@ namespace SquareMinecraftLauncher.Core.fabricmc
             {
                 if (i.version == version)
                 {
-                    string[] fv = await FabricmcVersion();
-                    foreach (var t in fv)
-                    {
-                        if (t == i.IdVersion)
-                        {
-                            mc = i.IdVersion;
-                            break;
-                        }
-                    }
-                    if (mc == null)
-                    {
-                        throw new SquareMinecraftLauncherException("不支持该版本安装Fabricmc");
-                    }
+                    version = i.version;
                     break;
                 }
+            }
+            string[] fv = await FabricmcVersion();
+            foreach (var t in fv)
+            {
+                if (t == version)
+                {
+                    mc = version;
+                    break;
+                }
+            }
+            if (mc == null)
+            {
+                throw new SquareMinecraftLauncherException("不支持该版本安装Fabricmc");
             }
             string xml = null;
             await Task.Factory.StartNew(() =>
@@ -83,7 +81,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
             throw new SquareMinecraftLauncherException("访问失败");
         }
         Tools tools = new Tools();
-        public async Task<bool> FabricmcVersionInstall(string version,string loaderVersion)
+        public async Task<bool> FabricmcVersionInstall(string version, string loaderVersion)
         {
             var MCversion = tools.GetAllTheExistingVersion();
             bool ret = false;

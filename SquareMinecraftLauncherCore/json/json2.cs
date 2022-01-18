@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace json2
 {
@@ -22,7 +18,7 @@ namespace json2
     {
         public string name { get; set; }
         public string value { get; set; }
-  
+
     }
 
     internal class Root
@@ -30,8 +26,8 @@ namespace json2
         public string accessToken { get; set; }
         public string clientToken { get; set; }
         public SelectedProfile selectedProfile { get; set; }
-            public string error { get; set; }
-            public string errorMessage { get; set; }
+        public string error { get; set; }
+        public string errorMessage { get; set; }
         public User user { get; set; }
     }
 }

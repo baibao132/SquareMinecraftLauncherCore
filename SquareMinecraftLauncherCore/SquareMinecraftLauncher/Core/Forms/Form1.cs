@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MicrosoftLoginFroms
@@ -33,7 +25,7 @@ namespace MicrosoftLoginFroms
                 webBrowser1.Dispose();
                 this.Close();
             }
-            
+
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -43,10 +35,10 @@ namespace MicrosoftLoginFroms
         public static bool close = false;
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(url == "")close = true;
+            if (url == "") close = true;
         }
     }
 
-    
+
 
 }

@@ -3,10 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SquareMinecraftLauncher.Core
 {
@@ -16,25 +13,25 @@ namespace SquareMinecraftLauncher.Core
         public List<JavaVersion> vs = new List<JavaVersion>();
         public void addSubDirectory()
         {
-            string[] path = { "Program Files\\Java", "Program Files (x86)\\Java" };
+            string[] path = { "Program Files\\Java", "Program Files (x86)\\Java", @"MCLDownload\ext\", @"MCLDownload\ext\" };
             foreach (var t in GetRemovableDeviceID())
             {
                 foreach (var i in path)
                 {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(t + i);
+                    DirectoryInfo directoryInfo = new DirectoryInfo(t + "\\" + i);
                     FileInfo[] j;
                     try
                     {
-                        j = directoryInfo.GetFiles("javaw.exe",SearchOption.AllDirectories);
+                        j = directoryInfo.GetFiles("javaw.exe", SearchOption.AllDirectories);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         continue;
                     }
-                     foreach (var y in j)
+                    foreach (var y in j)
                     {
                         bool s = false;
-                        foreach (var p in vs) if (p.Path.Equals(y.FullName)) { s = true;break; }
+                        foreach (var p in vs) if (p.Path.Equals(y.FullName)) { s = true; break; }
                         if (s) continue;
                         addrelativeDocument(y.FullName);
                     }
@@ -64,22 +61,7 @@ namespace SquareMinecraftLauncher.Core
             ManagementObjectCollection queryCollection = query.Get();
             foreach (ManagementObject mo in queryCollection)
             {
-
-                switch (int.Parse(mo["DriveType"].ToString()))
-                {
-                    case (int)DriveType.Removable:   //可以移动磁盘     
-                        {
-                            //MessageBox.Show("可以移动磁盘");
-                            deviceIDs.Add(mo["DeviceID"].ToString());
-                            break;
-                        }
-                    case (int)DriveType.Fixed:   //本地磁盘     
-                        {
-                            //MessageBox.Show("本地磁盘");
-                            deviceIDs.Add(mo["DeviceID"].ToString());
-                            break;
-                        }
-                }
+                deviceIDs.Add(mo["DeviceID"].ToString());
             }
             return deviceIDs;
         }

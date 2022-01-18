@@ -7,7 +7,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Forms;
@@ -61,10 +60,11 @@
         internal DATA[] data(string json)
         {
             List<DATA> list = new List<DATA>();
-            JObject obj2 = (JObject) JsonConvert.DeserializeObject(json);
+            JObject obj2 = (JObject)JsonConvert.DeserializeObject(json);
             foreach (JProperty property in JObject.Parse(json).Value<JObject>("data").Properties())
             {
-                DATA item = new DATA {
+                DATA item = new DATA
+                {
                     name = "{" + property.Name + "}",
                     arg = this.ArgAnalysis(obj2["data"][property.Name]["client"].ToString())
                 };
@@ -76,7 +76,7 @@
         public static void Delay(int milliSecond)
         {
             int tickCount = Environment.TickCount;
-            while (Math.Abs((int) (Environment.TickCount - tickCount)) < milliSecond)
+            while (Math.Abs(Environment.TickCount - tickCount) < milliSecond)
             {
                 Application.DoEvents();
             }
@@ -87,16 +87,16 @@
             await Task.Factory.StartNew(() =>
             {
                 if (this.SLC.FileExist(java) != null)
-            {
-                throw new SquareMinecraftLauncherException("java路径不存在");
-            }
-            string file = this.SLC.GetFile(path);
-            ForgeJson.Root json = JsonConvert.DeserializeObject<ForgeJson.Root>(file);
-            libraries(json);
-            DATA[] dataArray = this.data(file);
+                {
+                    throw new SquareMinecraftLauncherException("java路径不存在");
+                }
+                string file = this.SLC.GetFile(path);
+                ForgeJson.Root json = JsonConvert.DeserializeObject<ForgeJson.Root>(file);
+                libraries(json);
+                DATA[] dataArray = this.data(file);
                 foreach (ForgeJson.ProcessorsItem item in json.processors)
                 {
-                //    if (item.sides != null) if (item.sides[0].Equals("server")) continue;
+                    //    if (item.sides != null) if (item.sides[0].Equals("server")) continue;
                     string str2 = this.ArgAnalysis(item.jar);
                     string str3 = "-Xmn128m -Xss1M -Xmx512M -cp \"" + str2 + ";";
                     foreach (string str5 in item.classpath)
@@ -123,9 +123,9 @@
                     {
                         if (str6[0] == '{')
                         {
-                            if(str6.IndexOf("{ROOT}") > 0)
+                            if (str6.IndexOf("{ROOT}") > 0)
                             {
-                                str3 += str6.Replace("{ROOT}", System.Directory.GetCurrentDirectory().Replace("\\","/") + @"/.minecraft");
+                                str3 += str6.Replace("{ROOT}", System.Directory.GetCurrentDirectory().Replace("\\", "/") + @"/.minecraft");
                             }
                             if (str6 == "{MINECRAFT_JAR}")
                             {
@@ -180,26 +180,26 @@
                     num++;
                     Minecraft.MCDownload download1 = new Minecraft.MCDownload();
                     download1.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\" + item.downloads.artifact.path.Replace('/', '\\');
-                    download1.Url = item.downloads.artifact.url;//.Replace("https://files.minecraftforge.net/maven/", "https://bmclapi2.bangbang93.com/maven/");
+                    download1.Url = item.downloads.artifact.url.Replace("https://files.minecraftforge.net/maven/", "https://bmclapi2.bangbang93.com/maven/");
                     download.Add(download1);
                 }
             }
-            
-            ForgeDownload forgedownload = new ForgeDownload(5,download.ToArray());
+
+            ForgeDownload forgedownload = new ForgeDownload(5, download.ToArray());
             forgedownload.StartDownload();
             bool flag = true;
-                while (flag)
+            while (flag)
+            {
+                if (forgedownload.error > 0)
                 {
-                    if (forgedownload.error > 0)
-                    {
-                          throw new SquareMinecraftLauncherException("安装失败");
-                    }
-                    else if (forgedownload.GetEndDownload())
-                    {
-                        flag = false;
-                    }
-                    Thread.Sleep(1000);
+                    throw new SquareMinecraftLauncherException("安装失败");
                 }
+                else if (forgedownload.GetEndDownload())
+                {
+                    flag = false;
+                }
+                Thread.Sleep(1000);
+            }
         }
     }
 }

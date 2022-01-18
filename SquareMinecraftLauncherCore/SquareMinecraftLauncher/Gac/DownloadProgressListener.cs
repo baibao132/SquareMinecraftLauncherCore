@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Gac
 {
@@ -17,7 +15,7 @@ namespace Gac
         public dlgSendMsg doSendMsg = null;
         public void OnDownloadSize(long size)
         {
-            if (downMsg==null)
+            if (downMsg == null)
             {
                 DownMsg downMsg = new DownMsg();
             }
@@ -30,8 +28,8 @@ namespace Gac
             }
             else
             {
-                downMsg.Speed = (float)(size - downMsg.Size);
-                
+                downMsg.Speed = size - downMsg.Size;
+
             }
             if (downMsg.Speed == 0)
             {
@@ -43,24 +41,24 @@ namespace Gac
                 downMsg.Surplus = ((downMsg.Length - downMsg.Size) / downMsg.Speed);
             }
             downMsg.Size = size; //下载总量
-           
+
             if (size == downMsg.Length)
             {
                 //下载完成
                 downMsg.Tag = DownStatus.End;
                 downMsg.SpeedInfo = "0 K";
                 downMsg.SurplusInfo = "已完成";
-                
+
             }
             else
             {
                 //下载中
                 downMsg.Tag = DownStatus.DownLoad;
-                
+
 
             }
-            
-            
+
+
             if (doSendMsg != null) doSendMsg(downMsg);//通知具体调用者下载进度
         }
     }
@@ -82,7 +80,7 @@ namespace Gac
         private string _SizeInfo = "";
         private float _Speed = 0;
         private float _Surplus = 0;
-        private string _SurplusInfo ="";
+        private string _SurplusInfo = "";
         private string _ErrMessage = "";
         private string _SpeedInfo = "";
         private double _Progress = 0;
@@ -184,11 +182,11 @@ namespace Gac
             set
             {
                 _Surplus = value;
-                if (value>0)
+                if (value > 0)
                 {
                     SurplusInfo = GetDateName((int)Math.Round(value, 0));
                 }
-                
+
             }
         }
 
@@ -273,7 +271,7 @@ namespace Gac
         {
             float temp = Second;
             string suf = "秒";
-            if (Second>60)
+            if (Second > 60)
             {
                 suf = "分钟";
                 temp = temp / 60;
@@ -295,13 +293,13 @@ namespace Gac
                                 temp = temp / 12;
                             }
                         }
-                      
+
                     }
-                   
+
                 }
-                
+
             }
-            
+
             return String.Format("{0:0} {1}", temp, suf);
         }
     }

@@ -6,7 +6,6 @@
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
 
     internal class ForgeCore
@@ -16,7 +15,7 @@
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
         private Tools Tools = new Tools();
 
-        public string ForgeJson(string version, string ForgePath)
+        public string ForgeJson(string version, string ForgePath, string java)
         {
             string file = null;
             AllTheExistingVersion[] allTheExistingVersion = this.Tools.GetAllTheExistingVersion();
@@ -34,7 +33,7 @@
             }
             if (this.Tools.ForgeExist(version))
             {
-                this.Tools.UninstallTheExpansionPack(ExpansionPack.Forge, version);
+                this.Tools.UninstallTheExpansionPack(ExpansionPack.Forge, version, java);
             }
             file = this.SLC.GetFile(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json");
             ForgeJsonEarly.Root root = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
@@ -54,8 +53,8 @@
                 }
                 return (str2 + ",\"minecraftArguments\": \"" + root3.minecraftArguments + "\"}");
             }
-            JObject obj2 = (JObject) JsonConvert.DeserializeObject(file);
-            JObject obj3 = (JObject) JsonConvert.DeserializeObject(this.SLC.GetFile(ForgePath));
+            JObject obj2 = (JObject)JsonConvert.DeserializeObject(file);
+            JObject obj3 = (JObject)JsonConvert.DeserializeObject(this.SLC.GetFile(ForgePath));
             str2 = str2 + "{\"arguments\": {\"game\": [";
             for (int i = 0; (obj2["arguments"]["game"].ToArray<JToken>().Length - 1) > 0; i++)
             {
@@ -132,7 +131,7 @@
             }
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
-              //  if (versionText.libraries[i].name == "org.apache.logging.log4j:log4j-api:2.8.1" || versionText.libraries[i].name == "org.apache.logging.log4j:log4j-core:2.8.1" || versionText.libraries[i].name == "net.sf.jopt-simple:jopt-simple:5.0.3") continue;
+                //  if (versionText.libraries[i].name == "org.apache.logging.log4j:log4j-api:2.8.1" || versionText.libraries[i].name == "org.apache.logging.log4j:log4j-core:2.8.1" || versionText.libraries[i].name == "net.sf.jopt-simple:jopt-simple:5.0.3") continue;
                 str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
                 if (((versionText.libraries[i].downloads == null) || (versionText.libraries[i].downloads.artifact == null)) && (versionText.libraries[i].url == null))
                 {
@@ -194,7 +193,7 @@
             return str + ",\"mainClass\": \"" + ForgeText.mainClass + "\"";
         }
 
-        internal ForgeY.Root screening(ref ForgeY.Root Lib,ForgeY.Root forge)
+        internal ForgeY.Root screening(ref ForgeY.Root Lib, ForgeY.Root forge)
         {
             ForgeY.Root root = new ForgeY.Root();
             List<ForgeY.LibrariesItem> list = new List<ForgeY.LibrariesItem>();
@@ -203,10 +202,10 @@
                 bool l = false;
                 for (int j = 0; j < forge.libraries.Count; j++)
                 {
-                    if (string.Equals(forge.libraries[j].name.Split(':')[1] ,Lib.libraries[i].name.Split(':')[1]))
+                    if (string.Equals(forge.libraries[j].name.Split(':')[1], Lib.libraries[i].name.Split(':')[1]))
                     {
-                         l = true;
-                         break;
+                        l = true;
+                        break;
                     }
                 }
                 if (!l)
@@ -251,7 +250,7 @@
                 }
                 return (str + ",\"minecraftArguments\": \"" + str2 + "\"}");
             }
-            JObject obj2 = (JObject) JsonConvert.DeserializeObject(FileText);
+            JObject obj2 = (JObject)JsonConvert.DeserializeObject(FileText);
             str = str + "{\"arguments\": {\"game\": [";
             for (int i = 1; (obj2["arguments"]["game"].ToArray<JToken>().Length - 1) > 0; i += 2)
             {

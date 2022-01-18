@@ -6,6 +6,7 @@
     using Newtonsoft.Json.Linq;
     using SquareMinecraftLauncher;
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -17,21 +18,21 @@
         private SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
         private Tools tools = new Tools();
 
-        internal async Task<string> liteloaderJsonY(ForgeY.Root versionText, string type, string patch, string version, string filename)
+        internal async Task<string> liteloaderJsonY(ForgeY.Root versionText, string type, string patch, string version, string filename, string javaPath)
         {
             string[] textArray1 = new string[] { "\"assetIndex\": {\"id\": \"", versionText.assetIndex.id, "\",\"size\":", versionText.assetIndex.size, ",\"url\": \"", versionText.assetIndex.url, "\"},\"assets\": \"", versionText.assets, "\",\"downloads\": {\"client\": {\"url\":\"", versionText.downloads.client.url, "\"}},\"id\": \"", versionText.id, "\",\"libraries\": [" };
             string str = string.Concat(textArray1);
-            ForgeY.LibrariesItem item = new ForgeY.LibrariesItem();
-            string[] textArray2 = new string[] { "optifine:OptiFine:", versionText.id, "_", type, "_", patch };
-            item.name = string.Concat(textArray2);
+
             ForgeY.Artifact artifact = new ForgeY.Artifact();
             ForgeY.Downloads downloads = new ForgeY.Downloads();
-           var DO = Minecraft.DownloadOptifine(version, filename);
+            var DO = Minecraft.DownloadOptifine(version, filename);
+            ForgeY.LibrariesItem item = new ForgeY.LibrariesItem();
+            item.name = DO.name;
             artifact.url = DO.Url;
             downloads.artifact = artifact;
             item.downloads = downloads;
             versionText.libraries.Add(item);
-            ForgeDownload forgeDownload = new ForgeDownload(new MCDownload[] { new MCDownload() { Url = DO.Url,path = DO.path} });
+            ForgeDownload forgeDownload = new ForgeDownload(new MCDownload[] { new MCDownload() { Url = DO.Url, path = DO.path } });
             forgeDownload.StartDownload();
             await Task.Run(() =>
             {
@@ -40,25 +41,52 @@
                     Thread.Sleep(2000);
                 }
             });
+
+            if (forgeDownload.error != 0) throw new SquareMinecraftLauncherException("安装失败，下载optifine失败");
             Unzip unzip = new Unzip();
             string err;
             unzip.UnZipFile(DO.path, System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\", out err);
-            string launch = File.ReadAllText(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of.txt");
-            SLC.path(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\launchwrapper-of\"+launch);
-            try
+            if (File.Exists(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of.txt"))
             {
+                string launch = File.ReadAllText(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of.txt");
+                SLC.path(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\launchwrapper-of\" + launch);
                 File.Copy(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\launchwrapper-of-" + launch + ".jar", System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\launchwrapper-of\" + launch + @"\launchwrapper-of-" + launch + ".jar");
-                SLC.DelPathOrFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\");
+                ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem();
+                ForgeY.Artifact artifact2 = new ForgeY.Artifact();
+                ForgeY.Downloads downloads2 = new ForgeY.Downloads();
+                item2.name = "optifine:launchwrapper-of:" + launch;
+                artifact2.url = DO.Url;
+                downloads2.artifact = artifact2;
+                item2.downloads = downloads2;
+                versionText.libraries.Add(item2);
             }
-            catch (Exception ex) { }
-            ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem();
-            ForgeY.Artifact artifact2 = new ForgeY.Artifact();
-            ForgeY.Downloads downloads2 = new ForgeY.Downloads();
-            item2.name = "optifine:launchwrapper-of:" + launch;
-            artifact2.url = DO.Url;
-            downloads2.artifact = artifact;
-            item2.downloads = downloads;
-            versionText.libraries.Add(item2);
+            else
+            {
+                if (!tools.ForgeExist(version))
+                {
+                    ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem();
+                    ForgeY.Artifact artifact2 = new ForgeY.Artifact();
+                    ForgeY.Downloads downloads2 = new ForgeY.Downloads();
+                    item2.name = "net.minecraft:launchwrapper:1.12";
+                    artifact2.url = "http://files.minecraftforge.net/maven/";
+                    downloads2.artifact = artifact2;
+                    item2.downloads = downloads2;
+                    versionText.libraries.Add(item2);
+                }
+            }
+            if (File.Exists(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\optifine\Patcher.class"))
+            {
+                SLC.path(System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\OptiFine\" + DO.name.Split(':')[2]);
+                string arg = "-cp \"" + DO.path + "\" optifine.Patcher " + System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".jar " + DO.path + " " + System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\OptiFine\" + DO.name.Split(':')[2] + @"\" + DO.name.Split(':')[2] + ".jar";
+                Process process = Process.Start(javaPath, arg);
+                await Task.Run(() => { process.WaitForExit(); });
+                process.Close();
+            }
+            else
+            {
+                throw new SquareMinecraftLauncherException("安装失败，OptiFine存在问题");
+            }
+            SLC.DelPathOrFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\OptiFine\");
             for (int i = 0; versionText.libraries.ToArray().Length > i; i++)
             {
                 str = str + "{\"name\":\"" + versionText.libraries[i].name + "\",";
@@ -118,7 +146,7 @@
             return (str + ",\"mainClass\": \"net.minecraft.launchwrapper.Launch\"");
         }
 
-        internal async Task<string> OptifineJson(string version, OptiFineList optiFineList)
+        internal async Task<string> OptifineJson(string version, OptiFineList optiFineList, string javaPath)
         {
             if (this.tools.OptifineExist(version))
             {
@@ -130,7 +158,7 @@
             string str2 = null;
             if (root.minecraftArguments == null)
             {
-                JObject obj2 = (JObject) JsonConvert.DeserializeObject(file);
+                JObject obj2 = (JObject)JsonConvert.DeserializeObject(file);
                 str2 = str2 + "{\"arguments\": {\"game\": [";
                 for (int i = 0; (obj2["arguments"]["game"].ToArray<JToken>().Length - 1) > 0; i++)
                 {
@@ -163,9 +191,9 @@
                 {
                     str2 = str2 + "\"--tweakClass\"," + "\"optifine.OptiFineTweaker\"]},";
                 }
-                return (str2 + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename) + "}");
+                return (str2 + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename, javaPath) + "}");
             }
-            str2 = str2 + "{" + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename);
+            str2 = str2 + "{" + await liteloaderJsonY(versionText, optiFineList.type, optiFineList.patch, version, optiFineList.filename, javaPath);
             ForgeJsonEarly.Root root3 = JsonConvert.DeserializeObject<ForgeJsonEarly.Root>(file);
             try
             {

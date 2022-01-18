@@ -2,10 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SquareMinecraftLauncher.Core;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SquareMinecraftLauncher.Minecraft
@@ -31,7 +28,7 @@ namespace SquareMinecraftLauncher.Minecraft
             List<string> list = new List<string>();
             foreach (JToken token in (JArray)JsonConvert.DeserializeObject(new mcbbsnews().TakeTheMiddle(text, "\"versions\":", "]}") + "]"))
             {
-                    list.Add(token["id"].ToString());
+                list.Add(token["id"].ToString());
             }
             return list.ToArray();
         }
@@ -52,7 +49,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 throw new SquareMinecraftLauncherException("请求失败");
             }
             var obj = JsonConvert.DeserializeObject<List<category>>(json);
-            for(int i = 0;i < obj.Count;i++)
+            for (int i = 0; i < obj.Count; i++)
             {
                 obj[i].name = youdao.GetChinese(obj[i].name);
             }

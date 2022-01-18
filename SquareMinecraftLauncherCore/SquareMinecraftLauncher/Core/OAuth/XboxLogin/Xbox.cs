@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace SquareMinecraftLauncher.Core.OAuth
 {
@@ -26,16 +22,16 @@ namespace SquareMinecraftLauncher.Core.OAuth
         /// </summary>
         /// <param name="code">通过XboxLogin.GetToken函数获取</param>
         /// <returns></returns>
-        public string[] XSTSLogin(string code) 
+        public string[] XSTSLogin(string code)
         {
-            string json = web.Post("https://xsts.auth.xboxlive.com/xsts/authorize", "{ \"Properties\": { \"SandboxId\": \"RETAIL\", \"UserTokens\": [ \""+code+"\" ] }, \"RelyingParty\": \"rp://api.minecraftservices.com/\", \"TokenType\": \"JWT\" }");
+            string json = web.Post("https://xsts.auth.xboxlive.com/xsts/authorize", "{ \"Properties\": { \"SandboxId\": \"RETAIL\", \"UserTokens\": [ \"" + code + "\" ] }, \"RelyingParty\": \"rp://api.minecraftservices.com/\", \"TokenType\": \"JWT\" }");
             var jsonConvert = JsonConvert.DeserializeObject<XboxToken.Root>(json);
             string[] r = null;
             try
             {
                 r = new string[] { jsonConvert.Token, jsonConvert.DisplayClaims.xui[0].uhs };
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 var jsonConvert1 = JsonConvert.DeserializeObject<XboxErr.Root>(json);
                 throw new SquareMinecraftLauncherException(jsonConvert1.XErr.ToString());

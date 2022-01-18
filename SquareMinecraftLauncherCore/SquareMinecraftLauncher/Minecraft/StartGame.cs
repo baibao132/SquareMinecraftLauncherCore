@@ -1,5 +1,6 @@
 ﻿namespace SquareMinecraftLauncher.Minecraft
 {
+    using global::SquareMinecraftLauncher.Core;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SquareMinecraftLauncher;
@@ -14,7 +15,6 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using windows;
-    using global::SquareMinecraftLauncher.Core;
 
     public sealed class Game
     {
@@ -172,7 +172,7 @@
         /// <param name="RearParameter">后置参数</param>
         public async Task StartGame(string version, string java, int RAM, string name, string uuid, string token, string JVMparameter, string RearParameter)
         {
-            if (string.IsNullOrEmpty(version)|| string.IsNullOrEmpty(java) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(uuid) || string.IsNullOrEmpty(token) || RAM == 0)
+            if (string.IsNullOrEmpty(version) || string.IsNullOrEmpty(java) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(uuid) || string.IsNullOrEmpty(token) || RAM == 0)
             {
                 throw new SquareMinecraftLauncherException("任何一项都不能为空");
             }

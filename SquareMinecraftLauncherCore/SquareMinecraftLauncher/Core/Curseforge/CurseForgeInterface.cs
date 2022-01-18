@@ -1,8 +1,4 @@
 ﻿using SquareMinecraftLauncher.Minecraft;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SquareMinecraftLauncher.Core.Curseforge
@@ -14,7 +10,7 @@ namespace SquareMinecraftLauncher.Core.Curseforge
         /// </summary>
         /// <param name="name">搜索名</param>
         /// <returns></returns>
-        Task<List<CurseForgeItem>> Search(string name);
+        Task<CurseForgeItem[]> Search(string name);
         ///// <summary>
         ///// 搜索
         ///// </summary>
@@ -32,7 +28,7 @@ namespace SquareMinecraftLauncher.Core.Curseforge
         /// 热门
         /// </summary>
         /// <returns></returns>
-        Task<List<CurseForgeItem>> popular();
+        Task<CurseForgeItem[]> popular();
         /// <summary>
         /// 下载
         /// </summary>

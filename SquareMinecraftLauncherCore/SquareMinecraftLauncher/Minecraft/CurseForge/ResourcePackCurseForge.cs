@@ -1,8 +1,5 @@
 ﻿using SquareMinecraftLauncher.Core.Curseforge;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SquareMinecraftLauncher.Minecraft
@@ -20,32 +17,32 @@ namespace SquareMinecraftLauncher.Minecraft
             return download;
         }
 
-        public async Task<List<CurseForgeItem>> popular()
+        public async Task<CurseForgeItem[]> popular()
         {
             return await popular(null);
         }
 
-        public async Task<List<CurseForgeItem>> Search(string name)
+        public async Task<CurseForgeItem[]> Search(string name)
         {
             return await Search(name, null);
         }
 
-        public async Task<List<CurseForgeItem>> popular(category category)
+        public async Task<CurseForgeItem[]> popular(category category)
         {
-            List<CurseForgeItem> forgeItems = new List<CurseForgeItem>();
+            CurseForgeItem[] forgeItems = new CurseForgeItem[0];
             await Task.Factory.StartNew(() =>
             {
-                forgeItems = Curseforge.popular(12,category);
+                forgeItems = Curseforge.popular(12, category);
             });
             return forgeItems;
         }
 
-        public async Task<List<CurseForgeItem>> Search(string name, category category)
+        public async Task<CurseForgeItem[]> Search(string name, category category)
         {
-            List<CurseForgeItem> forgeItems = new List<CurseForgeItem>();
+            CurseForgeItem[] forgeItems = new CurseForgeItem[0];
             await Task.Factory.StartNew(() =>
             {
-                forgeItems = Curseforge.Search(name, 12,category);
+                forgeItems = Curseforge.Search(name, 12, category);
             });
             return forgeItems;
         }
@@ -54,7 +51,7 @@ namespace SquareMinecraftLauncher.Minecraft
         {
             await Task.Factory.StartNew(() =>
             {
-                 System.IO.Directory.Move(download.path, Directory.GetCurrentDirectory() + @"\.minecraft\resourcepacks");
+                System.IO.Directory.Move(download.path, Directory.GetCurrentDirectory() + @"\.minecraft\resourcepacks");
 
             });
             return true;

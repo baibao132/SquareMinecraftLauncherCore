@@ -1,27 +1,18 @@
-﻿using SquareMinecraftLauncher.Core;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace SquareMinecraftLauncher.Minecraft
 {
     public class AssetDownload
     {
         Process process = new Process();
-        int _NumThreads; 
-        string _version;
-        bool _disposed = false;
         int AllFile = 0;
         int FinishFile = 0;
         AssetDownloadCore gacDownload = null;
-        public async Task BuildAssetDownload(int NumThreads,string version)
+        public async Task BuildAssetDownload(int NumThreads, string version)
         {
             if (DownloadProgressChanged == null) throw new SquareMinecraftLauncherException("未对事件实例化，不排除未将事件代码放置改代码前");
             Tools tools = new Tools();
@@ -29,7 +20,7 @@ namespace SquareMinecraftLauncher.Minecraft
             gacDownload.StartDownload();
             Thread thread = new Thread(Process_OutputDataReceived);
             thread.Start();
-            await Task.Run(() => { while (!gacDownload.GetEndDownload())Thread.Sleep(3000); });
+            await Task.Run(() => { while (!gacDownload.GetEndDownload()) Thread.Sleep(3000); });
         }
 
         [field: CompilerGenerated]
@@ -39,16 +30,16 @@ namespace SquareMinecraftLauncher.Minecraft
         private void Process_OutputDataReceived()
         {
             DownloadIntermation intermation = new DownloadIntermation();
-                while (!gacDownload.GetEndDownload())
-                {
-                    intermation.FinishFile = gacDownload.EndDownload;
-                    intermation.AllFile = AllFile;
-                    intermation.Progress = gacDownload.Progress;
-                    intermation.Speed = gacDownload.Speed;
-                    DownloadProgressChanged(intermation);
-                    Console.WriteLine(gacDownload.EndDownload + "|" + Math.Round(gacDownload.Progress, 1) + "|" + Math.Round(gacDownload.Speed, 1));
-                    Thread.Sleep(1000);
-                }
+            while (!gacDownload.GetEndDownload())
+            {
+                intermation.FinishFile = gacDownload.EndDownload;
+                intermation.AllFile = AllFile;
+                intermation.Progress = gacDownload.Progress;
+                intermation.Speed = gacDownload.Speed;
+                DownloadProgressChanged(intermation);
+                Console.WriteLine(gacDownload.EndDownload + "|" + Math.Round(gacDownload.Progress, 1) + "|" + Math.Round(gacDownload.Speed, 1));
+                Thread.Sleep(1000);
+            }
             intermation.FinishFile = FinishFile;
             intermation.AllFile = AllFile;
             intermation.Progress = 100;

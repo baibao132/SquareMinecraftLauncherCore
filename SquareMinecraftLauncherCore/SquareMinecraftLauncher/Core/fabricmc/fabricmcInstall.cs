@@ -1,12 +1,9 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SquareMinecraftLauncher.Core.Forge;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json.Linq;
 
 namespace SquareMinecraftLauncher.Core.fabricmc
 {
@@ -15,7 +12,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
         List<ForgeY.LibrariesItem> libItem = new List<ForgeY.LibrariesItem>();
         Download web = new Download();
         SquareMinecraftLauncherCore SLC = new SquareMinecraftLauncherCore();
-        public void GetLoaderVersionJson(string loaderVersion,string version,string Idversion)
+        public void GetLoaderVersionJson(string loaderVersion, string version, string Idversion)
         {
             var json = web.getHtml("https://maven.fabricmc.net/net/fabricmc/fabric-loader/" + loaderVersion + "/fabric-loader-" + loaderVersion + ".json");
             if (json != null)
@@ -70,7 +67,7 @@ namespace SquareMinecraftLauncher.Core.fabricmc
                 }
                 string mainclass = jo.mainClass.client;//fabricmcMainClass
                 string Arguments = ArgumentsJson(json1); //组成新的Arguments
-                Arguments = Arguments.Substring(0,Arguments.Length-1);
+                Arguments = Arguments.Substring(0, Arguments.Length - 1);
                 SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + version + @"\" + version + ".json", new NewJson().newJson(libItem, Arguments, mainclass, jo1));
                 return;
             }

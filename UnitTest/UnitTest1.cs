@@ -6,6 +6,7 @@ using SquareMinecraftLauncher.Core.Curseforge;
 using SquareMinecraftLauncher.Minecraft;
 using System.Threading.Tasks;
 using System.Threading;
+using SquareMinecraftLauncher.Core;
 
 namespace UnitTest
 {
@@ -15,16 +16,9 @@ namespace UnitTest
         [TestMethod]
         public async Task TestMethod1Async()
         {
-            AssetDownload assetDownload = new AssetDownload();
-            assetDownload.DownloadProgressChanged += AssetDownload_DownloadProgressChanged;
-            await assetDownload.BuildAssetDownload(4, "1.17.1");
-
-            
-        }
-
-        private void AssetDownload_DownloadProgressChanged(AssetDownload.DownloadIntermation Log)
-        {
-            Console.WriteLine(Log.Progress);
+            ModCurseForge curseforge = new ModCurseForge();
+            var a = await curseforge.popular();
+            foreach (var i in a) Console.WriteLine(i.summary);
         }
     }
 }

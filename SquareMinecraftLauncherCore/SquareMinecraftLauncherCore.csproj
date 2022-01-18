@@ -136,6 +136,9 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\2020\source\repos\SquareMinecraftLauncher\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NSoup, Version=0.8.0.0, Culture=neutral, PublicKeyToken=6d44e53f0a65e802, processorArchitecture=MSIL">
+      <HintPath>..\packages\NSoup.0.8.0\lib\net40\NSoup.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -158,6 +161,8 @@
     <Compile Include="json\MinecraftSkin.cs" />
     <Compile Include="json\MinecraftSkinItem.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Forge\ForgeMaster.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\WIKI\wiki.cs" />
+    <Compile Include="SquareMinecraftLauncher\Minecraft\WIKI\WiKiInformation.cs" />
     <Compile Include="SquareMinecraftLauncher\Minecraft\AssetDownload\AssetDownload.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\curseforge.cs" />
     <Compile Include="SquareMinecraftLauncher\Core\Curseforge\CurseForgeInterface.cs" />

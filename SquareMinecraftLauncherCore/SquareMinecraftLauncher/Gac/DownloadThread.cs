@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
 using System.IO;
+using System.Net;
 using System.Threading;
 
 namespace Gac
@@ -10,7 +8,7 @@ namespace Gac
     public class DownloadThread
     {
         private string saveFilePath;
-        private string  downUrl;
+        private string downUrl;
         private long block;
         private int threadId = -1;
         private long downLength;
@@ -33,13 +31,13 @@ namespace Gac
             //task
             Thread td = new Thread(new ThreadStart(() =>
             {
-                 if (downLength < block)//未下载完成
+                if (downLength < block)//未下载完成
                 {
                     try
                     {
                         int startPos = (int)(block * (threadId - 1) + downLength);//开始位置
                         int endPos = (int)(block * threadId - 1);//结束位置
-                     //   Console.WriteLine("Thread " + this.threadId + " start download from position " + startPos + "  and endwith " + endPos);
+                                                                 //   Console.WriteLine("Thread " + this.threadId + " start download from position " + startPos + "  and endwith " + endPos);
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downUrl);
                         request.Referer = downUrl.ToString();
                         request.Method = "GET";
@@ -70,7 +68,7 @@ namespace Gac
                                 }
                                 threadfile.Close(); //using 用完后可以自动释放..手动释放一遍.木有问题的(其实是多余的)
                                 _stream.Close();
-                              //  Console.WriteLine("Thread " + this.threadId + " download finish");
+                                //  Console.WriteLine("Thread " + this.threadId + " download finish");
                                 this.finish = true;
                             }
                         }
@@ -78,9 +76,9 @@ namespace Gac
                     catch (Exception e)
                     {
                         this.downLength = -1;
-                  //      Console.WriteLine("Thread " + this.threadId + ":" + e.Message);
+                        //      Console.WriteLine("Thread " + this.threadId + ":" + e.Message);
                     }
-                } 
+                }
             }));
             td.IsBackground = true;
             td.Start();

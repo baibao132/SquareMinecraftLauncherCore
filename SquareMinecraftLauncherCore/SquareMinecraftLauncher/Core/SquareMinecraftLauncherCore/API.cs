@@ -8,7 +8,6 @@
 
     internal class API
     {
-        private static StreamWriter writer = new StreamWriter(System.IO.Directory.GetCurrentDirectory() + "\\SquareMinecraftLauncher\\Out.Log");
         private static bool a;
         private Download web = new Download();
 
@@ -23,13 +22,14 @@
             {
                 if (!a)
                 {
-                   // Console.SetOut(writer);
+                    // Console.SetOut(writer);
                     try
                     {
                         File.SetAttributes(System.IO.Directory.GetCurrentDirectory() + "\\SquareMinecraftLauncherDownload", FileAttributes.Hidden);
+                        File.SetAttributes(System.IO.Directory.GetCurrentDirectory() + "\\SquareMinecraftLauncher", FileAttributes.Hidden);
                     }
                     catch (Exception ex) { }
-                    string b = web.getHtml("http://mirror.baibaoblog.cn:88/tj.php");
+                    string b = web.getHtml("http://www.baibaoblog.cn:88/tj.php");
                     if (b != null)
                     {
                         Console.WriteLine(b);

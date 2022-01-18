@@ -1,11 +1,6 @@
-﻿using Gac;
-using SquareMinecraftLauncher.Minecraft;
+﻿using SquareMinecraftLauncher.Minecraft;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,7 +32,12 @@ namespace SquareMinecraftLauncher.Core
         {
             if (ADindex >= download.Length) return null;
             ADindex++;
-            return download[ADindex - 1];
+            try
+            {
+                return download[ADindex - 1];
+            }
+            catch (Exception) { }
+            return null;
         }
 
         public void StartDownload()
@@ -72,7 +72,12 @@ namespace SquareMinecraftLauncher.Core
                     files.Add(fileDownloader);
                 }
             }
-            if (files.Count == 0) return;
+            if (files.Count == 0)
+            {
+                Progress = 100;
+                DuckEndDownload = download.Length;
+                return;
+            }
             await Task.Factory.StartNew(() =>
             {
                 while (true)
@@ -95,7 +100,7 @@ namespace SquareMinecraftLauncher.Core
                     {
                         DuckEndDownload += files.Count;
                         Speed = 1;
-                        Progress += 0.5 / download.Length * files.Count;
+                        Progress += 100 / (double)(download.Length) * files.Count;
                         DownloadProgress();//递归
 
                         return;

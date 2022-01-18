@@ -2,15 +2,13 @@
 using BlessingSkinJson;
 using json4;
 using mcbbs;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SquareMinecraftLauncher.Core;
 using SquareMinecraftLauncher.Core.fabricmc;
 using SquareMinecraftLauncher.Core.Forge;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,7 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using windows;
 using File = System.IO.File;
-using SquareMinecraftLauncher.Core;
 
 namespace SquareMinecraftLauncher.Minecraft
 {
@@ -46,7 +43,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <param name="downloadSource">下载源</param>
         public void DownloadSourceInitialization(DownloadSource downloadSource)
         {
-            
+
             if (downloadSource == DownloadSource.MinecraftSource)
             {
                 DSI = "Minecraft";
@@ -91,7 +88,7 @@ namespace SquareMinecraftLauncher.Minecraft
         public async Task<bool> ForgeInstallation(string ForgePath, string version, string java)
         {
             string str;
-            if ((this.SLC.FileExist(ForgePath) == null) && new Unzip().UnZipFile(ForgePath, @"SquareMinecraftLauncher\Forge\", out str))
+            if ((this.SLC.FileExist(ForgePath) == null) && new Unzip().UnZipFile(ForgePath, System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncher\Forge\", out str))
             {
                 string[] textArray1 = new string[] { System.Directory.GetCurrentDirectory(), @"\.minecraft\versions\", version, @"\", version, ".jar" };
                 if (this.SLC.FileExist(string.Concat(textArray1)) == null)
@@ -107,11 +104,11 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                     if (int.Parse(IDversion.Split('.')[1]) > 12)
                     {
-                       await ForgeMaster.ForgeInstallHigh(version, java);
+                        await ForgeMaster.ForgeInstallHigh(version, java);
                     }
                     else
                     {
-                        ForgeMaster.ForgeInstallDown(version);
+                        ForgeMaster.ForgeInstallDown(version, java);
                     }
                     this.SLC.DelPathOrFile(@"SquareMinecraftLauncher\Forge\");
                     return true;
@@ -141,7 +138,7 @@ namespace SquareMinecraftLauncher.Minecraft
         {
             MCDownload[] downloadArray;
             MinecraftDownload download = new MinecraftDownload();
-            
+
             try
             {
                 var root = this.SLC.versionjson<json4.Root>(version);
@@ -220,8 +217,9 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         string OpVersion = strArray[2];
                         MCDownload op = download.DownloadOptifine(version, "OptiFine_" + OpVersion + ".jar");
-                        download2.path = op.path;
+                        download2.path = System.Directory.GetCurrentDirectory() + @"\.minecraft\libraries\optifine\OptiFine\" + OpVersion + @"\" + OpVersion + ".jar";
                         download2.Url = op.Url;
+                        download2.name = op.name;
                     }
                     if (strArray[1] == "forge")
                     {
@@ -233,10 +231,10 @@ namespace SquareMinecraftLauncher.Minecraft
                     }
                     list.Add(download2);
                 }
-            //if (ForgeExist(version))
-            //    downloadArray = this.SLC.screening(list.ToArray());
-            //else
-            downloadArray = list.ToArray();
+                //if (ForgeExist(version))
+                //    downloadArray = this.SLC.screening(list.ToArray());
+                //else
+                downloadArray = list.ToArray();
             }
             catch (Exception)
             {
@@ -280,7 +278,7 @@ namespace SquareMinecraftLauncher.Minecraft
         public MCDownload[] GetAllNatives(string version)
         {
             MCDownload[] downloadArray;
-            
+
             try
             {
                 List<MCDownload> list = new List<MCDownload>();
@@ -359,7 +357,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public AllTheExistingVersion[] GetAllTheExistingVersion()
         {
-            
+
             new mcbbsnews();
             List<AllTheExistingVersion> list = new List<AllTheExistingVersion>();
             if (!System.IO.Directory.Exists(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions"))
@@ -380,7 +378,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         continue;
                     }
-                    AllTheExistingVersion item = new AllTheExistingVersion { path = str,version = str2 };
+                    AllTheExistingVersion item = new AllTheExistingVersion { path = str, version = str2 };
                     if (!this.vp)
                     {
                         new Thread(new ThreadStart(this.SLC.MCVersion)) { IsBackground = true }.Start();
@@ -508,20 +506,12 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public async Task<ForgeList[]> GetForgeList(string version)
         {
-            string localForgeVersion = this.GetLocalForgeVersion(version);
-            if (localForgeVersion != null)
+            foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
             {
-                char[] separator = new char[] { '-' };
-                version = localForgeVersion.Split(separator)[0];
-            }
-            else
-            {
-                foreach (AllTheExistingVersion version2 in this.GetAllTheExistingVersion())
+                if (version2.version == version)
                 {
-                    if (version2.version == version)
-                    {
-                        version = version2.IdVersion;
-                    }
+                    version = version2.IdVersion;
+                    break;
                 }
             }
             string str2 = null;
@@ -556,175 +546,8 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public List<JavaVersion> GetJavaPath()
         {
-            #region java
-            //try
-            //{
-            //    string environmentPath = Environment.GetEnvironmentVariable("JAVA_HOME");
-
-            //    if (!string.IsNullOrEmpty(environmentPath) && File.Exists(environmentPath + @"\bin\javaw.exe"))
-            //    {
-            //        vs.Add(new JavaVersion() { Path = $@"{environmentPath}\bin\javaw.exe", Version = GetProductVersion(environmentPath + @"\bin\javaw.exe") });
-            //    }
-            //    //寻找 JDK
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\JavaSoft\JDK\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string currentVersion = rk.GetValue("CurrentVersion").ToString();
-
-            //            RegistryKey key = rk.OpenSubKey(currentVersion);
-            //            string path = key.GetValue("JavaHome").ToString();
-
-            //            if (File.Exists(path + @"\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\JavaSoft\JDK\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string currentVersion = rk.GetValue("CurrentVersion").ToString();
-
-            //            RegistryKey key = rk.OpenSubKey(currentVersion);
-            //            string path = key.GetValue("JavaHome").ToString();
-
-            //            if (File.Exists(path + @"\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-            //    //寻找 JRE
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string currentVersion = rk.GetValue("CurrentVersion").ToString();
-
-            //            RegistryKey key = rk.OpenSubKey(currentVersion);
-            //            string path = key.GetValue("JavaHome").ToString();
-
-            //            if (File.Exists(path + @"\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\JavaSoft\Java Runtime Environment\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string currentVersion = rk.GetValue("CurrentVersion").ToString();
-
-            //            RegistryKey key = rk.OpenSubKey(currentVersion);
-            //            string path = key.GetValue("JavaHome").ToString();
-
-            //            if (File.Exists(path + @"\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}\bin\javaw.exe", Version = GetProductVersion(path + @"\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-
-            //    //寻找 Microsoft 的 JDK
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\JDK\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            foreach (string currentVersion in rk.GetSubKeyNames())
-            //            {
-            //                RegistryKey key = rk.OpenSubKey(currentVersion + @"\hotspot\MSI");
-            //                string path = key.GetValue("Path").ToString();
-
-            //                if (File.Exists(path + @"bin\javaw.exe"))
-            //                {
-            //                    vs.Add(new JavaVersion() { Path = path + @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\JDK\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            foreach (string currentVersion in rk.GetSubKeyNames())
-            //            {
-            //                RegistryKey key = rk.OpenSubKey(currentVersion + @"\hotspot\MSI");
-            //                string path = key.GetValue("Path").ToString();
-
-            //                if (File.Exists(path + @"bin\javaw.exe"))
-            //                {
-            //                    vs.Add(new JavaVersion() { Path = path + @"\bin\javaw.exe", Version = GetProductVersion(path + @"bin\javaw.exe") });
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    //寻找 Minecraft Launcher 的 Java
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Mojang\InstalledProducts\Minecraft Launcher\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string path = rk.GetValue("InstallLocation").ToString();
-
-            //            if (File.Exists(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe") });
-            //            }
-
-            //            if (File.Exists(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe") });
-            //            }
-
-            //            if (File.Exists(path + @"runtime\jre-x64\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-x64\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-x64\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-
-            //    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Mojang\InstalledProducts\Minecraft Launcher\"))
-            //    {
-            //        if (rk != null)
-            //        {
-            //            string path = rk.GetValue("InstallLocation").ToString();
-
-            //            if (File.Exists(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\java-runtime-alpha\windows-x64\java-runtime-alpha\bin\javaw.exe") });
-            //            }
-
-            //            if (File.Exists(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-legacy\windows-x64\jre-legacy\bin\javaw.exe") });
-            //            }
-
-            //            if (File.Exists(path + @"runtime\jre-x64\bin\javaw.exe"))
-            //            {
-            //                vs.Add(new JavaVersion() { Path = $@"{path}runtime\jre-x64\bin\javaw.exe", Version = GetProductVersion(path + @"runtime\jre-x64\bin\javaw.exe") });
-            //            }
-            //        }
-            //    }
-
-            //    return vs;
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
-            #endregion
             SearchBase searchBase = new SearchBase();
-            var devices = searchBase.GetRemovableDeviceID();
-            foreach (var i in devices)
-            {
-                searchBase.addSubDirectory();
-            }
+            searchBase.addSubDirectory();
             return searchBase.vs;
         }
 
@@ -907,7 +730,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public MCDownload[] GetMissingFile(string version)
         {
-            
+
             List<MCDownload> list = new List<MCDownload>();
             foreach (MCDownload download in this.GetAllFile(version))
             {
@@ -942,7 +765,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public MCDownload[] GetMissingNatives(string version)
         {
-            
+
             List<MCDownload> list = new List<MCDownload>();
             foreach (MCDownload download in this.GetAllNatives(version))
             {
@@ -967,10 +790,6 @@ namespace SquareMinecraftLauncher.Minecraft
                 {
                     version = version2.IdVersion;
                     break;
-                }
-                if (version2.version == allTheExistingVersion[allTheExistingVersion.Length - 1].version)
-                {
-                    throw new SquareMinecraftLauncherException("未找到该版本");
                 }
             }
             List<OptiFineList> list = new List<OptiFineList>();
@@ -1006,7 +825,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public int GetOSBit()
         {
-            
+
             if (Environment.Is64BitOperatingSystem)
             {
                 return 0x40;
@@ -1155,12 +974,12 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <returns></returns>
         public Getlogin MinecraftLogin(string username, string password)
         {
-            
+
             if ((username == "") || (password == "") || (username == null) || (password == null))
             {
                 throw new SquareMinecraftLauncherException("账号密码不得为空");
             }
-            string str = this.web.Post("https://authserver.mojang.com/authenticate","{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\",\"clientToken\": \"sefsezfe22\", \"requestUser\":\"true\"}");
+            string str = this.web.Post("https://authserver.mojang.com/authenticate", "{\"agent\":{\"name\":\"Minecraft\",\"version\":\"1\"},\"username\":\"" + username + "\", \"password\":\"" + password + "\",\"clientToken\": \"sefsezfe22\", \"requestUser\":\"true\"}");
             if ((str == null) || !(str != ""))
             {
                 throw new SquareMinecraftLauncherException("请检查网络");
@@ -1176,8 +995,8 @@ namespace SquareMinecraftLauncher.Minecraft
                     name = root.selectedProfile.name
                 };
                 Console.WriteLine(getlogin.token);
-               // string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
-               // Console.WriteLine(str1);
+                // string str1 = this.web.Post("https://authserver.mojang.com/authenticate", getlogin.token, "Authorization");
+                // Console.WriteLine(str1);
                 return getlogin;
             }
             if (root.error == "ForbiddenOperationException")
@@ -1191,7 +1010,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     throw new SquareMinecraftLauncherException("密码账户错误");
                 }
             }
-            if(root.error == "GoneException") throw new SquareMinecraftLauncherException("账户已迁移微软");
+            if (root.error == "GoneException") throw new SquareMinecraftLauncherException("账户已迁移微软");
             throw new SquareMinecraftLauncherException(root.error);
         }
 
@@ -1205,7 +1024,7 @@ namespace SquareMinecraftLauncher.Minecraft
             var obj1 = JsonConvert.DeserializeObject<MinecraftSkin.Root>(json);
             byte[] outputb = Convert.FromBase64String(obj1.properties[0].value);
             string orgStr = Encoding.Default.GetString(outputb);
-            var obj = JsonConvert.DeserializeObject<MinecraftSkinItem.Root> (orgStr);
+            var obj = JsonConvert.DeserializeObject<MinecraftSkinItem.Root>(orgStr);
             return obj.textures.SKIN.url;
 
         }
@@ -1259,8 +1078,9 @@ namespace SquareMinecraftLauncher.Minecraft
         /// </summary>
         /// <param name="version">版本</param>
         /// <param name="patch">patch</param>
+        /// <param name="javaPath">Java路径</param>
         /// <returns></returns>
-        public async Task<bool> OptifineInstall(string version, string patch)
+        public async Task<bool> OptifineInstall(string version, string patch, string javaPath)
         {
             OptiFineList[] optiFineList = await GetOptiFineList(version);
             AllTheExistingVersion[] allTheExistingVersion = this.GetAllTheExistingVersion();
@@ -1286,7 +1106,7 @@ namespace SquareMinecraftLauncher.Minecraft
                 }
             }
             OptifineCore core = new OptifineCore();
-            this.SLC.wj(@".minecraft\versions\" + str + @"\" + str + ".json", await core.OptifineJson(str, list));
+            this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", await core.OptifineJson(str, list, javaPath));
             return true;
         }
         /// <summary>
@@ -1294,7 +1114,8 @@ namespace SquareMinecraftLauncher.Minecraft
         /// </summary>
         /// <param name="ExpansionPack">扩展包类型</param>
         /// <param name="version">版本</param>
-        public void UninstallTheExpansionPack(ExpansionPack ExpansionPack, string version)
+        /// <param name="java">Java</param>
+        public void UninstallTheExpansionPack(ExpansionPack ExpansionPack, string version, string java)
         {
             string str = version;
             MinecraftDownload download = new MinecraftDownload();
@@ -1325,7 +1146,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     this.SLC.wj(System.Directory.GetCurrentDirectory() + @"\.minecraft\versions\" + str + @"\" + str + ".json", text);
                     if (strArray.Length != 0)
                     {
-                        this.SLC.opKeep(version, strArray[strArray.Length - 1]);
+                        this.SLC.opKeep(version, strArray[strArray.Length - 1], java);
                     }
                     if (!flag)
                     {
@@ -1348,7 +1169,7 @@ namespace SquareMinecraftLauncher.Minecraft
                     {
                         break;
                     }
-                    this.SLC.opKeep(str, strArray[strArray.Length - 1]);
+                    this.SLC.opKeep(str, strArray[strArray.Length - 1], java);
                     return;
 
                 case ExpansionPack.Optifine:

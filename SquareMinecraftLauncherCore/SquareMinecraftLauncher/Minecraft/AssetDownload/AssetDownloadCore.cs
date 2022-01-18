@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,9 +58,14 @@ namespace SquareMinecraftLauncher.Minecraft
                         Thread.Sleep(2000);
                     }
                 });
+                Unzip unzip = new Unzip();
+                string Out = "";
+                unzip.UnZipFile(System.Directory.GetCurrentDirectory() + @"\SquareMinecraftLauncherDownload\Asset\Assets.zip", System.Directory.GetCurrentDirectory() + @"\.minecraft\assets\", out Out);
                 Thread.Sleep(4000);
             }
             Console.WriteLine("pass");
+            tools.DownloadSourceInitialization(DownloadSource.MCBBSSource);
+            Progress = 50;
             DuckEndDownload = 0;
             download = tools.GetMissingAsset(Version);
             EndDownload = tools.GetAllTheAsset(Version).Length - download.Length;
@@ -76,7 +79,7 @@ namespace SquareMinecraftLauncher.Minecraft
         private async void DownloadProgress()
         {
             List<downloader> files = new List<downloader>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 MCDownload download = AssignedDownload();
                 if (download != null)
@@ -87,7 +90,12 @@ namespace SquareMinecraftLauncher.Minecraft
                     files.Add(fileDownloader);
                 }
             }
-            if (files.Count == 0) return;
+            if (files.Count == 0)
+            {
+                Progress = 100;
+                DuckEndDownload = download.Length;
+                return;
+            }
             await Task.Factory.StartNew(() =>
             {
                 while (true)
@@ -111,7 +119,7 @@ namespace SquareMinecraftLauncher.Minecraft
                         DuckEndDownload += files.Count;
                         EndDownload += files.Count;
                         Speed = 1;
-                        Progress += 0.5 / download.Length * files.Count;
+                        Progress += 50 / (double)(download.Length) * files.Count;
                         DownloadProgress();//递归
 
                         return;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SquareMinecraftLauncher.Minecraft
+﻿namespace SquareMinecraftLauncher.Minecraft
 {
     public sealed class Getlogin
     {
@@ -199,7 +193,7 @@ namespace SquareMinecraftLauncher.Minecraft
         /// <summary>
         /// 皮肤
         /// </summary>
-        public string Skin {get;set;}
+        public string Skin { get; set; }
         /// <summary>
         /// 披风
         /// </summary>
@@ -216,6 +210,6 @@ namespace SquareMinecraftLauncher.Minecraft
     public class JavaVersion
     {
         public string Version { get; internal set; }
-        public string Path{ get; internal set; }
+        public string Path { get; internal set; }
     }
 }

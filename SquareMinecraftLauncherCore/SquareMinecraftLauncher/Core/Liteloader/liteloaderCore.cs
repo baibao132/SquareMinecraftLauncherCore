@@ -4,8 +4,6 @@
     using global::SquareMinecraftLauncher.Minecraft;
     using Newtonsoft.Json;
     using SquareMinecraftLauncher;
-    using System;
-    using System.IO;
     using System.Threading.Tasks;
 
     internal class LiteloaderCore
@@ -57,20 +55,24 @@
             string str = string.Concat(textArray1);
             foreach (Lib lib in libraries.lib)
             {
-                ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem {
+                ForgeY.LibrariesItem item2 = new ForgeY.LibrariesItem
+                {
                     name = lib.name
                 };
-                ForgeY.Downloads downloads2 = new ForgeY.Downloads {
+                ForgeY.Downloads downloads2 = new ForgeY.Downloads
+                {
                     artifact = new ForgeY.Artifact()
                 };
                 downloads2.artifact.url = " ";
                 item2.downloads = downloads2;
                 versionText.libraries.Add(item2);
             }
-            ForgeY.LibrariesItem item = new ForgeY.LibrariesItem {
+            ForgeY.LibrariesItem item = new ForgeY.LibrariesItem
+            {
                 name = "com.mumfrey:liteloader:" + libraries.version
             };
-            ForgeY.Downloads downloads = new ForgeY.Downloads {
+            ForgeY.Downloads downloads = new ForgeY.Downloads
+            {
                 artifact = new ForgeY.Artifact()
             };
             downloads.artifact.url = this.Minecraft.DownloadLiteloader(libraries.version).Url;

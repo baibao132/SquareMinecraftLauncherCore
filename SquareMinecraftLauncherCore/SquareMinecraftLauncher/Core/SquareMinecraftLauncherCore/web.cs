@@ -11,12 +11,12 @@
     {
         internal HttpWebResponse CreateGetHttpResponse(string url)
         {
-            HttpWebRequest request1 = (HttpWebRequest) WebRequest.Create(url);
+            HttpWebRequest request1 = (HttpWebRequest)WebRequest.Create(url);
             request1.Timeout = 6000;
             request1.ContentType = "text/html;chartset=UTF-8";
             request1.UserAgent = "Mozilla / 5.0(Windows NT 10.0; Win64; x64; rv: 48.0) Gecko / 20100101 Firefox / 48.0";
             request1.Method = "GET";
-            return (HttpWebResponse) request1.GetResponse();
+            return (HttpWebResponse)request1.GetResponse();
         }
 
         internal string Get(string URL, string Type)
@@ -41,6 +41,9 @@
 
         public string getHtml(string url)
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
             Stream stream;
             WebClient client = new WebClient();
             try
@@ -63,7 +66,7 @@
                 return null;
             }
         }
-        internal string getHtml(string url,bool WL)
+        internal string getHtml(string url, bool WL)
         {
             if (WL == true)
             {
@@ -79,7 +82,7 @@
         {
             return Post(URL, jsonParas, "application/json");
         }
-        internal string Post(string URL, string jsonParas,string Type)
+        internal string Post(string URL, string jsonParas, string Type)
         {
             string result = "";
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);

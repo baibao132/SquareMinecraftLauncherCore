@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace Gac
 {
@@ -88,13 +87,13 @@ namespace Gac
         /// <param name="downloadUrl">下载路径</param>
         /// <param name="fileSaveDir"> 文件保存目录</param>
         /// <param name="threadNum">下载线程数</param>
-        public FileDownloader(string downloadUrl, string fileSaveDir,string filename="", int threadNum=3)
+        public FileDownloader(string downloadUrl, string fileSaveDir, string filename = "", int threadNum = 3)
         {
             try
             {
                 if (string.IsNullOrEmpty(filename))
                 {
-                     filename = Uri.UnescapeDataString(Path.GetFileName(downloadUrl));//获取文件名称 uri 解码中文字符
+                    filename = Uri.UnescapeDataString(Path.GetFileName(downloadUrl));//获取文件名称 uri 解码中文字符
                 }
                 //构建http 请求
                 this.downloadUrl = downloadUrl;
@@ -116,7 +115,7 @@ namespace Gac
 
                         this.fileSize = response.ContentLength;//根据响应获取文件大小
                         if (this.fileSize <= 0) throw new Exception("获取文件大小失败");
-                        
+
                         if (filename.Length == 0) throw new Exception("获取文件名失败");
                         this.saveFile = Path.Combine(fileSaveDir, filename); //构建保存文件 
                         //计算每条线程下载的数据长度
@@ -195,7 +194,7 @@ namespace Gac
                     {
                         listener.OnDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
 
-                     //   Console.WriteLine(this.downloadSize);
+                        //   Console.WriteLine(this.downloadSize);
                     }
                 }
             }

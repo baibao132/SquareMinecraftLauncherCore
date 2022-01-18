@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Gac
+﻿namespace Gac
 {
-   public  interface  IDownloadProgressListener
+    public interface IDownloadProgressListener
     {
-         void OnDownloadSize(long size);
+        void OnDownloadSize(long size);
     }
 }

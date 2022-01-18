@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
+﻿using Newtonsoft.Json;
 using SquareMinecraftLauncher;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace mcbbs
 {
@@ -36,7 +31,7 @@ namespace mcbbs
         public string TakeTheMiddle(string text, string LeftText, string RightText)
         {
             if (text != "" && LeftText != "" && RightText != "")
-            {   
+            {
                 string[] str1 = Regex.Split(text, LeftText);
                 if (str1.Length == 1 && str1[0] == text)
                 {
@@ -67,7 +62,7 @@ namespace mcbbs
         {
             if (url == "")
             {
-                url = Web.getHtml("http://www.mcbbs.net/",true);
+                url = Web.getHtml("http://www.mcbbs.net/", true);
             }
             string ns;
             if (url != null)
@@ -134,7 +129,7 @@ namespace mcbbs
             const string strd1 = "\" title=\"";
             if (url == "")
             {
-                url = Web.getHtml("http://www.mcbbs.net/",true);
+                url = Web.getHtml("http://www.mcbbs.net/", true);
             }
             string ns;
             if (url != null)

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using static windows.WinAPI;
 
 namespace windows
 {
@@ -101,9 +98,9 @@ namespace windows
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(WNDENUMPROC lpEnumFunc, int lParam);
         [DllImport("user32.dll")]
-        private static extern int GetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)]StringBuilder lpString, int nMaxCount);
+        private static extern int GetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lpString, int nMaxCount);
         [DllImport("user32.dll")]
-        private static extern int GetClassNameW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)]StringBuilder lpString, int nMaxCount);
+        private static extern int GetClassNameW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lpString, int nMaxCount);
 
         /// <summary>
         /// 窗口置顶 或设置大小
@@ -279,7 +276,7 @@ namespace windows
             byte[] ch = (ASCIIEncoding.ASCII.GetBytes(Input));
             for (int i = 0; i < ch.Length; i++)
             {
-                SendMessageA(myIntPtr, (uint)0X102, int.Parse(ch[i].ToString()), "0");
+                SendMessageA(myIntPtr, 0X102, int.Parse(ch[i].ToString()), "0");
             }
         }
         /// <summary>

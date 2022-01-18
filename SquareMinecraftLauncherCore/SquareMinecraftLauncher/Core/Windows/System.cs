@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System
+﻿namespace System
 {
     internal class Directory
     {
         internal static string GetCurrentDirectory()
         {
-            
+
             if (Files != null)
             {
                 Files = Files.Replace(".minecraft", "");

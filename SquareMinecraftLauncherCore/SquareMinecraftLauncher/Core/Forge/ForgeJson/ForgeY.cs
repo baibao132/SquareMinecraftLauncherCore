@@ -1,8 +1,6 @@
 ﻿namespace SquareMinecraftLauncher.Core.Forge
 {
-    using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
 
     internal class ForgeY
     {
