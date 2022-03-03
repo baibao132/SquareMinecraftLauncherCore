@@ -8,6 +8,18 @@
 # 可供开发者第一时间获得技术支持，遇到bug可以快速解决
 # QQ群：431127283
 
+# 我们发布了两个版本，1.赞助版 2.免费版 。
+# 出现两个版本的原因是：1.从库的发布起到现在，获得的赞助远远少于成本。2.为了让赞助的开发者更加公平。
+# 无奈之举，望大家能理解。
+# 我们将对资源下载，forge安装，第一时间获得新版本和Curseforge国内下载源做出相应限制。
+# 赞助的开发者可以获得相应激活码，并绑定一启动器一码，无法被盗用。
+# 凡是采用破解库的方式对代码进行修改将会追究法律责任。
+# 哔哩哔哩相关博主可免费提供，可以通过加入技术群与我联系！
+# 赞助价格：
+![image](https://user-images.githubusercontent.com/35104649/156529858-79863bfa-fd56-4175-8b44-75088aeda7fa.png)
+# 赞助：https://afdian.net/@BaiBaoStudio
+# 赞助后会自动展现出赞助内群
+
 <a href="https://github.com/baibao132/SquareMinecraftLauncherCore/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/baibao132/SquareMinecraftLauncherCore"></a>
 <a href="https://github.com/baibao132/SquareMinecraftLauncherCore/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/baibao132/SquareMinecraftLauncherCore"></a>
 <a href="https://github.com/baibao132/SquareMinecraftLauncherCore/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/baibao132/SquareMinecraftLauncherCore"></a>
